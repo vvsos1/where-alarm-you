@@ -16,3 +16,6 @@
 # Fiebase 설정 파일
 app/google-services.json
 
+# API 설정 파일
+secret.xml
+

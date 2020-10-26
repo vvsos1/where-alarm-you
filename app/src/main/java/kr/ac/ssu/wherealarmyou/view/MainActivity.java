@@ -1,8 +1,10 @@
-package kr.ac.ssu.wherealarmyou;
+package kr.ac.ssu.wherealarmyou.view;
+
+import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
+import kr.ac.ssu.wherealarmyou.R;
 
 public class MainActivity extends AppCompatActivity {
 
