@@ -12,3 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Fiebase 설정 파일
+app/google-services.json
+

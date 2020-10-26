@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+// for Firebase
+apply plugin: 'com.google.gms.google-services'
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -29,5 +32,18 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // Firebase library version management tool
+    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation 'com.google.firebase:firebase-analytics'
+
+    // Firebase Login UI
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
+
+    // Firebase Authentication
+    implementation 'com.google.firebase:firebase-auth:19.4.0'
 
 }
