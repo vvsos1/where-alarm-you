@@ -23,16 +23,16 @@ import java.util.List;
 import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.address.Address;
-import kr.ac.ssu.wherealarmyou.address.service.AddressSearchService;
-import kr.ac.ssu.wherealarmyou.address.service.NaverAddressSearchService;
+import kr.ac.ssu.wherealarmyou.address.Location;
+import kr.ac.ssu.wherealarmyou.address.service.LocationSearchService;
+import kr.ac.ssu.wherealarmyou.address.service.NaverLocationSearchService;
 import kr.ac.ssu.wherealarmyou.common.ThreadUtil;
 
 public class LocationAddActivity extends AppCompatActivity implements OnMapReadyCallback {
     // 네이버 맵 객체
     private NaverMap naverMap;
 
-    private AddressSearchService searchService;
+    private LocationSearchService searchService;
     private EditText etAddressSearch;
 
     // ListView 구현을 위해 필요한 필드들
@@ -45,7 +45,7 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_add);
 
-        searchService = new NaverAddressSearchService(getApplicationContext());
+        searchService = new NaverLocationSearchService(getApplicationContext());
 
         etAddressSearch = findViewById(R.id.etAddressSearch);
         addressListView = findViewById(R.id.addressListView);
@@ -106,16 +106,16 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
         naverMap.moveCamera(cameraUpdate);
     }
 
-    private void setAddressListViewData(List<Address> addresses) {
+    private void setAddressListViewData(List<Location> locations) {
         // 기존의 리스트 뷰 데이터 삭제
         addressListViewData.clear();
 
-        for (Address address : addresses) {
+        for (Location location : locations) {
             Map<String, String> item = Map.of(
-                    "title", address.getTitle(),
-                    "roadAddress", address.getRoadAddress(),
-                    "latitude", String.valueOf(address.getLocation().getLatitude()),
-                    "longitude", String.valueOf(address.getLocation().getLongitude())
+                    "title", location.getTitle(),
+                    "roadAddress", location.getRoadAddress(),
+                    "latitude", String.valueOf(location.getLatitude()),
+                    "longitude", String.valueOf(location.getLongitude())
             );
             // 데이터 추가
             addressListViewData.add(item);
