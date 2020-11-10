@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "kr.ac.ssu.wherealarmyou"
-        minSdkVersion 16
+        minSdkVersion defaultMinSdkVersion
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -50,6 +50,9 @@ dependencies {
     // Firebase Authentication
     implementation 'com.google.firebase:firebase-auth:19.4.0'
 
+    // Firebase Realtime Database
+    implementation 'com.google.firebase:firebase-database'
+
     // 네이버 지도 SDK
     implementation 'com.naver.maps:map-sdk:3.10.0'
 
@@ -57,4 +60,13 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.16'
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
 
+    // RX Java
+//    implementation "io.reactivex.rxjava3:rxjava:3.0.7"
+
+    // Reactor
+    implementation 'io.projectreactor:reactor-core:3.2.3.RELEASE'
+
+    // Reactor Test
+//    androidTestImplementation 'io.projectreactor:reactor-test:3.2.3.RELEASE'
+//    testImplementation 'io.projectreactor:reactor-test:3.2.3.RELEASE'
 }

@@ -52,7 +52,6 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
 
         initListView();
 
-
         initAddressSearch();
 
         initNaverMap();
