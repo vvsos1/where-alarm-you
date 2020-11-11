@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.address;
+package kr.ac.ssu.wherealarmyou.location;
 
 
 import lombok.AccessLevel;
@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Location {
+    String locationUid;
     // 주소를 대표하는 이름; ex) 숭실대학교 정보과학관
     String title;
     // 도로명 주소
@@ -36,5 +37,9 @@ public class Location {
         if (radiusMeter < 20)
             throw new IllegalArgumentException("범위는 20m 이하로 지정할 수 없습니다");
         this.radiusMeter = radiusMeter;
+    }
+
+    void setLocationUid(String locationUid) {
+        this.locationUid = locationUid;
     }
 }

@@ -10,7 +10,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
+import kr.ac.ssu.wherealarmyou.location.Location;
+import kr.ac.ssu.wherealarmyou.location.LocationRepository;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
+import reactor.core.publisher.Mono;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase mDatabase;
     private UserRepository userRepository;
     private AlarmRepository alarmRepository;
+    private LocationRepository locationRepository;
 
 
     @Override
@@ -27,10 +31,16 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
+        mDatabase.setPersistenceEnabled(true);
         userRepository = new UserRepository(mDatabase);
         alarmRepository = new AlarmRepository(mDatabase);
+        locationRepository = new LocationRepository(mDatabase);
 
-        alarmRepository.getAlarmByUid("alarmUid2")
-                .subscribe(alarm -> Log.d("Alarm", alarm.toString() + "\n Alarm Type : " + alarm.getClass().getSimpleName()));
+        locationRepository.save(new Location("title", "road", "jibun", 127.127, 32.32))
+                .doOnError(exception -> Log.e("MainActivity", exception.getMessage()))
+                .then(Mono.just("location save success"))
+                .doOnNext(str -> Log.d("MainActivity", str))
+                .subscribe();
+
     }
 }

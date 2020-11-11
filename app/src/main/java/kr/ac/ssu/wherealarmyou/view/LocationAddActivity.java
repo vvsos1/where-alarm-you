@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.address.Location;
-import kr.ac.ssu.wherealarmyou.address.service.LocationSearchService;
-import kr.ac.ssu.wherealarmyou.address.service.NaverLocationSearchService;
 import kr.ac.ssu.wherealarmyou.common.ThreadUtil;
+import kr.ac.ssu.wherealarmyou.location.Location;
+import kr.ac.ssu.wherealarmyou.location.service.LocationSearchService;
+import kr.ac.ssu.wherealarmyou.location.service.NaverLocationSearchService;
 
 public class LocationAddActivity extends AppCompatActivity implements OnMapReadyCallback {
     // 네이버 맵 객체

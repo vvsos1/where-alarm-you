@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.address.service;
+package kr.ac.ssu.wherealarmyou.location.service;
 
 import android.content.Context;
 import android.util.Log;
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.address.Location;
 import kr.ac.ssu.wherealarmyou.common.HttpUtil;
+import kr.ac.ssu.wherealarmyou.location.Location;
 import lombok.SneakyThrows;
 
 public class NaverLocationSearchService implements LocationSearchService {
