@@ -11,6 +11,8 @@ import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraUpdate;
@@ -21,10 +23,12 @@ import com.naver.maps.map.OnMapReadyCallback;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.ThreadUtil;
 import kr.ac.ssu.wherealarmyou.location.Location;
+import kr.ac.ssu.wherealarmyou.location.service.LocationAddService;
 import kr.ac.ssu.wherealarmyou.location.service.LocationSearchService;
 import kr.ac.ssu.wherealarmyou.location.service.NaverLocationSearchService;
 
@@ -33,19 +37,29 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
     private NaverMap naverMap;
 
     private LocationSearchService searchService;
+    private LocationAddService addService;
+
     private EditText etAddressSearch;
 
     // ListView 구현을 위해 필요한 필드들
     private ListView addressListView;
     private List<Map<String, String>> addressListViewData = new ArrayList<>();
     private SimpleAdapter adapter;
+    private FloatingActionButton fab;
+
+    // 현재 사용자가 선택한 장소
+    private Optional<Location> selectedLocation = Optional.empty();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_add);
 
+//        UserService.getInstance().register(new RegisterRequest("vvsos1@hotmail.co.kr","111111","박명규")).subscribe();
+        FirebaseAuth.getInstance().signInWithEmailAndPassword("vvsos1@hotmail.co.kr", "111111");
         searchService = new NaverLocationSearchService(getApplicationContext());
+        addService = LocationAddService.getInstance();
+
 
         etAddressSearch = findViewById(R.id.etAddressSearch);
         addressListView = findViewById(R.id.addressListView);
@@ -55,6 +69,16 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
         initAddressSearch();
 
         initNaverMap();
+
+        initFloatingButton();
+    }
+
+    private void initFloatingButton() {
+        fab = findViewById(R.id.floating_action_button);
+        fab.setOnClickListener(v -> {
+            selectedLocation.ifPresent(location -> addService.addLocation(location).subscribe());
+        });
+
     }
 
     private void initAddressSearch() {
@@ -83,6 +107,12 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
             Map<String, String> current = addressListViewData.get(position);
             double latitude = Double.parseDouble(current.get("latitude"));
             double longitude = Double.parseDouble(current.get("longitude"));
+            String title = current.get("title");
+            String roadAddress = current.get("roadAddress");
+            String jibunAddress = current.get("jibunAddress");
+            // TODO : 범위 값도 가져오기
+
+            selectedLocation = Optional.of(new Location(title, roadAddress, jibunAddress, longitude, latitude));
 
             LatLng location = new LatLng(latitude, longitude);
             moveMapCamera(location);
@@ -114,6 +144,7 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
             Map<String, String> item = Map.of(
                     "title", location.getTitle(),
                     "roadAddress", location.getRoadAddress(),
+                    "jibunAddress", location.getJibunAddress(),
                     "latitude", String.valueOf(location.getLatitude()),
                     "longitude", String.valueOf(location.getLongitude())
             );

@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         mDatabase.setPersistenceEnabled(true);
-        userRepository = new UserRepository(mDatabase);
-        alarmRepository = new AlarmRepository(mDatabase);
-        locationRepository = new LocationRepository(mDatabase);
+        userRepository = UserRepository.getInstance();
+        alarmRepository = AlarmRepository.getInstance();
+        locationRepository = LocationRepository.getInstance();
 
         locationRepository.save(new Location("title", "road", "jibun", 127.127, 32.32))
                 .doOnError(exception -> Log.e("MainActivity", exception.getMessage()))

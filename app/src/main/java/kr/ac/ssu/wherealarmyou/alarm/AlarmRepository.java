@@ -11,10 +11,18 @@ import com.google.firebase.database.ValueEventListener;
 import reactor.core.publisher.Mono;
 
 public class AlarmRepository {
+    private static AlarmRepository instance;
+
+    private AlarmRepository(FirebaseDatabase mDatabase) {
+        this.alarmsRef = mDatabase.getReference("alarms");
+    }
+
     private final DatabaseReference alarmsRef;
 
-    public AlarmRepository(FirebaseDatabase mDatabase) {
-        this.alarmsRef = mDatabase.getReference("alarms");
+    public static AlarmRepository getInstance() {
+        if (instance == null)
+            instance = new AlarmRepository(FirebaseDatabase.getInstance());
+        return instance;
     }
 
     public Mono<Alarm> getAlarmByUid(String alarmUid) {

@@ -1,10 +1,13 @@
 package kr.ac.ssu.wherealarmyou.user;
 
+import android.util.ArrayMap;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Map;
 
+import kr.ac.ssu.wherealarmyou.location.Location;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,19 +27,20 @@ public class User {
 
     String name;
 
-    Map<String, Boolean> alarms;
+    Map<String, Boolean> locations = new ArrayMap<>();
 
-    Map<String, Boolean> groups;
+    Map<String, Boolean> alarms = new ArrayMap<>();
 
-    public User(String email, String name) {
-        this(email, name, Map.of(), Map.of());
+    Map<String, Boolean> groups = new ArrayMap<>();
+
+    public User(String email, String name, String uid) {
+        this(email, name);
+        this.uid = uid;
     }
 
-    public User(String email, String name, Map<String, Boolean> alarms, Map<String, Boolean> groups) {
+    public User(String email, String name) {
         this.email = email;
         this.name = name;
-        this.alarms = alarms;
-        this.groups = groups;
     }
 
     // UserRepository에서만 접근
@@ -47,6 +51,10 @@ public class User {
 
     public void changeEmail(String email) {
         this.email = email;
+    }
+
+    public void addLocation(Location location) {
+        this.locations.put(location.getUid(), true);
     }
 
 }

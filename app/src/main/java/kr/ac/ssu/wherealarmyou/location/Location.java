@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Location {
-    String locationUid;
+    String uid;
     // 주소를 대표하는 이름; ex) 숭실대학교 정보과학관
     String title;
     // 도로명 주소
@@ -39,7 +39,7 @@ public class Location {
         this.radiusMeter = radiusMeter;
     }
 
-    void setLocationUid(String locationUid) {
-        this.locationUid = locationUid;
+    void setUid(String uid) {
+        this.uid = uid;
     }
 }

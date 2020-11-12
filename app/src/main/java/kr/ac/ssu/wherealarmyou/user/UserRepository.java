@@ -14,17 +14,22 @@ import reactor.core.publisher.Mono;
 
 
 public class UserRepository {
-    private final DatabaseReference usersRef;
+    // Singleton
+    private static UserRepository instance;
 
-    public UserRepository(FirebaseDatabase mDatabase) {
+    private UserRepository(FirebaseDatabase mDatabase) {
         this.usersRef = mDatabase.getReference("users");
     }
 
-    public Mono<User> save(User user) {
-        DatabaseReference newUserRef = usersRef.push();
-        String uid = newUserRef.getKey();
-        user.setUid(uid);
+    private final DatabaseReference usersRef;
 
+    public static UserRepository getInstance() {
+        if (instance == null)
+            instance = new UserRepository(FirebaseDatabase.getInstance());
+        return instance;
+    }
+
+    public Mono<User> save(User user) {
         return update(user).thenReturn(user);
     }
 
