@@ -28,8 +28,11 @@ public class User {
     String name;
 
 
-    // 귀속된 알람에 등록된 장소; (LocationUid,GroupUid)
-    Map<String, Boolean> locations = new ArrayMap<>();
+    // 사용자에게 귀속된 장소
+    Map<String, Boolean> userLocations = new ArrayMap<>();
+
+    // 사용자가 속한 그룹에게 귀속된 장소
+    Map<String, Boolean> groupLocations = new ArrayMap<>();
 
     // 사용자에게 귀속된 알람
     Map<String, Boolean> alarms = new ArrayMap<>();
@@ -58,7 +61,7 @@ public class User {
     }
 
     public void addLocation(Location location) {
-        this.locations.put(location.getUid(), true);
+        this.userLocations.put(location.getUid(), true);
     }
 
 
