@@ -1,6 +1,8 @@
 package kr.ac.ssu.wherealarmyou.view;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -23,14 +25,13 @@ import com.naver.maps.map.OnMapReadyCallback;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.common.ThreadUtil;
 import kr.ac.ssu.wherealarmyou.location.Location;
 import kr.ac.ssu.wherealarmyou.location.service.LocationAddService;
 import kr.ac.ssu.wherealarmyou.location.service.LocationSearchService;
 import kr.ac.ssu.wherealarmyou.location.service.NaverLocationSearchService;
+import reactor.core.scheduler.Schedulers;
 
 public class LocationAddActivity extends AppCompatActivity implements OnMapReadyCallback {
     // 네이버 맵 객체
@@ -48,7 +49,10 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
     private FloatingActionButton fab;
 
     // 현재 사용자가 선택한 장소
-    private Optional<Location> selectedLocation = Optional.empty();
+    private Location selectedLocation;
+
+    private Handler handler = new Handler(Looper.getMainLooper());
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +80,8 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
     private void initFloatingButton() {
         fab = findViewById(R.id.floating_action_button);
         fab.setOnClickListener(v -> {
-            selectedLocation.ifPresent(location -> addService.addLocation(location).subscribe());
+            if (selectedLocation != null)
+                addService.addLocation(selectedLocation).subscribe();
         });
 
     }
@@ -85,10 +90,13 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
         etAddressSearch.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {   // 엔터를 누르면
                 String searchQuery = etAddressSearch.getText().toString();  // 검색어를 가져온다
-                ThreadUtil.runAsync(
-                        () -> searchService.search(searchQuery),
-                        result -> setAddressListViewData(result)
-                );
+
+                searchService.search(searchQuery)
+                        .subscribeOn(Schedulers.single())
+                        .subscribeOn(Schedulers.elastic())
+//                        .publishOn(Schedulers.elastic())
+                        .collectList()
+                        .subscribe(result -> handler.post(() -> setAddressListViewData(result)));
                 return true;
             }
             return false;
@@ -112,7 +120,7 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
             String jibunAddress = current.get("jibunAddress");
             // TODO : 범위 값도 가져오기
 
-            selectedLocation = Optional.of(new Location(title, roadAddress, jibunAddress, longitude, latitude));
+            selectedLocation = new Location(title, roadAddress, jibunAddress, longitude, latitude);
 
             LatLng location = new LatLng(latitude, longitude);
             moveMapCamera(location);

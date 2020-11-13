@@ -27,10 +27,14 @@ public class User {
 
     String name;
 
+
+    // 귀속된 알람에 등록된 장소; (LocationUid,GroupUid)
     Map<String, Boolean> locations = new ArrayMap<>();
 
+    // 사용자에게 귀속된 알람
     Map<String, Boolean> alarms = new ArrayMap<>();
 
+    // 사용자가 가입된 그룹
     Map<String, Boolean> groups = new ArrayMap<>();
 
     public User(String email, String name, String uid) {
@@ -56,5 +60,6 @@ public class User {
     public void addLocation(Location location) {
         this.locations.put(location.getUid(), true);
     }
+
 
 }

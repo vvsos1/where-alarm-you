@@ -11,11 +11,9 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class Period {
-    // 시작 날짜
-    Date start;
+@FieldDefaults(level = AccessLevel.PROTECTED)
+public class Repetition {
+    Integer repeatCount;
 
-    // 종료 날짜
-    Date end;
+    Integer interval;
 }

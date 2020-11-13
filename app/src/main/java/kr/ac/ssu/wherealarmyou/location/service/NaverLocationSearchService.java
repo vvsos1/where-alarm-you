@@ -1,7 +1,6 @@
 package kr.ac.ssu.wherealarmyou.location.service;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -11,14 +10,14 @@ import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.Tm128;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.HttpUtil;
 import kr.ac.ssu.wherealarmyou.location.Location;
 import lombok.SneakyThrows;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public class NaverLocationSearchService implements LocationSearchService {
     // 네이버 지역 검색 REST API URL
@@ -49,7 +48,7 @@ public class NaverLocationSearchService implements LocationSearchService {
 
     @SneakyThrows
     @Override
-    public List<Location> search(String query) {
+    public Flux<Location> search(String query) {
         // 네이버 지역 검색 기본 URL + Query String
         String searchUrl = NAVER_SEARCH_URL
                 + "?" + "query=" + URLEncoder.encode(query, "UTF-8")
@@ -64,37 +63,38 @@ public class NaverLocationSearchService implements LocationSearchService {
                 "X-Naver-Client-Secret", NAVER_DEVELOPERS_CLIENT_SECRET
         );
 
-        String resultJson = HttpUtil.requestHttp(searchUrl, headers);
+        Mono<String> resultJson = HttpUtil.requestHttp(searchUrl, headers);
 
-        Log.d("AddressSearchService", "resultJson : " + resultJson);
-
-        return parseJson(resultJson);
+        return resultJson.flatMapMany(this::parseJson);
     }
 
     // 네이버 지역 검색 결과 JSON을 파싱
     // 네이버 지역 검색 결과에서 제공하는 Tm128 좌표계의 좌표를 위경도 좌표계로 변환해서 사용; 우선 Naver GeoCoding을 거치지 않고 구현
-    private List<Location> parseJson(String naverLocationSearchJson) {
+    private Flux<Location> parseJson(String naverLocationSearchJson) {
         JsonObject root = new JsonParser().parse(naverLocationSearchJson).getAsJsonObject();
 
         JsonArray items = root.getAsJsonArray("items");
 
-        List<Location> result = new ArrayList<>();
-        for (JsonElement item : items) {
-            JsonObject i = item.getAsJsonObject();
-            String title = i.get("title").getAsString();
-            title = removeTag(title);       // title에 HTML 태그가 들어가있으므로 제거
-            String jibunAddress = i.get("address").getAsString();
-            String roadAddress = i.get("roadAddress").getAsString();
+        Flux<Location> result = Flux.create(fluxSink -> {
+            for (JsonElement item : items) {
+                JsonObject i = item.getAsJsonObject();
+                String title = i.get("title").getAsString();
+                title = removeTag(title);       // title에 HTML 태그가 들어가있으므로 제거
+                String jibunAddress = i.get("address").getAsString();
+                String roadAddress = i.get("roadAddress").getAsString();
 
-            int mapx = i.get("mapx").getAsInt();
-            int mapy = i.get("mapy").getAsInt();
-            // Tm128 좌표계의 좌표를 위경도 좌표로 변환
-            LatLng latLng = new Tm128(mapx, mapy).toLatLng();
+                int mapx = i.get("mapx").getAsInt();
+                int mapy = i.get("mapy").getAsInt();
+                // Tm128 좌표계의 좌표를 위경도 좌표로 변환
+                LatLng latLng = new Tm128(mapx, mapy).toLatLng();
 
-            Location location = new Location(title, roadAddress, jibunAddress, latLng.longitude, latLng.latitude);
+                Location location = new Location(title, roadAddress, jibunAddress, latLng.longitude, latLng.latitude);
 
-            result.add(location);
-        }
+                fluxSink.next(location);
+            }
+            fluxSink.complete();
+        });
+
 
         return result;
     }

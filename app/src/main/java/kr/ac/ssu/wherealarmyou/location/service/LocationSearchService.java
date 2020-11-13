@@ -1,10 +1,9 @@
 package kr.ac.ssu.wherealarmyou.location.service;
 
-import java.util.List;
-
 import kr.ac.ssu.wherealarmyou.location.Location;
+import reactor.core.publisher.Flux;
 
 public interface LocationSearchService {
 
-    List<Location> search(String query);
+    Flux<Location> search(String query);
 }
