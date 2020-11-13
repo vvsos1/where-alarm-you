@@ -28,6 +28,20 @@
             </intent-filter>
         </activity>
 
+        <!-- login package activities -->
+        <activity android:name=".login.StartActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".login.SignUpActivity" />
+        <activity
+            android:name=".login.LoginActivity"
+            android:theme="@style/MyTheme" />
+        <activity android:name=".login.FindActivity" />
+        <activity android:name=".login.ProfileActivity" />
+        <activity android:name=".login.SetUserInfoActivity" />
 
         <!-- Naver Mobile Dynamic Map SDK를 위한 설정 -->
         <meta-data
