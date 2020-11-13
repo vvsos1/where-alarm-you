@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">WhereAlarmYou</string>
+    <string name="_10dp">10dp</string>
+    <string name="findPasswordTitle">비밀번호 찾기</string>
+    <string name="findPasswordMessage">가입에 사용했던 이메일을 입력해주세요</string>
+    <string name="findPasswordHint">&#160;&#160;이메일</string>
+    <string name="findPasswordButton">메일 보내기</string>
+    <string name="loginTitle">로그인</string>
+    <string name="loginMessage">Where Alarm You</string>
+    <string name="loginEmailHint">&#160;&#160;이메일</string>
+    <string name="loginPasswordHint">&#160;&#160;비밀번호</string>
+    <string name="loginButton">로그인</string>
+    <string name="loginTextButton_signIn">새 계정이 필요하신가요?</string>
+    <string name="loginTextButtonParser">|</string>
+    <string name="loginTextButton_findPassword">비밀번호를 잊으셨나요?</string>
+    <string name="signInTitle">회원가입</string>
+    <string name="signInMessage1">회원가입을 통해 서비스를 정상적으로 이용하실 수 있습니다</string>
+    <string name="signInMessage2">이메일로 계정을 등록해주세요</string>
+    <string name="signInEmailHint">&#160;&#160;이메일</string>
+    <string name="signInPasswordHint">&#160;&#160;비밀번호</string>
+    <string name="signInButton">회원가입</string>
+    <string name="signInTextButton_sub">이미 계정을 보유하고 있다면</string>
+    <string name="signInTextButton_left">여기에서</string>
+    <string name="signInTextButton">&#160;&#160;로그인&#160;&#160;</string>
+    <string name="signInTextButton_right">해주세요</string>
+    <string name="logoutButton">로그아웃</string>
+    <string name="deleteUserTextButton">회원탈퇴</string>
+    <string name="todo">TODO</string>
+    <string name="appTitle">WHERE_ALARM_YOU</string>
+    <string name="appSubTitle">똑같지만 전혀 다른 알람</string>
 </resources>
