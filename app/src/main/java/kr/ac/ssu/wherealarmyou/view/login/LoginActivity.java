@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.login;
+package kr.ac.ssu.wherealarmyou.view.login;
 
 import android.content.Intent;
 import android.os.Bundle;
