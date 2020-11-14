@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import kr.ac.ssu.wherealarmyou.R;
 
 import java.util.regex.Pattern;
 

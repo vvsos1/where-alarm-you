@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import kr.ac.ssu.wherealarmyou.R;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -18,8 +19,6 @@ public class StartActivity extends AppCompatActivity
 {
     private AccountManager accountManager;
     private FirebaseAuth   firebaseAuth;
-    
-    private long keyDownTime_KEYCODE_BACK;
     
     @Override
     protected void onCreate(Bundle savedInstanceState)

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import kr.ac.ssu.wherealarmyou.R;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener
 {
