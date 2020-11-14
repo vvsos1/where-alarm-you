@@ -8,7 +8,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Address {
+public class Address
+{
     // 주소를 대표하는 이름; ex) 숭실대학교 정보과학관
     String title;
     // 도로명 주소

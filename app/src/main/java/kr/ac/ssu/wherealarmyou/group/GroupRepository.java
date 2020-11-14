@@ -8,8 +8,8 @@ import reactor.core.publisher.Mono;
 public class GroupRepository
 {
     // Singleton
-    private static GroupRepository instance;
-    private final DatabaseReference groupsRef;
+    private static GroupRepository   instance;
+    private final  DatabaseReference groupsRef;
     
     private GroupRepository(FirebaseDatabase mDatabase)
     {
@@ -85,6 +85,4 @@ public class GroupRepository
             });
         });
     }
-    
-    
 }

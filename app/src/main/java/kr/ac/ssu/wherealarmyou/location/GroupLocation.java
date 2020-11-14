@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GroupLocation extends Location {
+public class GroupLocation extends Location
+{
     String groupUid;
 }
