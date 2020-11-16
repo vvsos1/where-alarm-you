@@ -55,7 +55,7 @@ public class NaverLocationSearchService implements LocationSearchService
                            + "?" + "query=" + URLEncoder.encode(query, "UTF-8")
                            + "&" + "display=" + "5"         // 검색 결과 출력 건수 지정; 최대 5개
                            + "&" + "start=" + "1"           // 검색 시작 위치; 1만 가능
-                           + "&" + "sort=" + "random";       // 정렬 옵션; random은 유사도순
+                           + "&" + "sort=" + "random";      // 정렬 옵션; random은 유사도순
         
         
         // 인증에 필요한 HTTP 헤더

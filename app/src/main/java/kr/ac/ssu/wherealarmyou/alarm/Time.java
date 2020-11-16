@@ -11,5 +11,6 @@ import lombok.experimental.FieldDefaults;
 public class Time
 {
     Integer hours;
+    
     Integer minutes;
 }

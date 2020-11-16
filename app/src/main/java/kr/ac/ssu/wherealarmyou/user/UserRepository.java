@@ -1,16 +1,15 @@
 package kr.ac.ssu.wherealarmyou.user;
 
-
 import androidx.annotation.NonNull;
 import com.google.firebase.database.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-
 public class UserRepository
 {
     // Singleton
     private static UserRepository instance;
+    
     private final DatabaseReference usersRef;
     
     private UserRepository(FirebaseDatabase mDatabase)
@@ -32,8 +31,7 @@ public class UserRepository
     public Mono<User> findUserByUid(String uid)
     {
         return Mono.create(userMonoSink -> {
-            usersRef
-                    .child(uid)
+            usersRef.child(uid)
                     .addListenerForSingleValueEvent(new ValueEventListener( )
                     {
                         @Override
@@ -66,8 +64,7 @@ public class UserRepository
     public Flux<User> findUserByEmail(String email)
     {
         return Flux.create(userFluxSink -> {
-            usersRef
-                    .orderByChild("email")
+            usersRef.orderByChild("email")
                     .equalTo(email)
                     .addListenerForSingleValueEvent(new ValueEventListener( )
                     {
@@ -76,7 +73,9 @@ public class UserRepository
                         {
                             snapshot.getChildren( ).forEach(dataSnapshot -> {
                                 User user = dataSnapshot.getValue(User.class);
-                                userFluxSink.next(user);
+                                if (user != null) {
+                                    userFluxSink.next(user);
+                                }
                             });
                             userFluxSink.complete( );
                         }

@@ -8,8 +8,9 @@ import reactor.core.publisher.Mono;
 public class GroupRepository
 {
     // Singleton
-    private static GroupRepository   instance;
-    private final  DatabaseReference groupsRef;
+    private static GroupRepository instance;
+    
+    private final DatabaseReference groupsRef;
     
     private GroupRepository(FirebaseDatabase mDatabase)
     {
@@ -27,8 +28,7 @@ public class GroupRepository
         DatabaseReference newGroupRef = groupsRef.push( );
         group.setUid(newGroupRef.getKey( ));
         
-        return update(group)
-                .then(Mono.just(group));
+        return update(group).then(Mono.just(group));
     }
     
     public Mono<Void> update(Group group)
@@ -43,7 +43,7 @@ public class GroupRepository
     
     public Flux<Group> findGroupByName(String groupName)
     {
-        return Flux.create(fluxSink -> {
+        return Flux.create(fluxSink ->
             groupsRef.orderByChild("name").equalTo(groupName).addListenerForSingleValueEvent(new ValueEventListener( )
             {
                 @Override
@@ -61,8 +61,7 @@ public class GroupRepository
                 {
                     fluxSink.error(error.toException( ));
                 }
-            });
-        });
+            }));
     }
     
     public Mono<Group> findGroupByUid(String groupUid)

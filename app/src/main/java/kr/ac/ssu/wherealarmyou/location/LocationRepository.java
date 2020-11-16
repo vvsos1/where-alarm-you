@@ -28,8 +28,7 @@ public class LocationRepository
         
         location.setUid(newLocationRef.getKey( ));
         
-        return update(location)
-                .then(Mono.just(location));
+        return update(location).then(Mono.just(location));
     }
     
     public Mono<Void> update(Location location)

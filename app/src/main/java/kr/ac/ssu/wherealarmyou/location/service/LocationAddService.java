@@ -1,6 +1,5 @@
 package kr.ac.ssu.wherealarmyou.location.service;
 
-
 import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.location.Location;
 import kr.ac.ssu.wherealarmyou.location.LocationRepository;
@@ -33,10 +32,8 @@ public class LocationAddService
         String userUid = FirebaseAuth.getInstance( ).getCurrentUser( ).getUid( );
         
         return locationRepository.save(newLocation)
-                                 .flatMap(location ->
-                                         userRepository.findUserByUid(userUid)
-                                                       .doOnNext(user -> user.addLocation(location))
-                                                       .flatMap(userRepository::update)
-                                 );
+                                 .flatMap(location -> userRepository.findUserByUid(userUid)
+                                                                    .doOnNext(user -> user.addLocation(location))
+                                                                    .flatMap(userRepository::update));
     }
 }

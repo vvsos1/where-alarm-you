@@ -7,6 +7,7 @@ import reactor.core.publisher.Mono;
 public class AlarmRepository
 {
     private static AlarmRepository instance;
+    
     private final DatabaseReference alarmsRef;
     
     private AlarmRepository(FirebaseDatabase mDatabase)
@@ -22,7 +23,7 @@ public class AlarmRepository
     
     public Mono<Alarm> getAlarmByUid(String alarmUid)
     {
-        return Mono.create(sink -> {
+        return Mono.create(sink ->
             alarmsRef.child(alarmUid).addListenerForSingleValueEvent(new ValueEventListener( )
             {
                 @Override
@@ -37,8 +38,7 @@ public class AlarmRepository
                 {
                     sink.error(error.toException( ));
                 }
-            });
-        });
+            }));
     }
     
     public Mono<Void> update(Alarm alarm)
@@ -54,11 +54,10 @@ public class AlarmRepository
     
     public Mono<Void> deleteByUid(String alarmUid)
     {
-        return Mono.create(voidMonoSink -> {
+        return Mono.create(voidMonoSink ->
             alarmsRef.child(alarmUid).removeValue((error, ref) -> {
                 if (error != null) { voidMonoSink.error(error.toException( )); }
                 else { voidMonoSink.success( ); }
-            });
-        });
+            }));
     }
 }

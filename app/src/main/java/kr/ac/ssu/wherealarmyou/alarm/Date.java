@@ -11,6 +11,8 @@ import lombok.experimental.FieldDefaults;
 public class Date
 {
     Integer day;
+    
     Integer month;
+    
     Integer year;
 }

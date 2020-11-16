@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity
     
     private FirebaseAuth       mAuth;
     private FirebaseDatabase   mDatabase;
+    
     private UserRepository     userRepository;
     private AlarmRepository    alarmRepository;
     private LocationRepository locationRepository;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity
         mAuth     = FirebaseAuth.getInstance( );
         mDatabase = FirebaseDatabase.getInstance( );
         mDatabase.setPersistenceEnabled(true);
+        
         userRepository     = UserRepository.getInstance( );
         alarmRepository    = AlarmRepository.getInstance( );
         locationRepository = LocationRepository.getInstance( );
@@ -39,6 +41,5 @@ public class MainActivity extends AppCompatActivity
                           .then(Mono.just("location save success"))
                           .doOnNext(str -> Log.d("MainActivity", str))
                           .subscribe( );
-        
     }
 }

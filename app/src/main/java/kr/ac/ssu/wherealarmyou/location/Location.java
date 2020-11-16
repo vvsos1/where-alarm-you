@@ -17,8 +17,10 @@ public abstract class Location
     
     // 주소 정보
     Address address;
+    
     // 범위 반지름
     Integer range;
+    
     // 아이콘
     Icon icon;
     
