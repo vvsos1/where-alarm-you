@@ -1,24 +1,29 @@
 package kr.ac.ssu.wherealarmyou.user.service;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
 import kr.ac.ssu.wherealarmyou.user.dto.DeleteRequest;
 import kr.ac.ssu.wherealarmyou.user.dto.LoginRequest;
-import kr.ac.ssu.wherealarmyou.user.dto.RegisterRequest;
+import kr.ac.ssu.wherealarmyou.user.dto.SignUpRequest;
 import kr.ac.ssu.wherealarmyou.user.dto.UpdateRequest;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 public class UserService
 {
-    private static UserService    instance;
-    private final  FirebaseAuth   mAuth;
-    private final  UserRepository userRepository;
+    private static UserService instance;
+    
+    private final FirebaseAuth   firebaseAuth;
+    private final UserRepository userRepository;
     
     private UserService(UserRepository userRepository, FirebaseAuth mAuth)
     {
         this.userRepository = userRepository;
-        this.mAuth          = mAuth;
+        this.firebaseAuth   = mAuth;
     }
     
     public static UserService getInstance( )
@@ -29,40 +34,90 @@ public class UserService
         return instance;
     }
     
-    // Firebase Auth와 Realtime Database에 유저 정보 저장
-    public Mono<User> register(RegisterRequest request)
+    /* 로그인 */
+    // Firebase Auth에 로그인 후 Realtime Database에서 UID로 유저 정보를 찾아와 리턴
+    public Mono<User> login(LoginRequest request)
     {
-        return null;
+        String email    = request.getEmail( );
+        String password = request.getPassword( );
+        
+        return Mono.<FirebaseUser>create(firebaseUserMonoSink ->
+                firebaseAuth.signInWithEmailAndPassword(email, password)
+                            .addOnSuccessListener(authResult -> firebaseUserMonoSink.success(authResult.getUser( )))
+                            .addOnFailureListener(firebaseUserMonoSink::error))
+                .map(FirebaseUser::getUid)
+                .flatMap(userRepository::findUserByUid);
     }
     
-    // email로 패스워드 리셋 링크를 보냄
-    public Mono<Void> passwordReset(String email)
+    /* 로그아웃 */
+    // Signs out the current user and clears it from the disk cache.
+    public Mono<Void> logout( )
     {
-        return null;
+        return Mono.create(voidMonoSink -> {
+            firebaseAuth.signOut( );
+            voidMonoSink.success( );
+        });
     }
     
-    public Mono<Boolean> isExistUser(String email)
+    /* 회원 가입 */
+    // Firebase Auth에 계정 생성 후 Realtime Database에 User 정보 저장
+    public Mono<User> signUp(SignUpRequest request)
     {
-        return null;
+        String email    = request.getEmail( );
+        String password = request.getPassword( );
+        
+        return Mono.<FirebaseUser>create(firebaseUserMonoSink ->
+                firebaseAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnSuccessListener(authResult -> firebaseUserMonoSink.success(authResult.getUser( )))
+                            .addOnFailureListener(firebaseUserMonoSink::error))
+                .map(FirebaseUser::getUid)
+                .map(request::toUser)
+                .flatMap(userRepository::save);
     }
     
-    // Firebase Auth와 Realtime Database에 유저 정보 삭제
+    /* 회원 탈퇴 */
+    // Firebase Auth와 Realtime Database에서 유저 정보 삭제
     public Mono<Void> delete(DeleteRequest request)
     {
         return null;
     }
     
-    // Firebase Auth에 로그인 후 Realtime Database에서 유저 정보를 가져와 리턴
-    public Mono<User> login(LoginRequest request)
+    /* 이메일 중복 체크 */
+    // Realtime Database에 존재하는 유저인지 확인
+    public Mono<Boolean> checkExistUser(String email)
     {
-        return null;
+        return Mono.create(booleanMonoSink ->
+                userRepository.findUserByUid(email)
+                              .thenReturn(Boolean.TRUE)
+                              .onErrorReturn(Boolean.FALSE)
+                              .subscribe( ));
     }
     
+    /* 비밀번호 초기화 */
+    // Email로 Password Reset URL을 보냄
+    public Mono<Void> resetPassword(String email)
+    {
+        return Mono.create(voidMonoSink ->
+                firebaseAuth.sendPasswordResetEmail(email)
+                            .addOnSuccessListener(unused -> voidMonoSink.success( ))
+                            .addOnFailureListener(voidMonoSink::error));
+    }
+    
+    /* 회원 정보 수정 */
     // 현재 로그인 중인 사용자의 정보를 Firebase Auth와 Realtime Database에서 변경
     public Mono<User> update(UpdateRequest request)
     {
-        return null;
+        String email = request.getEmail( );
+        String name  = request.getName( );
+        
+        return Mono.create(userMonoSink -> {
+            UserProfileChangeRequest userProfileChangeRequest =
+                    new UserProfileChangeRequest.Builder( ).setDisplayName(name).build( );
+            Objects.requireNonNull(firebaseAuth.getCurrentUser( )).updateProfile(userProfileChangeRequest)
+                   .addOnSuccessListener(unused -> userMonoSink.success( ))
+                   .addOnFailureListener(userMonoSink::error);
+        })
+                   .then(userRepository.findUserByEmail(email)
+                                       .flatMap(userRepository::save));
     }
-    
-    
 }

@@ -4,16 +4,14 @@ import kr.ac.ssu.wherealarmyou.user.User;
 import lombok.Value;
 
 @Value
-public class RegisterRequest
+public class SignUpRequest
 {
     String email;
     
     String password;
     
-    String name;
-    
     public User toUser(String uid)
     {
-        return new User(email, name, uid);
+        return new User(uid, email);
     }
 }
