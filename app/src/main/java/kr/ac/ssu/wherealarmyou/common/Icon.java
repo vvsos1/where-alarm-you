@@ -8,9 +8,10 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Icon {
+public class Icon
+{
     // 아이콘 색상 16진수 값
     String colorHex;
-
+    
     String text;
 }
