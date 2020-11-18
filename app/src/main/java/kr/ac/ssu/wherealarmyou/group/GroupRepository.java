@@ -44,44 +44,45 @@ public class GroupRepository
     public Flux<Group> findGroupByName(String groupName)
     {
         return Flux.create(fluxSink ->
-            groupsRef.orderByChild("name").equalTo(groupName).addListenerForSingleValueEvent(new ValueEventListener( )
-            {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot)
-                {
-                    snapshot.getChildren( ).forEach(dataSnapshot -> {
-                        Group group = dataSnapshot.getValue(Group.class);
-                        fluxSink.next(group);
-                    });
-                    fluxSink.complete( );
-                }
-                
-                @Override
-                public void onCancelled(@NonNull DatabaseError error)
-                {
-                    fluxSink.error(error.toException( ));
-                }
-            }));
+                groupsRef.orderByChild("name")
+                         .equalTo(groupName)
+                         .addListenerForSingleValueEvent(new ValueEventListener( )
+                         {
+                             @Override
+                             public void onDataChange(@NonNull DataSnapshot snapshot)
+                             {
+                                 snapshot.getChildren( ).forEach(dataSnapshot -> {
+                                     Group group = dataSnapshot.getValue(Group.class);
+                                     fluxSink.next(group);
+                                 });
+                                 fluxSink.complete( );
+                             }
+                    
+                             @Override
+                             public void onCancelled(@NonNull DatabaseError error)
+                             {
+                                 fluxSink.error(error.toException( ));
+                             }
+                         }));
     }
     
     public Mono<Group> findGroupByUid(String groupUid)
     {
-        return Mono.create(monoSink -> {
-            groupsRef.child(groupUid).addListenerForSingleValueEvent(new ValueEventListener( )
-            {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot)
+        return Mono.create(monoSink ->
+                groupsRef.child(groupUid).addListenerForSingleValueEvent(new ValueEventListener( )
                 {
-                    Group group = snapshot.getValue(Group.class);
-                    monoSink.success(group);
-                }
-                
-                @Override
-                public void onCancelled(@NonNull DatabaseError error)
-                {
-                    monoSink.error(error.toException( ));
-                }
-            });
-        });
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot)
+                    {
+                        Group group = snapshot.getValue(Group.class);
+                        monoSink.success(group);
+                    }
+                    
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error)
+                    {
+                        monoSink.error(error.toException( ));
+                    }
+                }));
     }
 }
