@@ -27,17 +27,18 @@ import java.util.List;
 import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.location.Address;
 import kr.ac.ssu.wherealarmyou.location.Location;
+import kr.ac.ssu.wherealarmyou.location.service.AddressSearchService;
 import kr.ac.ssu.wherealarmyou.location.service.LocationAddService;
-import kr.ac.ssu.wherealarmyou.location.service.LocationSearchService;
-import kr.ac.ssu.wherealarmyou.location.service.NaverLocationSearchService;
+import kr.ac.ssu.wherealarmyou.location.service.NaverAddressSearchService;
 import reactor.core.scheduler.Schedulers;
 
 public class LocationAddActivity extends AppCompatActivity implements OnMapReadyCallback {
     // 네이버 맵 객체
     private NaverMap naverMap;
 
-    private LocationSearchService searchService;
+    private AddressSearchService searchService;
     private LocationAddService addService;
 
     private EditText etAddressSearch;
@@ -49,7 +50,7 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
     private FloatingActionButton fab;
 
     // 현재 사용자가 선택한 장소
-    private Location selectedLocation;
+    private Address selectedAddress;
 
     private Handler handler = new Handler(Looper.getMainLooper());
 
@@ -61,7 +62,7 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
 
 //        UserService.getInstance().register(new RegisterRequest("vvsos1@hotmail.co.kr","111111","박명규")).subscribe();
         FirebaseAuth.getInstance().signInWithEmailAndPassword("vvsos1@hotmail.co.kr", "111111");
-        searchService = new NaverLocationSearchService(getApplicationContext());
+        searchService = new NaverAddressSearchService(getApplicationContext());
         addService = LocationAddService.getInstance();
 
 
@@ -80,8 +81,11 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
     private void initFloatingButton() {
         fab = findViewById(R.id.floating_action_button);
         fab.setOnClickListener(v -> {
-            if (selectedLocation != null)
-                addService.addLocation(selectedLocation).subscribe();
+            if (selectedAddress != null) {
+                // TODO: 코드 완성
+                Location newLocation = null;
+                addService.addLocation(newLocation).subscribe();
+            }
         });
 
     }
@@ -97,7 +101,10 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
 //                        .publishOn(Schedulers.elastic())
                         .collectList()
                         .subscribe(result -> handler.post(() -> setAddressListViewData(result)));
+
                 return true;
+
+
             }
             return false;
         });
@@ -120,7 +127,8 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
             String jibunAddress = current.get("jibunAddress");
             // TODO : 범위 값도 가져오기
 
-            selectedLocation = new Location(title, roadAddress, jibunAddress, longitude, latitude);
+            selectedAddress = new Address(title, roadAddress, jibunAddress, longitude, latitude);
+
 
             LatLng location = new LatLng(latitude, longitude);
             moveMapCamera(location);
@@ -144,18 +152,19 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
         naverMap.moveCamera(cameraUpdate);
     }
 
-    private void setAddressListViewData(List<Location> locations) {
+    private void setAddressListViewData(List<Address> addresses) {
         // 기존의 리스트 뷰 데이터 삭제
         addressListViewData.clear();
 
-        for (Location location : locations) {
+        for (Address address : addresses) {
             Map<String, String> item = Map.of(
-                    "title", location.getTitle(),
-                    "roadAddress", location.getRoadAddress(),
-                    "jibunAddress", location.getJibunAddress(),
-                    "latitude", String.valueOf(location.getLatitude()),
-                    "longitude", String.valueOf(location.getLongitude())
+                    "title", address.getTitle(),
+                    "roadAddress", address.getRoadAddress(),
+                    "jibunAddress", address.getJibunAddress(),
+                    "latitude", String.valueOf(address.getLatitude()),
+                    "longitude", String.valueOf(address.getLongitude())
             );
+
             // 데이터 추가
             addressListViewData.add(item);
         }

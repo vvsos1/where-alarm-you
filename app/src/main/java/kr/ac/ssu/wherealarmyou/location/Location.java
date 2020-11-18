@@ -23,6 +23,12 @@ public abstract class Location {
     // 아이콘
     Icon icon;
 
+    public Location(Address address, Integer range, Icon icon) {
+        this.address = address;
+        this.range = range;
+        this.icon = icon;
+    }
+
     public static Location fromSnapShot(DataSnapshot snapshot) {
         String type = snapshot.child("type").getValue(String.class);
         if ("group".equals(type)) {

@@ -14,22 +14,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
-import kr.ac.ssu.wherealarmyou.R;
 
 import java.util.regex.Pattern;
 
-public class SignUpActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener
-{
-    private final Pattern      emailPattern = Patterns.EMAIL_ADDRESS;
-    private       FirebaseAuth firebaseAuth;
-    private       EditText     editTextEmail;
-    private       EditText     editTextPassword;
-    private       Button       buttonSignUp;
-    private       TextView     textViewSignUp1;
-    private       TextView     textViewSignUp2;
+import kr.ac.ssu.wherealarmyou.R;
+
+public class SignUpActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
+    private final Pattern emailPattern = Patterns.EMAIL_ADDRESS;
+    private FirebaseAuth firebaseAuth;
+    private EditText editTextEmail;
+    private EditText editTextPassword;
+    private Button buttonSignUp;
+    private TextView textViewSignUp1;
+    private TextView textViewSignUp2;
     private       TextView     textViewLogin;
     private       TextView     textViewWarning;
     private       String       userEmail;
@@ -106,22 +108,21 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         if (emailPattern.matcher(email).matches( )) {
             if (password.length( ) > 6) {
                 firebaseAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(this, task -> {
-                                if (task.isSuccessful( )) {
-                                    Toast.makeText(SignUpActivity.this, "회원가입 성공", Toast.LENGTH_SHORT).show( );
-                                    firebaseAuth.signOut( );
-                                    Intent intent = new Intent(getApplicationContext( ), LoginActivity.class);
-                                    intent.putExtra("email", email)
-                                          .putExtra("password", password)
-                                          .putExtra("textViewLogin", "로그인 버튼을 눌러주세요");
-                                    startActivity(intent);
-                                    finish( );
-                                }
-                                else {
-                                    Toast.makeText(SignUpActivity.this, "회원가입 실패", Toast.LENGTH_SHORT).show( );
-                                    textViewWarning.setText("이미 등록된 메일이거나 서버 오류일 수 있습니다");
-                                }
-                            });
+                        .addOnCompleteListener(this, task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(SignUpActivity.this, "회원가입 성공", Toast.LENGTH_SHORT).show();
+                                firebaseAuth.signOut();
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                intent.putExtra("email", email)
+                                        .putExtra("password", password)
+                                        .putExtra("textViewLogin", "로그인 버튼을 눌러주세요");
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(SignUpActivity.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
+                                textViewWarning.setText("이미 등록된 메일이거나 서버 오류일 수 있습니다");
+                            }
+                        });
             }
             else {
                 Toast.makeText(SignUpActivity.this, "회원가입 실패", Toast.LENGTH_SHORT).show( );

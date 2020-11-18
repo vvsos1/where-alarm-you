@@ -14,12 +14,12 @@ import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.HttpUtil;
-import kr.ac.ssu.wherealarmyou.location.Location;
+import kr.ac.ssu.wherealarmyou.location.Address;
 import lombok.SneakyThrows;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class NaverLocationSearchService implements LocationSearchService {
+public class NaverAddressSearchService implements AddressSearchService {
     // 네이버 지역 검색 REST API URL
     private final String NAVER_SEARCH_URL;
     // 네이버 개발자 센터 CLIENT ID
@@ -36,7 +36,7 @@ public class NaverLocationSearchService implements LocationSearchService {
     private final String NAVER_CLOUD_PLATFORM_CLIENT_SECRET;
 
     // secret.xml의 설정 값을 가져오기 위해 필요
-    public NaverLocationSearchService(Context context) {
+    public NaverAddressSearchService(Context context) {
         NAVER_SEARCH_URL = context.getString(R.string.naver_developers_local_search_url);
         NAVER_DEVELOPERS_CLIENT_ID = context.getString(R.string.naver_developers_client_id);
         NAVER_DEVELOPERS_CLIENT_SECRET = context.getString(R.string.naver_developers_client_secret);
@@ -48,7 +48,7 @@ public class NaverLocationSearchService implements LocationSearchService {
 
     @SneakyThrows
     @Override
-    public Flux<Location> search(String query) {
+    public Flux<Address> search(String query) {
         // 네이버 지역 검색 기본 URL + Query String
         String searchUrl = NAVER_SEARCH_URL
                 + "?" + "query=" + URLEncoder.encode(query, "UTF-8")
@@ -70,12 +70,12 @@ public class NaverLocationSearchService implements LocationSearchService {
 
     // 네이버 지역 검색 결과 JSON을 파싱
     // 네이버 지역 검색 결과에서 제공하는 Tm128 좌표계의 좌표를 위경도 좌표계로 변환해서 사용; 우선 Naver GeoCoding을 거치지 않고 구현
-    private Flux<Location> parseJson(String naverLocationSearchJson) {
+    private Flux<Address> parseJson(String naverLocationSearchJson) {
         JsonObject root = new JsonParser().parse(naverLocationSearchJson).getAsJsonObject();
 
         JsonArray items = root.getAsJsonArray("items");
 
-        Flux<Location> result = Flux.create(fluxSink -> {
+        Flux<Address> result = Flux.create(fluxSink -> {
             for (JsonElement item : items) {
                 JsonObject i = item.getAsJsonObject();
                 String title = i.get("title").getAsString();
@@ -88,9 +88,8 @@ public class NaverLocationSearchService implements LocationSearchService {
                 // Tm128 좌표계의 좌표를 위경도 좌표로 변환
                 LatLng latLng = new Tm128(mapx, mapy).toLatLng();
 
-                Location location = new Location(title, roadAddress, jibunAddress, latLng.longitude, latLng.latitude);
-
-                fluxSink.next(location);
+                Address address = new Address(title, roadAddress, jibunAddress, latLng.longitude, latLng.latitude);
+                fluxSink.next(address);
             }
             fluxSink.complete();
         });

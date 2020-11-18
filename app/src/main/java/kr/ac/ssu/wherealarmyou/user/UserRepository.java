@@ -9,7 +9,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
@@ -64,27 +63,8 @@ public class UserRepository {
         });
     }
 
-    public Flux<User> findUserByEmail(String email) {
-        return Flux.create(userFluxSink -> {
-            usersRef
-                    .orderByChild("email")
-                    .equalTo(email)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            snapshot.getChildren().forEach(dataSnapshot -> {
-                                User user = dataSnapshot.getValue(User.class);
-                                userFluxSink.next(user);
-                            });
-                            userFluxSink.complete();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            userFluxSink.error(error.toException());
-                        }
-                    });
-        });
+    public Mono<User> findUserByEmail(String email) {
+        return null;
     }
 
     public Mono<Void> delete(User user) {

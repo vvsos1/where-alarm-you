@@ -1,11 +1,13 @@
 package kr.ac.ssu.wherealarmyou.user.service;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
+import kr.ac.ssu.wherealarmyou.user.dto.DeleteRequest;
+import kr.ac.ssu.wherealarmyou.user.dto.LoginRequest;
 import kr.ac.ssu.wherealarmyou.user.dto.RegisterRequest;
+import kr.ac.ssu.wherealarmyou.user.dto.UpdateRequest;
 import reactor.core.publisher.Mono;
 
 public class UserService {
@@ -24,25 +26,35 @@ public class UserService {
         return instance;
     }
 
+
+    // Firebase Auth와 Realtime Database에 유저 정보 저장
     public Mono<User> register(RegisterRequest request) {
-        String email = request.getEmail();
-        String password = request.getPassword();
-        return registerWithEmail(email, password)
-                .map(FirebaseUser::getUid)
-                .map(uid -> request.toUser(uid))
-                .flatMap(userRepository::save);
+        return null;
     }
 
-    private Mono<FirebaseUser> registerWithEmail(String email, String password) {
-        return Mono.create(monoSink -> {
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnSuccessListener(authResult -> {
-                        monoSink.success(authResult.getUser());
-                    })
-                    .addOnFailureListener(e -> {
-                        monoSink.error(e);
-                    });
-        });
-
+    // email로 패스워드 리셋 링크를 보냄
+    public Mono<Void> passwordReset(String email) {
+        return null;
     }
+
+    public Mono<Boolean> isExistUser(String email) {
+        return null;
+    }
+
+    // Firebase Auth와 Realtime Database에 유저 정보 삭제
+    public Mono<Void> delete(DeleteRequest request) {
+        return null;
+    }
+
+    // Firebase Auth에 로그인 후 Realtime Database에서 유저 정보를 가져와 리턴
+    public Mono<User> login(LoginRequest request) {
+        return null;
+    }
+
+    // 현재 로그인 중인 사용자의 정보를 Firebase Auth와 Realtime Database에서 변경
+    public Mono<User> update(UpdateRequest request) {
+        return null;
+    }
+
+
 }
