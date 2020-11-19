@@ -3,6 +3,9 @@ package kr.ac.ssu.wherealarmyou.user.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
+import kr.ac.ssu.wherealarmyou.group.GroupRepository;
+import kr.ac.ssu.wherealarmyou.location.LocationRepository;
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
 import kr.ac.ssu.wherealarmyou.user.dto.DeleteRequest;
@@ -17,19 +20,33 @@ public class UserService
 {
     private static UserService instance;
     
-    private final FirebaseAuth   firebaseAuth;
-    private final UserRepository userRepository;
+    private final FirebaseAuth firebaseAuth;
     
-    private UserService(UserRepository userRepository, FirebaseAuth mAuth)
+    private final UserRepository     userRepository;
+    private final LocationRepository locationRepository;
+    private final GroupRepository    groupRepository;
+    private final AlarmRepository    alarmRepository;
+    
+    private UserService(UserRepository userRepository, LocationRepository locationRepository,
+                        GroupRepository groupRepository, AlarmRepository alarmRepository, FirebaseAuth firebaseAuth)
     {
-        this.userRepository = userRepository;
-        this.firebaseAuth   = mAuth;
+        this.userRepository     = userRepository;
+        this.locationRepository = locationRepository;
+        this.groupRepository    = groupRepository;
+        this.alarmRepository    = alarmRepository;
+        
+        this.firebaseAuth = firebaseAuth;
     }
     
     public static UserService getInstance( )
     {
         if (instance == null) {
-            instance = new UserService(UserRepository.getInstance( ), FirebaseAuth.getInstance( ));
+            instance = new UserService(UserRepository.getInstance( ),
+                    LocationRepository.getInstance( ),
+                    GroupRepository.getInstance( ),
+                    AlarmRepository.getInstance( ),
+                    FirebaseAuth.getInstance( )
+            );
         }
         return instance;
     }
@@ -79,7 +96,11 @@ public class UserService
     // Firebase Auth와 Realtime Database에서 유저 정보 삭제
     public Mono<Void> delete(DeleteRequest request)
     {
-        return null;
+        String email    = request.getEmail( );
+        String password = request.getPassword( );
+        
+        return Mono.just(firebaseAuth.getCurrentUser( ).getUid( ))
+                   .flatMap(userRepository::deleteByUid);
     }
     
     /* 이메일 중복 체크 */
@@ -88,9 +109,8 @@ public class UserService
     {
         return Mono.create(booleanMonoSink ->
                 userRepository.findUserByUid(email)
-                              .thenReturn(Boolean.TRUE)
-                              .onErrorReturn(Boolean.FALSE)
-                              .subscribe( ));
+                              .map(user -> Boolean.TRUE)
+                              .onErrorReturn(Boolean.FALSE));
     }
     
     /* 비밀번호 초기화 */
@@ -105,18 +125,18 @@ public class UserService
     
     /* 회원 정보 수정 */
     // 현재 로그인 중인 사용자의 정보를 Firebase Auth와 Realtime Database에서 변경
-    public Mono<User> update(UpdateRequest request)
+    public Mono<User> updateUserInfo(UpdateRequest request)
     {
         String email = request.getEmail( );
         String name  = request.getName( );
         
-        return Mono.create(userMonoSink -> {
-            UserProfileChangeRequest userProfileChangeRequest =
-                    new UserProfileChangeRequest.Builder( ).setDisplayName(name).build( );
-            Objects.requireNonNull(firebaseAuth.getCurrentUser( )).updateProfile(userProfileChangeRequest)
-                   .addOnSuccessListener(unused -> userMonoSink.success( ))
-                   .addOnFailureListener(userMonoSink::error);
-        })
+        UserProfileChangeRequest userProfileChangeRequest =
+                new UserProfileChangeRequest.Builder( ).setDisplayName(name).build( );
+        
+        return Mono.create(userMonoSink ->
+                Objects.requireNonNull(firebaseAuth.getCurrentUser( )).updateProfile(userProfileChangeRequest)
+                       .addOnSuccessListener(unused -> userMonoSink.success( ))
+                       .addOnFailureListener(userMonoSink::error))
                    .then(userRepository.findUserByEmail(email)
                                        .flatMap(userRepository::save));
     }

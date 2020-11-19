@@ -4,21 +4,23 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Patterns;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class StartActivity extends AppCompatActivity
 {
     private AccountManager accountManager;
     private FirebaseAuth   firebaseAuth;
+    
+    private UserService userService;
+    private Handler     handler = new Handler(Looper.getMainLooper( ));
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,11 +44,25 @@ public class StartActivity extends AppCompatActivity
             finish( );
             return;
         }
-        checkRegisteredUser( );
+    
+        userService = UserService.getInstance( );
+        userService.checkExistUser(getUserEmail( ))
+                   .subscribe(this::changeActivity);
     }
     
-    private void checkRegisteredUser( )
+    private void changeActivity(Boolean aBoolean)
     {
+        Intent intent;
+        if (aBoolean == Boolean.TRUE) {
+            intent = new Intent(getApplicationContext( ), SignUpActivity.class);
+        }
+        else {
+            intent = new Intent(getApplicationContext( ), LoginActivity.class);
+        }
+        intent.putExtra("email", getUserEmail( ));
+        startActivity(intent);
+        finish( );
+        /*
         firebaseAuth.signInWithEmailAndPassword(getUserEmail( ), "TEST")
                     .addOnCompleteListener(this, (task) -> {
                         if (!task.isSuccessful( )) {
@@ -84,6 +100,7 @@ public class StartActivity extends AppCompatActivity
                             checkRegisteredUser( );
                         }
                     });
+            */
     }
     
     private String getUserEmail( )
