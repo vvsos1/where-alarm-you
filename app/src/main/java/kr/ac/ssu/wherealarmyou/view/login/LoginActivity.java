@@ -10,13 +10,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.user.dto.LoginRequest;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener
 {
-    private FirebaseAuth firebaseAuth;
-    
+    // View
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Button   buttonLogin;
@@ -34,8 +34,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         Bundle extras = getIntent( ).getExtras( );
         
-        firebaseAuth = FirebaseAuth.getInstance( );
-        
+        // Find View By ID
         TextView textViewLogin = findViewById(R.id.textViewLogin);
         editTextEmail        = findViewById(R.id.editTextEmail);
         editTextPassword     = findViewById(R.id.editTextPassword);
@@ -45,6 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         textViewWarning1     = findViewById(R.id.textViewWarning1);
         textViewWarning2     = findViewById(R.id.textViewWarning2);
         
+        //
         if (extras != null) {
             editTextEmail.setText(extras.getString("email"));
             editTextPassword.setText(extras.getString("password"));
@@ -53,46 +53,55 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }
         
+        // Set On Event Listener
         buttonLogin.setOnClickListener(this);
         textViewSignUp.setOnClickListener(this);
         textViewFindPassword.setOnClickListener(this);
     }
     
-    private void userLogin( )
-    {
-        String email    = editTextEmail.getText( ).toString( ).trim( );
-        String password = editTextPassword.getText( ).toString( ).trim( );
+    private void loginActivity(String email, String password)
+     {
+        UserService userService = UserService.getInstance( );
         
+        /* 요청 실패 */
+        // 이메일 미입력
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(this, "이메일을 입력해주세요", Toast.LENGTH_SHORT).show( );
             return;
         }
+        // 비밀번호 미입력
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show( );
             return;
         }
         
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, task -> {
-                        if (task.isSuccessful( )) {
-                            Toast.makeText(getApplicationContext( ), "반갑습니다", Toast.LENGTH_LONG).show( );
-                            finish( );
-                            startActivity(new Intent(getApplicationContext( ), ProfileActivity.class));
-                        }
-                        else {
-                            Toast.makeText(getApplicationContext( ), "로그인 실패", Toast.LENGTH_LONG).show( );
-                            textViewWarning1.setText("아이디 또는 비밀번호가 일치하지 않거나");
-                            textViewWarning2.setText("네트워크에 연결되어 있지 않습니다");
-                            textViewWarning2.setVisibility(View.VISIBLE);
-                        }
-                    });
+        /* 요청 성공 */
+        // 로그인 요청
+        userService.login(new LoginRequest(email, password))
+                   .doOnSuccess(user -> {
+                       Toast.makeText(getApplicationContext( ), "반갑습니다", Toast.LENGTH_LONG).show( );
+                       Intent intent = new Intent(getApplicationContext( ), ProfileActivity.class);
+                       intent.putExtra("uid", user.getUid( ));
+                       startActivity(intent);
+                       finish( );
+                   })
+                   .doOnError(throwable -> {
+                       Toast.makeText(getApplicationContext( ), "로그인 실패", Toast.LENGTH_LONG).show( );
+                       textViewWarning1.setText("아이디 또는 비밀번호가 일치하지 않거나");
+                       textViewWarning2.setText("네트워크에 연결되어 있지 않습니다");
+                       textViewWarning2.setVisibility(View.VISIBLE);
+                   })
+                   .subscribe( );
     }
     
+    /* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Event Listener Method ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
     @Override
     public void onClick(View view)
     {
         if (view == buttonLogin) {
-            userLogin( );
+            String email    = editTextEmail.getText( ).toString( ).trim( );
+            String password = editTextPassword.getText( ).toString( ).trim( );
+            loginActivity(email, password);
         }
         if (view == textViewSignUp) {
             Intent intent = new Intent(getApplicationContext( ), SignUpActivity.class);
@@ -101,10 +110,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             finish( );
         }
         if (view == textViewFindPassword) {
-            startActivity(new Intent(this, FindActivity.class));
+            startActivity(new Intent(this, FindPasswordActivity.class));
         }
     }
+    /* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Event Listener Method ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
     
+    /* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Event Handler Method ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
@@ -123,4 +134,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         return result;
     }
+    /* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Event Handler Method ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 }

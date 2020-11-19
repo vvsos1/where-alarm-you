@@ -12,6 +12,6 @@ public class SignUpRequest
     
     public User toUser(String uid)
     {
-        return new User(uid, email);
+        return new User(email, null, uid);
     }
 }

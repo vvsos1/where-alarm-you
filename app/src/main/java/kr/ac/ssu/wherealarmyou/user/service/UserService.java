@@ -3,9 +3,6 @@ package kr.ac.ssu.wherealarmyou.user.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
-import kr.ac.ssu.wherealarmyou.group.GroupRepository;
-import kr.ac.ssu.wherealarmyou.location.LocationRepository;
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
 import kr.ac.ssu.wherealarmyou.user.dto.DeleteRequest;
@@ -14,6 +11,7 @@ import kr.ac.ssu.wherealarmyou.user.dto.SignUpRequest;
 import kr.ac.ssu.wherealarmyou.user.dto.UpdateRequest;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Objects;
 
 public class UserService
@@ -22,18 +20,18 @@ public class UserService
     
     private final FirebaseAuth firebaseAuth;
     
-    private final UserRepository     userRepository;
-    private final LocationRepository locationRepository;
-    private final GroupRepository    groupRepository;
-    private final AlarmRepository    alarmRepository;
+    private final UserRepository userRepository;
+//    private final LocationRepository locationRepository;
+//    private final GroupRepository    groupRepository;
+//    private final AlarmRepository    alarmRepository;
     
-    private UserService(UserRepository userRepository, LocationRepository locationRepository,
-                        GroupRepository groupRepository, AlarmRepository alarmRepository, FirebaseAuth firebaseAuth)
+    private UserService(UserRepository userRepository, /*LocationRepository locationRepository,
+                        GroupRepository groupRepository, AlarmRepository alarmRepository,*/ FirebaseAuth firebaseAuth)
     {
-        this.userRepository     = userRepository;
-        this.locationRepository = locationRepository;
-        this.groupRepository    = groupRepository;
-        this.alarmRepository    = alarmRepository;
+        this.userRepository = userRepository;
+//        this.locationRepository = locationRepository;
+//        this.groupRepository    = groupRepository;
+//        this.alarmRepository    = alarmRepository;
         
         this.firebaseAuth = firebaseAuth;
     }
@@ -42,9 +40,11 @@ public class UserService
     {
         if (instance == null) {
             instance = new UserService(UserRepository.getInstance( ),
+                    /*
                     LocationRepository.getInstance( ),
                     GroupRepository.getInstance( ),
                     AlarmRepository.getInstance( ),
+                    */
                     FirebaseAuth.getInstance( )
             );
         }
@@ -83,11 +83,11 @@ public class UserService
         String email    = request.getEmail( );
         String password = request.getPassword( );
         
-        return Mono.<FirebaseUser>create(firebaseUserMonoSink ->
+        return Mono.<String>create(firebaseUserMonoSink ->
                 firebaseAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnSuccessListener(authResult -> firebaseUserMonoSink.success(authResult.getUser( )))
+                            .addOnSuccessListener(authResult ->
+                                    firebaseUserMonoSink.success(Objects.requireNonNull(authResult.getUser( )).getUid( )))
                             .addOnFailureListener(firebaseUserMonoSink::error))
-                .map(FirebaseUser::getUid)
                 .map(request::toUser)
                 .flatMap(userRepository::save);
     }
@@ -99,7 +99,7 @@ public class UserService
         String email    = request.getEmail( );
         String password = request.getPassword( );
         
-        return Mono.just(firebaseAuth.getCurrentUser( ).getUid( ))
+        return Mono.just(Objects.requireNonNull(firebaseAuth.getCurrentUser( )).getUid( ))
                    .flatMap(userRepository::deleteByUid);
     }
     
@@ -107,10 +107,10 @@ public class UserService
     // Realtime Database에 존재하는 유저인지 확인
     public Mono<Boolean> checkExistUser(String email)
     {
-        return Mono.create(booleanMonoSink ->
-                userRepository.findUserByUid(email)
-                              .map(user -> Boolean.TRUE)
-                              .onErrorReturn(Boolean.FALSE));
+        return userRepository.findUserByEmail(email)
+                             .map(user -> Boolean.TRUE)
+                             .timeout(Duration.ofMillis(2000))
+                             .onErrorReturn(Boolean.FALSE);
     }
     
     /* 비밀번호 초기화 */
@@ -127,17 +127,17 @@ public class UserService
     // 현재 로그인 중인 사용자의 정보를 Firebase Auth와 Realtime Database에서 변경
     public Mono<User> updateUserInfo(UpdateRequest request)
     {
-        String email = request.getEmail( );
-        String name  = request.getName( );
+        String name = request.getName( );
         
         UserProfileChangeRequest userProfileChangeRequest =
                 new UserProfileChangeRequest.Builder( ).setDisplayName(name).build( );
         
-        return Mono.create(userMonoSink ->
+        return Mono.<FirebaseUser>create(userMonoSink ->
                 Objects.requireNonNull(firebaseAuth.getCurrentUser( )).updateProfile(userProfileChangeRequest)
-                       .addOnSuccessListener(unused -> userMonoSink.success( ))
+                       .addOnSuccessListener(unused -> userMonoSink.success(firebaseAuth.getCurrentUser( )))
                        .addOnFailureListener(userMonoSink::error))
-                   .then(userRepository.findUserByEmail(email)
-                                       .flatMap(userRepository::save));
+                .map(FirebaseUser::getUid)
+                .map(request::toUser)
+                .flatMap(userRepository::save);    // TODO | update는 리턴타입이 Mono<Void>여서 save로 임시 작성
     }
 }

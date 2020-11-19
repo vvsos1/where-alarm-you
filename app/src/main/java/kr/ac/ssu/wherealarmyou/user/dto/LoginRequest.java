@@ -9,9 +9,4 @@ public class LoginRequest
     String email;
     
     String password;
-    
-    public User toUser(String uid)
-    {
-        return new User(uid, email);
-    }
 }

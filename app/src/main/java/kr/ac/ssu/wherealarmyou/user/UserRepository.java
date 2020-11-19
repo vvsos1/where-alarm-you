@@ -61,7 +61,7 @@ public class UserRepository
     
     public Mono<User> findUserByEmail(String email)
     {
-        return Mono.create(userFluxSink -> {
+        return Mono.create(userMonoSink -> {
             usersRef.orderByChild("email")
                     .equalTo(email)
                     .addListenerForSingleValueEvent(new ValueEventListener( )
@@ -72,14 +72,14 @@ public class UserRepository
                             snapshot.getChildren( )
                                     .forEach(dataSnapshot -> {
                                         User user = dataSnapshot.getValue(User.class);
-                                        userFluxSink.success(user);
+                                        userMonoSink.success(user);
                                     });
                         }
                 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error)
                         {
-                            userFluxSink.error(error.toException( ));
+                            userMonoSink.error(error.toException( ));
                         }
                     });
         });

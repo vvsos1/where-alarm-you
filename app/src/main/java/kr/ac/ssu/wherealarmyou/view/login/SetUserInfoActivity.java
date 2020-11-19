@@ -11,20 +11,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.user.dto.UpdateRequest;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
 
 import java.util.Objects;
 
 public class SetUserInfoActivity extends AppCompatActivity implements View.OnClickListener
 {
-    private FirebaseAuth             firebaseAuth;
-    private UserProfileChangeRequest userProfileChangeRequest;
-    
+    // View
     private EditText editTextName;
-    private Button   buttonSignUp;
+    private Button   buttonSetUserInfo;
     private TextView textViewLogout;
     
+    //
     private long keyDownTime_KEYCODE_BACK;
     
     @Override
@@ -33,55 +33,71 @@ public class SetUserInfoActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_user_info);
         
-        firebaseAuth = FirebaseAuth.getInstance( );
-        
+        // Find View By ID
         TextView textViewMessage = findViewById(R.id.textViewMessage2);
-        editTextName   = findViewById(R.id.editTextName);
-        buttonSignUp   = findViewById(R.id.buttonSignUp2);
-        textViewLogout = findViewById(R.id.textViewLogout);
+        textViewMessage.setText(Objects.requireNonNull(FirebaseAuth.getInstance( ).getCurrentUser( )).getEmail( ));
+        editTextName      = findViewById(R.id.editTextName);
+        buttonSetUserInfo = findViewById(R.id.buttonSetUserInfo);
+        textViewLogout    = findViewById(R.id.textViewLogout);
         
-        textViewMessage.setText(Objects.requireNonNull(firebaseAuth.getCurrentUser( )).getEmail( ));
-        
-        buttonSignUp.setOnClickListener(this);
+        // Set On Event Listener
+        buttonSetUserInfo.setOnClickListener(this);
         textViewLogout.setOnClickListener(this);
     }
     
+    private void setUserInfoActivity(String userName)
+    {
+        UserService userService = UserService.getInstance( );
+        
+        String email = Objects.requireNonNull(FirebaseAuth.getInstance( ).getCurrentUser( )).getEmail( );
+        
+        /* 요청 실패 */
+        // 이름 미입력
+        if (TextUtils.isEmpty(userName)) {
+            Toast.makeText(SetUserInfoActivity.this, "이름을 입력해주세요.", Toast.LENGTH_SHORT).show( );
+            return;
+        }
+        
+        /* 요청 성공 */
+        // 새로운 유저 이름으로 업데이트 요청
+        userService.updateUserInfo(new UpdateRequest(email, userName))
+                   .doOnSuccess(user -> {
+                       Toast.makeText(SetUserInfoActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show( );
+                       startActivity(new Intent(getApplicationContext( ), ProfileActivity.class));
+                       finish( );
+                   })
+                   .doOnError(throwable ->
+                           Toast.makeText(SetUserInfoActivity.this, "오류", Toast.LENGTH_SHORT).show( ))
+                   .subscribe( );
+        
+    }
+    
+    private void logoutActivity( )
+    {
+        UserService userService = UserService.getInstance( );
+        
+        userService.logout( )
+                   .subscribe(unused -> {
+                       startActivity(new Intent(getApplicationContext( ), LoginActivity.class));
+                       finish( );
+                   });
+    }
+    
+    /* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Event Listener Method ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
     @Override
     public void onClick(View view)
     {
-        if (view == buttonSignUp) {
-            setUserName( );
+        if (view == buttonSetUserInfo) {
+            String userName = editTextName.getText( ).toString( ).trim( );
+            setUserInfoActivity(userName);
         }
-        else if (view == textViewLogout) {
-            firebaseAuth.signOut( );
-            startActivity(new Intent(getApplicationContext( ), LoginActivity.class));
-            finish( );
-        }
-    }
-    
-    private void setUserName( )
-    {
-        String userName = editTextName.getText( ).toString( ).trim( );
-        userProfileChangeRequest = new UserProfileChangeRequest.Builder( ).setDisplayName(userName).build( );
-        
-        if (TextUtils.isEmpty(userName)) {
-            Toast.makeText(SetUserInfoActivity.this, "이름을 입력해주세요.", Toast.LENGTH_SHORT).show( );
-        }
-        else {
-            Objects.requireNonNull(firebaseAuth.getCurrentUser( )).updateProfile(userProfileChangeRequest)
-                   .addOnCompleteListener(task -> {
-                       if (task.isSuccessful( )) {
-                           Toast.makeText(SetUserInfoActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show( );
-                           startActivity(new Intent(getApplicationContext( ), ProfileActivity.class));
-                           finish( );
-                       }
-                       else {
-                           Toast.makeText(SetUserInfoActivity.this, "오류", Toast.LENGTH_SHORT).show( );
-                       }
-                   });
+        if (view == textViewLogout) {
+            logoutActivity( );
         }
     }
+    /* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Event Listener Method ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
     
+    /* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Event Handler Method ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
@@ -100,4 +116,5 @@ public class SetUserInfoActivity extends AppCompatActivity implements View.OnCli
         }
         return result;
     }
+    /* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Event Handler Method ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 }
