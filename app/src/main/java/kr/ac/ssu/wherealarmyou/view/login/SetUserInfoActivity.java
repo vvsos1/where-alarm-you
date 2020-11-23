@@ -1,5 +1,6 @@
 package kr.ac.ssu.wherealarmyou.view.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.dto.UpdateRequest;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
+import kr.ac.ssu.wherealarmyou.view.fragment.FrameActivity;
 
 import java.util.Objects;
 
@@ -63,7 +65,7 @@ public class SetUserInfoActivity extends AppCompatActivity implements View.OnCli
         userService.updateUserInfo(new UpdateRequest(email, userName))
                    .doOnSuccess(user -> {
                        Toast.makeText(SetUserInfoActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show( );
-                       startActivity(new Intent(getApplicationContext( ), ProfileActivity.class));
+                       startActivity(new Intent(getApplicationContext( ), FrameActivity.class));
                        finish( );
                    })
                    .doOnError(throwable ->
@@ -77,10 +79,11 @@ public class SetUserInfoActivity extends AppCompatActivity implements View.OnCli
         UserService userService = UserService.getInstance( );
         
         userService.logout( )
-                   .subscribe(unused -> {
+                   .doOnSuccess(unused -> {
                        startActivity(new Intent(getApplicationContext( ), LoginActivity.class));
                        finish( );
-                   });
+                   })
+                   .subscribe( );
     }
     
     /* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Event Listener Method ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */

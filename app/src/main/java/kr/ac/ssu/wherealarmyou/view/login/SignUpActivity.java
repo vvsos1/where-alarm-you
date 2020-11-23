@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.dto.SignUpRequest;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
@@ -128,12 +127,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         // 회원가입 요청
         userService.signUp(new SignUpRequest(email, password))
                    .doOnSuccess(user -> {
-                       FirebaseAuth.getInstance( ).signOut( );
+                       userService.logout( ).subscribe( );
                        Toast.makeText(SignUpActivity.this, "회원가입 성공", Toast.LENGTH_SHORT).show( );
                        Intent intent = new Intent(getApplicationContext( ), LoginActivity.class);
                        intent.putExtra("email", email)
                              .putExtra("password", password)
-                             .putExtra("textViewLogin", "로그인 버튼을 눌러주세요");
+                             .putExtra("textViewLogin", true);
                        startActivity(intent);
                        finish( );
                    })

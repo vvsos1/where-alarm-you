@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.dto.LoginRequest;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
+import kr.ac.ssu.wherealarmyou.view.fragment.FrameActivity;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -48,8 +49,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (extras != null) {
             editTextEmail.setText(extras.getString("email"));
             editTextPassword.setText(extras.getString("password"));
-            if (extras.getString("textViewLogin") != null) {
-                textViewLogin.setText(extras.getString("textViewLogin"));
+            if (extras.getBoolean("textViewLogin")) {
+                textViewLogin.setText("로그인 버튼을 눌러주세요");
             }
         }
         
@@ -60,7 +61,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
     
     private void loginActivity(String email, String password)
-     {
+    {
         UserService userService = UserService.getInstance( );
         
         /* 요청 실패 */
@@ -80,7 +81,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         userService.login(new LoginRequest(email, password))
                    .doOnSuccess(user -> {
                        Toast.makeText(getApplicationContext( ), "반갑습니다", Toast.LENGTH_LONG).show( );
-                       Intent intent = new Intent(getApplicationContext( ), ProfileActivity.class);
+                       Intent intent = new Intent(getApplicationContext( ), FrameActivity.class);
                        intent.putExtra("uid", user.getUid( ));
                        startActivity(intent);
                        finish( );

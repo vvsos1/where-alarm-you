@@ -2,6 +2,7 @@ package kr.ac.ssu.wherealarmyou.view.login;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
+import kr.ac.ssu.wherealarmyou.view.fragment.FrameActivity;
 
 import java.util.regex.Pattern;
 
@@ -26,7 +28,12 @@ public class StartActivity extends AppCompatActivity
         
         // 이미 로그인 된 사용자가 존재하면 건너뜀
         if (FirebaseAuth.getInstance( ).getCurrentUser( ) != null) {
-            startActivity(new Intent(getApplicationContext( ), ProfileActivity.class));
+            if(FirebaseAuth.getInstance().getCurrentUser().getDisplayName() == null) {
+                startActivity(new Intent(getApplicationContext( ), SetUserInfoActivity.class));
+            }
+            else {
+                startActivity(new Intent(getApplicationContext( ), FrameActivity.class));
+            }
             finish( );
             return;
         }

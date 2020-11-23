@@ -27,7 +27,6 @@ public class GroupRepository
     {
         DatabaseReference newGroupRef = groupsRef.push( );
         group.setUid(newGroupRef.getKey( ));
-        
         return update(group).then(Mono.just(group));
     }
     

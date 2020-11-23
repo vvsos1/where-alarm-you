@@ -60,7 +60,6 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
         searchService = new NaverAddressSearchService(getApplicationContext( ));
         addService    = LocationAddService.getInstance( );
         
-        
         etAddressSearch = findViewById(R.id.etAddressSearch);
         addressListView = findViewById(R.id.addressListView);
         
