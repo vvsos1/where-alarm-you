@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.user.dto.DeleteRequest;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
 
 import java.util.Objects;
 
@@ -53,6 +55,20 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         textViewDeleteUser.setOnClickListener(this);
     }
     
+    public void deleteUserActivity(String email)
+    {
+        UserService userService = UserService.getInstance( );
+        
+        userService.deleteUser(new DeleteRequest(email, ""))
+                   .doOnSuccess(unused -> {
+                       Toast.makeText(ProfileActivity.this, "계정이 삭제 되었습니다", Toast.LENGTH_SHORT).show( );
+                       Intent intent = new Intent(getApplicationContext( ), SignUpActivity.class);
+                       intent.putExtra("email", "");
+                       startActivity(intent);
+                       finish( );
+                   })
+                   .subscribe( );
+    }
     
     @Override
     public void onClick(View view)
@@ -72,16 +88,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                  .setPositiveButton("확인", (dialogInterface, i) -> {
                                      FirebaseUser user = firebaseAuth.getCurrentUser( );
                                      if (user != null) {
-                                         user.delete( )
-                                             .addOnCompleteListener(task -> {
-                                                 Toast.makeText(ProfileActivity.this, "계정이 삭제 되었습니다",
-                                                         Toast.LENGTH_SHORT)
-                                                      .show( );
-                                                 Intent intent = new Intent(getApplicationContext( ),SignUpActivity.class);
-                                                 intent.putExtra("email", "");
-                                                 startActivity(intent);
-                                                 finish( );
-                                             });
+                                         deleteUserActivity(firebaseAuth.getCurrentUser( ).getEmail( ));
                                      }
                                  })
                                  .setNegativeButton("취소", (dialogInterface, i) ->

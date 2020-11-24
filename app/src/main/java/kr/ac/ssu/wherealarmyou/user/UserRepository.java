@@ -23,9 +23,6 @@ public class UserRepository
     
     public Mono<User> save(User user)
     {
-        DatabaseReference newUserRef = usersRef.push( );
-        String            newUid     = newUserRef.getKey( );
-        user.setUid(newUid);
         return update(user).thenReturn(user);
     }
     

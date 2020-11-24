@@ -76,17 +76,21 @@ public class OverlappingView extends LinearLayout
     
     private void setTypeArray(TypedArray typedArray)
     {
+        // 제목
         String title = typedArray.getString(R.styleable.overlappingView_title);
         this.textViewTitle.setText(title);
         
+        // 추가 버튼
         boolean buttonAdd = typedArray.getBoolean(R.styleable.overlappingView_button_add, false);
         if (buttonAdd) { this.buttonAdd.setVisibility(VISIBLE); }
         else { this.buttonAdd.setVisibility(GONE); }
         
+        // 뒤로가기 버튼
         boolean buttonBack = typedArray.getBoolean(R.styleable.overlappingView_button_back, false);
         if (buttonBack) { this.buttonBack.setVisibility(VISIBLE); }
         else { this.buttonBack.setVisibility(GONE); }
         
+        // 숨기기 버튼
         boolean buttonHide = typedArray.getBoolean(R.styleable.overlappingView_button_hide, false);
         if (buttonHide) { this.buttonHide.setVisibility(VISIBLE); }
         else { this.buttonHide.setVisibility(GONE); }
