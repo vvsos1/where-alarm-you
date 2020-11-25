@@ -28,7 +28,7 @@
         <activity android:name=".view.login.ProfileActivity" />
         <activity android:name=".view.login.SetUserInfoActivity" />
 
-        <activity android:name=".view.fragment.FrameActivity" />
+        <activity android:name=".view.fragment.MainFrameActivity" />
 
         <!-- Naver Mobile Dynamic Map SDK를 위한 설정 -->
         <meta-data

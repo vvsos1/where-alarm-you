@@ -5,13 +5,11 @@ import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
-import kr.ac.ssu.wherealarmyou.view.fragment.FrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.MainFrameActivity;
 
 import java.util.regex.Pattern;
 
@@ -33,7 +31,7 @@ public class StartActivity extends AppCompatActivity
                 startActivity(new Intent(getApplicationContext( ), SetUserInfoActivity.class));
             }
             else {
-                startActivity(new Intent(getApplicationContext( ), FrameActivity.class));
+                startActivity(new Intent(getApplicationContext( ), MainFrameActivity.class));
             }
             finish( );
             return;

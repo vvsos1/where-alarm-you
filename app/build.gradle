@@ -72,4 +72,8 @@ dependencies {
     // Reactor Test
 //    androidTestImplementation 'io.projectreactor:reactor-test:3.2.3.RELEASE'
 //    testImplementation 'io.projectreactor:reactor-test:3.2.3.RELEASE'
+
+    // Floating Action Buttons
+    implementation 'me.jahirfiquitiva:FABsMenu:1.1.4'
+
 }

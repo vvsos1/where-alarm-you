@@ -86,7 +86,8 @@ public class UserService
         return Mono.<String>create(firebaseUserMonoSink ->
                 firebaseAuth.createUserWithEmailAndPassword(email, password)
                             .addOnSuccessListener(authResult ->
-                                    firebaseUserMonoSink.success(Objects.requireNonNull(authResult.getUser( )).getUid( )))
+                                    firebaseUserMonoSink.success(
+                                            Objects.requireNonNull(authResult.getUser( )).getUid( )))
                             .addOnFailureListener(firebaseUserMonoSink::error))
                 .map(request::toUser)
                 .flatMap(userRepository::save);
@@ -94,13 +95,14 @@ public class UserService
     
     /* 회원 탈퇴 */
     // Firebase Auth와 Realtime Database에서 유저 정보 삭제
-    public Mono<Void> delete(DeleteRequest request)
+    public Mono<Void> deleteUser(DeleteRequest request)
     {
         String email    = request.getEmail( );
         String password = request.getPassword( );
         
         return Mono.just(Objects.requireNonNull(firebaseAuth.getCurrentUser( )).getUid( ))
-                   .flatMap(userRepository::deleteByUid);
+                   .flatMap(userRepository::deleteByUid)
+                   .doOnSuccess(unused -> firebaseAuth.getCurrentUser( ).delete( ));
     }
     
     /* 이메일 중복 체크 */

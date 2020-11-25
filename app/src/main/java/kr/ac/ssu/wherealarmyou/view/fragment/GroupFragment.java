@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 
+import java.util.Objects;
+
 public class GroupFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
 {
-    private FrameActivity frameActivity;
+    private MainFrameActivity mainFrameActivity;
     
     private View            view;
     private OverlappingView overlappingView;
@@ -28,14 +30,16 @@ public class GroupFragment extends Fragment implements View.OnClickListener, OnB
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        frameActivity = (FrameActivity)getActivity( );
+        Bundle bundle = Objects.requireNonNull(getArguments( ));
+        mainFrameActivity = (MainFrameActivity)getActivity( );
         
         view = inflater.inflate(R.layout.frame_overlap_content, container, false);
         
         overlappingView = view.findViewById(R.id.overlap_view);
         overlappingView.setTitle("그룹");
         overlappingView.setButtonAdd(true);
-        overlappingView.setButtonHide(true);
+        overlappingView.setButtonBack(bundle.getBoolean("backButton"));
+        overlappingView.setButtonHide(bundle.getBoolean("hideButton"));
         overlappingView.setContent(inflater.inflate(R.layout.content_group, null));
         
         buttonAdd  = view.findViewById(R.id.overlap_buttonAdd);
@@ -50,26 +54,32 @@ public class GroupFragment extends Fragment implements View.OnClickListener, OnB
     @Override
     public void onClick(View view)
     {
-        if (view == buttonAdd) {
-            Toast.makeText(getContext( ), "ADD 버튼", Toast.LENGTH_SHORT).show( );
-            frameActivity.addTopFragment(GroupAddFragment.getInstance( ));
-        }
-        if (view == buttonHide) {
-            Toast.makeText(getContext( ), "HIDE 버튼", Toast.LENGTH_SHORT).show( );
-            frameActivity.hideTopFragment(this);
+        switch (view.getId( )) {
+            case (R.id.overlap_buttonAdd):
+                Toast.makeText(getContext( ), "ADD 버튼", Toast.LENGTH_SHORT).show( );
+                mainFrameActivity.addTopFragment(GroupAddFragment.getInstance( ));
+                break;
+            case (R.id.overlap_buttonBack):
+                Toast.makeText(getContext( ), "BACK 버튼", Toast.LENGTH_SHORT).show( );
+                mainFrameActivity.onClick(view);
+                break;
+            case (R.id.overlap_buttonHide):
+                Toast.makeText(getContext( ), "HIDE 버튼", Toast.LENGTH_SHORT).show( );
+                mainFrameActivity.onClick(view);
+                break;
         }
     }
     
     @Override
     public void onBackPressed( )
     {
-        frameActivity.hideTopFragment(this);
+        mainFrameActivity.hideTopFragment(this);
     }
     
     @Override
     public void onResume( )
     {
         super.onResume( );
-        frameActivity.setOnBackPressedListener(this);
+        mainFrameActivity.setOnBackPressedListener(this);
     }
 }
