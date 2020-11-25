@@ -1,5 +1,7 @@
 package kr.ac.ssu.wherealarmyou.group.service;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.group.Group;
@@ -27,9 +29,9 @@ public class GroupService {
         return instance;
     }
 
-    public Flux<Group> getJoinedGroup(String userUid) {
+    public Flux<Group> getJoinedGroup() {
 //        return groupRepository.findGroupsByUserUid(userUid);
-
+        String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         return userRepository.findUserByUid(userUid)
                 .map(User::getGroups)
                 .flatMapIterable(Map::keySet)
@@ -52,7 +54,16 @@ public class GroupService {
     }
 
     public Mono<Void> acceptWaitingUser(String groupUid, String userUid) {
+        String loginUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
         return groupRepository.findGroupByUid(groupUid)
+                .map(group -> {
+                    String role = group.getMembers().get(loginUid);
+                    if (!role.equals("관리자"))
+                        throw new IllegalArgumentException("관리자만이 ");
+                    return group;
+                })
                 .doOnNext(group -> group.acceptWaitingUser(userUid))
                 .flatMap(groupRepository::update);
     }
