@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView
+        android:id="@+id/overlap_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:button_add="false"
+        app:button_back="false"
+        app:button_hide="false"
+        app:title="Title">
+
+    </kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView>
+</FrameLayout>

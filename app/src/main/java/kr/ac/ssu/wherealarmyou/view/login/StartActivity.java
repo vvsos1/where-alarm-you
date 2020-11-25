@@ -2,23 +2,21 @@ package kr.ac.ssu.wherealarmyou.view.login;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
+import kr.ac.ssu.wherealarmyou.view.fragment.FrameActivity;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class StartActivity extends AppCompatActivity
 {
     private AccountManager accountManager;
-    private FirebaseAuth   firebaseAuth;
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -27,66 +25,40 @@ public class StartActivity extends AppCompatActivity
         setContentView(R.layout.activity_start);
         
         accountManager = AccountManager.get(this);
-        firebaseAuth   = FirebaseAuth.getInstance( );
-        /*
-        TextView startDecorationL = findViewById(R.id.startDecorationLeft);
-        TextView startDecorationR = findViewById(R.id.startDecorationRight);
         
-        Animation animation = AnimationUtils.loadAnimation(getApplicationContext( ), R.anim.animation_rotation);
-        
-        startDecorationL.setAnimation(animation);
-        startDecorationR.setAnimation(animation);
-        */
-        if (firebaseAuth.getCurrentUser( ) != null) {
-            startActivity(new Intent(getApplicationContext( ), ProfileActivity.class));
+        // 이미 로그인 된 사용자가 존재하면 건너뜀
+        if (FirebaseAuth.getInstance( ).getCurrentUser( ) != null) {
+            if(FirebaseAuth.getInstance().getCurrentUser().getDisplayName() == null) {
+                startActivity(new Intent(getApplicationContext( ), SetUserInfoActivity.class));
+            }
+            else {
+                startActivity(new Intent(getApplicationContext( ), FrameActivity.class));
+            }
             finish( );
             return;
         }
-        checkRegisteredUser( );
+        
+        // 이메일 중복 확인 요청
+        UserService userService = UserService.getInstance( );
+        userService.checkExistUser(getUserAndroidEmail( ))
+                   .subscribe(this::changeActivity);
     }
     
-    private void checkRegisteredUser( )
+    private void changeActivity(Boolean aBoolean)
     {
-        firebaseAuth.signInWithEmailAndPassword(getUserEmail( ), "TEST")
-                    .addOnCompleteListener(this, (task) -> {
-                        if (!task.isSuccessful( )) {
-                            try {
-                                throw Objects.requireNonNull(task.getException( ));
-                            }
-                            catch (FirebaseAuthInvalidUserException ignored) {
-                                Intent intent = new Intent(getApplicationContext( ), SignUpActivity.class);
-                                intent.putExtra("email", getUserEmail( ));
-                                startActivity(intent);
-                                finish( );
-                                try {
-                                    Thread.sleep(200);
-                                }
-                                catch (InterruptedException e) {
-                                    e.printStackTrace( );
-                                }
-                            }
-                            catch (FirebaseAuthInvalidCredentialsException ignored) {
-                                Intent intent = new Intent(getApplicationContext( ), LoginActivity.class);
-                                intent.putExtra("email", getUserEmail( ));
-                                startActivity(intent);
-                                finish( );
-                                try {
-                                    Thread.sleep(1000);
-                                }
-                                catch (InterruptedException e) {
-                                    e.printStackTrace( );
-                                }
-                            }
-                            catch (Exception e) {
-                                checkRegisteredUser( );
-                                Log.e("StartError", e.getMessage( ));
-                            }
-                            checkRegisteredUser( );
-                        }
-                    });
+        Intent intent;
+        if (aBoolean == Boolean.TRUE) {
+            intent = new Intent(getApplicationContext( ), LoginActivity.class);
+        }
+        else {
+            intent = new Intent(getApplicationContext( ), SignUpActivity.class);
+        }
+        intent.putExtra("email", getUserAndroidEmail( ));
+        startActivity(intent);
+        finish( );
     }
     
-    private String getUserEmail( )
+    private String getUserAndroidEmail( )
     {
         String    email        = null;
         Pattern   emailPattern = Patterns.EMAIL_ADDRESS;

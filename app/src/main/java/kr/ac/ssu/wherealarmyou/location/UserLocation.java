@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserLocation extends Location {
-
+public class UserLocation extends Location
+{
     String ownerUid;
 }

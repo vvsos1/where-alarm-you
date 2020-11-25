@@ -41,7 +41,7 @@
         tools:ignore="SmallSp" />
 
     <Button
-        android:id="@+id/buttonSignUp2"
+        android:id="@+id/buttonSetUserInfo"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

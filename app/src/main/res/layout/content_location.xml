@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/groupContentView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="장소 1"
+        android:background="#5B38" />
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="장소 2"
+        android:layout_marginTop="20dp"
+        android:background="#71BF" />
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="장소 3"
+        android:layout_marginTop="20dp"
+        android:background="#77B6" />
+
+</LinearLayout>
