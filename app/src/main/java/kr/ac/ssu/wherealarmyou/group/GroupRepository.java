@@ -1,6 +1,7 @@
 package kr.ac.ssu.wherealarmyou.group;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,18 +37,35 @@ public class GroupRepository
         return update(group).then(Mono.just(group));
     }
 
-    public Mono<Void> update(Group group) {
+    public Mono<Group> update(Group group) {
         return Mono.create(voidMonoSink -> {
             groupsRef.child(group.getUid()).setValue(group, (error, ref) -> {
                 if (error != null) {
                     voidMonoSink.error(error.toException());
                 } else {
-                    voidMonoSink.success();
+                    voidMonoSink.success(group);
                 }
             });
         });
     }
 
+    public Mono<Void> deleteByUid(String groupUid) {
+        return Mono.create(voidMonoSink -> {
+            groupsRef.child(groupUid).removeValue(new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                    if (error != null)
+                        voidMonoSink.error(error.toException());
+                    else
+                        voidMonoSink.success();
+                }
+            });
+        });
+    }
+
+    public Mono<Void> delete(Group group) {
+        return deleteByUid(group.getUid());
+    }
 
     public Flux<Group> findGroupsByName(String groupName) {
         return Flux.create(fluxSink ->
@@ -57,7 +75,7 @@ public class GroupRepository
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 snapshot.getChildren().forEach(dataSnapshot -> {
-                                     Group group = dataSnapshot.getValue(Group.class);
+                                    Group group = dataSnapshot.getValue(Group.class);
                                      fluxSink.next(group);
                                  });
                                  fluxSink.complete( );
