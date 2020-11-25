@@ -1,34 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Button
-        android:id="@+id/buttonLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#382F"
-        android:text="장소"
-        android:textColor="#C000" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/buttonGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="#3F28"
-        android:text="그룹"
-        android:textColor="#C000" />
+        <Button
+            android:id="@+id/buttonLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#382F"
+            android:text="장소"
+            android:textColor="#C000" />
 
-    <Button
-        android:id="@+id/buttonProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="#3F70"
-        android:text="회원 정보"
-        android:textColor="#C000" />
-</LinearLayout>
+        <Button
+            android:id="@+id/buttonGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="#3F28"
+            android:text="그룹"
+            android:textColor="#C000" />
+
+        <Button
+            android:id="@+id/buttonProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="#3F70"
+            android:text="회원 정보"
+            android:textColor="#C000" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/blind_fabs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#3000"
+        android:visibility="gone">
+    </View>
+
+    <jahirfiquitiva.libs.fabsmenu.FABsMenuLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:fabs_menu_clickableOverlay="true"
+        app:fabs_menu_overlayColor="@android:color/transparent">
+
+        <jahirfiquitiva.libs.fabsmenu.FABsMenu
+            android:id="@+id/fabsMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:clipChildren="false"
+            app:fab_expandDirection="up"
+            app:fab_labelsPosition="left"
+            app:fab_menuMargins="16dp"
+            app:fab_moreButtonBackgroundColor="#2177DE"
+            app:fab_moreButtonPlusIcon="@drawable/ic_add_fabs"
+            app:fab_moreButtonRippleColor="#BDBDBD"
+            app:fab_moreButtonSize="normal">
+
+            <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                android:id="@+id/addAlarmFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="#FFEDAC"
+                app:fabSize="mini"
+                app:fab_title="알람 추가"
+                app:rippleColor="#BDBDBD"
+                app:srcCompat="@drawable/ic_alarm_add" />
+
+            <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                android:id="@+id/addLocationFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="#BDBDF9"
+                app:fabSize="mini"
+                app:fab_title="장소 추가"
+                app:rippleColor="#BDBDBD"
+                app:srcCompat="@drawable/ic_location_add" />
+
+            <jahirfiquitiva.libs.fabsmenu.TitleFAB
+                android:id="@+id/addGroupFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="#FFE5FB"
+                app:fabSize="mini"
+                app:fab_title="그룹 추가"
+                app:rippleColor="#BDBDBD"
+                app:srcCompat="@drawable/ic_group_add" />
+        </jahirfiquitiva.libs.fabsmenu.FABsMenu>
+    </jahirfiquitiva.libs.fabsmenu.FABsMenuLayout>
+</FrameLayout>
