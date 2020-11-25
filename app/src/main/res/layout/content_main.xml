@@ -96,7 +96,7 @@
             android:clipChildren="false"
             app:fab_expandDirection="up"
             app:fab_labelsPosition="left"
-            app:fab_menuMargins="16dp"
+            app:fab_menuMargins="25dp"
             app:fab_moreButtonBackgroundColor="#2177DE"
             app:fab_moreButtonPlusIcon="@drawable/ic_add_fabs"
             app:fab_moreButtonRippleColor="#BDBDBD"
