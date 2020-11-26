@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,8 +21,6 @@ public class MainFragment extends Fragment implements View.OnClickListener
 {
     private MainFrameActivity mainFrameActivity;
     
-    private View view;
-    
     private Button buttonLocation;
     private Button buttonGroup;
     
@@ -35,8 +32,9 @@ public class MainFragment extends Fragment implements View.OnClickListener
     private TextView text_4;
     private TextView text_5;
     private TextView text_6;
+    // FAB ( Floating Action Button )
     private FABsMenu fabsMenu;
-    private View     blindFabs;
+    private View     fabsBlind;
     private TitleFAB buttonAddAlarm;
     private TitleFAB buttonAddLocation;
     private TitleFAB buttonAddGroup;
@@ -49,7 +47,7 @@ public class MainFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        view              = inflater.inflate(R.layout.content_main, container, false);
+        View view = inflater.inflate(R.layout.content_main, container, false);
         mainFrameActivity = (MainFrameActivity)getActivity( );
         
         buttonLocation = view.findViewById(R.id.buttonLocation);
@@ -68,31 +66,30 @@ public class MainFragment extends Fragment implements View.OnClickListener
         text_5            = view.findViewById(R.id.textView5);
         text_6            = view.findViewById(R.id.textView6);
         fabsMenu          = view.findViewById(R.id.fabsMenu);
-        blindFabs         = view.findViewById(R.id.blind_fabs);
+        fabsBlind         = view.findViewById(R.id.blind_fabs);
         buttonAddAlarm    = view.findViewById(R.id.addAlarmFab);
         buttonAddLocation = view.findViewById(R.id.addLocationFab);
         buttonAddGroup    = view.findViewById(R.id.addGroupFab);
         
+        getUserInfo( );
+        
         buttonAddAlarm.setOnClickListener(this);
         buttonAddLocation.setOnClickListener(this);
         buttonAddGroup.setOnClickListener(this);
-        
-        getUserInfo( );
-        
         fabsMenu.setMenuListener(new FABsMenuListener( )
         {
             @Override
             public void onMenuExpanded(FABsMenu fabsMenu)
             {
                 super.onMenuExpanded(fabsMenu);
-                blindFabs.setVisibility(View.VISIBLE);
+                fabsBlind.setVisibility(View.VISIBLE);
             }
             
             @Override
             public void onMenuCollapsed(FABsMenu fabsMenu)
             {
                 super.onMenuCollapsed(fabsMenu);
-                blindFabs.setVisibility(View.GONE);
+                fabsBlind.setVisibility(View.GONE);
             }
         });
         
@@ -104,25 +101,25 @@ public class MainFragment extends Fragment implements View.OnClickListener
     {
         switch (view.getId( )) {
             case (R.id.buttonLocation):
-                mainFrameActivity.showTopFragment(LocationFragment.getInstance( ));
+                MainFrameActivity.showTopFragment(LocationFragment.getInstance( ));
                 break;
             case (R.id.buttonGroup):
-                mainFrameActivity.showTopFragment(GroupFragment.getInstance( ));
+                MainFrameActivity.showTopFragment(GroupFragment.getInstance( ));
                 break;
             case (R.id.buttonProfile):
                 startActivity(new Intent(mainFrameActivity.getApplicationContext( ), ProfileActivity.class));
                 mainFrameActivity.finish( );
                 break;
             case (R.id.addAlarmFab):
-                Toast.makeText(getContext( ), "알람 페이지로 이동 (미구현)", Toast.LENGTH_SHORT).show( );
+                MainFrameActivity.showTopFragment(AlarmAddFragment.getInstance( ));
                 fabsMenu.collapse( );
                 break;
             case (R.id.addLocationFab):
-                mainFrameActivity.showTopFragment(LocationAddFragment.getInstance( ));
+                MainFrameActivity.showTopFragment(LocationAddFragment.getInstance( ));
                 fabsMenu.collapse( );
                 break;
             case (R.id.addGroupFab):
-                mainFrameActivity.showTopFragment(GroupAddFragment.getInstance( ));
+                MainFrameActivity.showTopFragment(GroupAddFragment.getInstance( ));
                 fabsMenu.collapse( );
                 break;
         }

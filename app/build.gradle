@@ -76,4 +76,7 @@ dependencies {
     // Floating Action Buttons
     implementation 'me.jahirfiquitiva:FABsMenu:1.1.4'
 
+    // Recycler View
+    implementation 'androidx.recyclerview:recyclerview'
+
 }

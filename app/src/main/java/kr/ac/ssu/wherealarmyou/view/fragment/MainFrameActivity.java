@@ -1,10 +1,10 @@
 package kr.ac.ssu.wherealarmyou.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -13,12 +13,82 @@ import kr.ac.ssu.wherealarmyou.R;
 
 public class MainFrameActivity extends AppCompatActivity implements View.OnClickListener
 {
-    FragmentManager fragmentManager;
-    FrameLayout     frameTop;
-    FrameLayout     frameBottom;
-    LinearLayout    blind;
+    public static FragmentManager fragmentManager;
     
-    OnBackPressedListener onBackPressedListener;
+    @SuppressLint("StaticFieldLeak")
+    public static FrameLayout  frameTop;
+    
+    @SuppressLint("StaticFieldLeak")
+    public static FrameLayout  frameBottom;
+    
+    @SuppressLint("StaticFieldLeak")
+    public static LinearLayout blind;
+    
+    public static OnBackPressedListener onBackPressedListener;
+    
+    /* 시작 */
+    // Top FrameLayout을 띄우고 Fragment를 나타내기
+    public static void showTopFragment(Fragment fragment)
+    {
+        blind.setVisibility(View.VISIBLE);
+        
+        Bundle bundle = new Bundle(2);
+        bundle.putBoolean("backButton", false);
+        bundle.putBoolean("hideButton", true);
+        fragment.setArguments(bundle);
+        
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
+        fragmentTransaction//.setCustomAnimations(R.anim.anim_in, R.anim.test_anim, R.anim.anim_in, R.anim.test_anim)
+                           .replace(R.id.frameTop, fragment)
+                           .addToBackStack(null)
+                           .commit( );
+    }
+    
+    /* 추가 */
+    // 기존 Fragment 위에 새로운 Fragment를 띄우기
+    public static void addTopFragment(Fragment fragment)
+    {
+        Bundle bundle = new Bundle(2);
+        bundle.putBoolean("backButton", true);
+        bundle.putBoolean("hideButton", false);
+        fragment.setArguments(bundle);
+        
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
+        fragmentTransaction//.setCustomAnimations(R.anim.fade_in, R.anim.test_anim, R.anim.fade_in, R.anim.test_anim)
+                           .replace(R.id.frameTop, fragment)
+                           .addToBackStack(null)
+                           .commit( );
+        
+    }
+    
+    /* 뒤로 가기 */
+    // 이전 Fragment로 돌아가기
+    public static void backTopFragment(Fragment fragment)
+    {
+        onBackPressedListener = null;
+        
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
+        fragmentTransaction.remove(fragment).commit( );
+        fragmentManager.popBackStack( );
+    }
+    
+    /* 종료 */
+    // Top FrameLayout을 없애고 모든 Fragment 종료하기
+    public static void hideTopFragment(Fragment fragment)
+    {
+        blind.setVisibility(View.GONE);
+        onBackPressedListener = null;
+        
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
+        fragmentTransaction.remove(fragment).commit( );
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+    
+    // Fragment에서 설정한 BackPressedListener가 존재하면 프래그먼트에서 이벤트 처리
+    public static void setOnBackPressedListener(OnBackPressedListener listener)
+    {
+        onBackPressedListener = listener;
+    }
     
     public void onCreate(Bundle savedInstanceState)
     {
@@ -44,72 +114,9 @@ public class MainFrameActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view)
     {
-        switch (view.getId( )) {
-            case (R.id.blind):
-                hideTopFragment(fragmentManager.findFragmentById(R.id.frameTop));
-                break;
-            case (R.id.overlap_buttonBack):
-                Toast.makeText(this, "MAIN BACK 버튼", Toast.LENGTH_SHORT).show( );
-                this.backTopFragment(fragmentManager.findFragmentById(R.id.frameTop));
-                break;
-            case (R.id.overlap_buttonHide):
-                Toast.makeText(this, "MAIN HIDE 버튼", Toast.LENGTH_SHORT).show( );
-                this.hideTopFragment(fragmentManager.findFragmentById(R.id.frameTop));
-                break;
+        if (view == blind) {
+            hideTopFragment(fragmentManager.findFragmentById(R.id.frameTop));
         }
-    }
-    
-    /* 시작 */
-    // Top FrameLayout을 띄우고 Fragment를 나타내기
-    public void showTopFragment(Fragment fragment)
-    {
-        Bundle bundle = new Bundle(2);
-        bundle.putBoolean("backButton", false);
-        bundle.putBoolean("hideButton", true);
-        fragment.setArguments(bundle);
-        blind.setVisibility(View.VISIBLE);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.replace(R.id.frameTop, fragment).addToBackStack(null).commit( );
-    }
-    
-    /* 추가 */
-    // 기존 Fragment 위에 새로운 Fragment를 띄우기
-    public void addTopFragment(Fragment fragment)
-    {
-        Bundle bundle = new Bundle(2);
-        bundle.putBoolean("backButton", true);
-        bundle.putBoolean("hideButton", false);
-        fragment.setArguments(bundle);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.replace(R.id.frameTop, fragment).addToBackStack(null).commit( );
-        
-    }
-    
-    /* 뒤로 가기 */
-    // 이전 Fragment로 돌아가기
-    public void backTopFragment(Fragment fragment)
-    {
-        onBackPressedListener = null;
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.remove(fragment).commit( );
-        fragmentManager.popBackStack( );
-    }
-    
-    /* 종료 */
-    // Top FrameLayout을 없애고 모든 Fragment 종료하기
-    public void hideTopFragment(Fragment fragment)
-    {
-        blind.setVisibility(View.GONE);
-        onBackPressedListener = null;
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.remove(fragment).commit( );
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-    }
-    
-    // Fragment에서 설정한 BackPressedListener가 존재하면 프래그먼트에서 이벤트 처리
-    public void setOnBackPressedListener(OnBackPressedListener listener)
-    {
-        this.onBackPressedListener = listener;
     }
     
     @Override

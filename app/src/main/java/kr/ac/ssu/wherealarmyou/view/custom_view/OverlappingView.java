@@ -3,16 +3,19 @@ package kr.ac.ssu.wherealarmyou.view.custom_view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.view.fragment.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 
-public class OverlappingView extends LinearLayout
+public class OverlappingView extends LinearLayout implements View.OnClickListener
 {
     private TextView    textViewTitle;
     private Button      buttonAdd;
@@ -57,9 +60,8 @@ public class OverlappingView extends LinearLayout
         
         AnimationDrawable animationDrawable = (AnimationDrawable)distinguishBar.getBackground( );
         animationDrawable.setEnterFadeDuration(1000);
-        animationDrawable.setExitFadeDuration(2000);
+        animationDrawable.setExitFadeDuration(1000);
         animationDrawable.start( );
-        
     }
     
     private void getAttrs(AttributeSet attrs)
@@ -124,5 +126,42 @@ public class OverlappingView extends LinearLayout
     public void setContent(View view)
     {
         this.frameLayoutContent.addView(view);
+    }
+    
+    public void setAtOnce(Bundle bundle, View frameView, View contentView, String title,
+                          Boolean existAddButton, Boolean setBackHideButtonEvent)
+    {
+        this.setTitle(title);
+        this.setButtonAdd(existAddButton);
+        this.setButtonBack(bundle.getBoolean("backButton"));
+        this.setButtonHide(bundle.getBoolean("hideButton"));
+        this.setContent(contentView);
+    
+        if (setBackHideButtonEvent) {
+            frameView.findViewById(R.id.overlap_buttonBack).setOnClickListener(this);
+            frameView.findViewById(R.id.overlap_buttonHide).setOnClickListener(this);
+        }
+    }
+    
+    @Override
+    public void onClick(View view)
+    {
+        switch (view.getId( )) {
+            case (R.id.overlap_buttonAdd):
+                break;
+            case (R.id.overlap_buttonBack):
+                Toast.makeText(getContext( ), "MAIN BACK 버튼", Toast.LENGTH_SHORT).show( );
+                MainFrameActivity.backTopFragment(MainFrameActivity.fragmentManager.findFragmentById(R.id.frameTop));
+                break;
+            case (R.id.overlap_buttonHide):
+                Toast.makeText(getContext( ), "MAIN HIDE 버튼", Toast.LENGTH_SHORT).show( );
+                MainFrameActivity.hideTopFragment(MainFrameActivity.fragmentManager.findFragmentById(R.id.frameTop));
+                break;
+        }
+    }
+    
+    public void onAddClick(Fragment overlapFragmentFragment)
+    {
+        MainFrameActivity.addTopFragment(overlapFragmentFragment);
     }
 }

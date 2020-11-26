@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Overlapping View Default Settings -->
+    <!-- xml 배치는 overlapping_view_src.xml에서 수정 -->
     <kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView
         android:id="@+id/overlap_view"
         android:layout_width="match_parent"

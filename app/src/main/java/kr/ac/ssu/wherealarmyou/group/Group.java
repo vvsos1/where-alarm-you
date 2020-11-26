@@ -35,4 +35,11 @@ public class Group
     {
         this.uid = uid;
     }
+    
+    // test
+    public Group(String name, Icon icon)
+    {
+        this.name = name;
+        this.icon = icon;
+    }
 }
