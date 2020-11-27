@@ -52,15 +52,15 @@ public class GroupFragment extends Fragment implements View.OnClickListener, OnB
         }
         
         // Content View Setting
-        RecyclerView            recyclerView           = frameView.findViewById(R.id.recyclerViewGroup);
-        LinearLayoutManager     linearLayoutManager    = new LinearLayoutManager(getContext( ));
-        GroupContentViewAdapter recyclerViewAdapter    = new GroupContentViewAdapter(getContext( ), groups);
-        RecyclerViewDecoration  recyclerViewDecoration = new RecyclerViewDecoration(30);
+        RecyclerView            recyclerView            = frameView.findViewById(R.id.recyclerViewGroup);
+        LinearLayoutManager     linearLayoutManager     = new LinearLayoutManager(getContext( ));
+        GroupContentViewAdapter groupContentViewAdapter = new GroupContentViewAdapter(getContext( ), groups);
+        RecyclerViewDecoration  recyclerViewDecoration  = new RecyclerViewDecoration(30);
         
-        recyclerViewAdapter.setOnGroupClickListener((itemView, group) ->
+        groupContentViewAdapter.setOnGroupClickListener((itemView, group) ->
                 MainFrameActivity.addTopFragment(GroupDetailFragment.getInstance(group)));
         
-        recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerView.setAdapter(groupContentViewAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(recyclerViewDecoration);
 //        recyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext( )), linearLayoutManager.getOrientation( )));

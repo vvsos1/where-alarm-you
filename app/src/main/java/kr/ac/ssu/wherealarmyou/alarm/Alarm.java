@@ -1,14 +1,12 @@
 package kr.ac.ssu.wherealarmyou.alarm;
 
 import com.google.firebase.database.DataSnapshot;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @ToString
 @Getter
+@Setter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public abstract class Alarm

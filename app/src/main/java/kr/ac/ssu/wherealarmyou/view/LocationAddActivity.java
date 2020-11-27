@@ -108,7 +108,7 @@ public class LocationAddActivity extends AppCompatActivity implements OnMapReady
     
     private void initListView( )
     {
-        // ListView에 보여줄 item_alarm_add 레이아웃 설정
+        // ListView에 보여줄 item_alarm_add_frame 레이아웃 설정
         String[] from = { "title", "roadAddress" };
         int[]    to   = { R.id.addressTitle, R.id.tvRoadAddress };
         adapter = new SimpleAdapter(getApplicationContext( ), addressListViewData, R.layout.address_list_item, from,

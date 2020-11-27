@@ -50,6 +50,7 @@ public class User
         this.name  = name;
     }
     
+    
     // UserRepository에서만 접근
     // 데이터를 가져온 뒤 UID를 직접 설정해주기 위함
     void setUid(String uid)

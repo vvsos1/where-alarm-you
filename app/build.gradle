@@ -79,4 +79,9 @@ dependencies {
     // Recycler View
     implementation 'androidx.recyclerview:recyclerview'
 
+    // View Model
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
 }
