@@ -67,8 +67,19 @@ public abstract class Alarm implements Serializable {
         }
     }
 
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    ;
+
     // AlarmRepository 전용
     void setUid(String newUid) {
         this.uid = newUid;
     }
+
 }
