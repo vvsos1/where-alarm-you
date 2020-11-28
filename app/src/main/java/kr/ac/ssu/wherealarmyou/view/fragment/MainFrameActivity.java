@@ -3,6 +3,7 @@ package kr.ac.ssu.wherealarmyou.view.fragment;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,10 +17,10 @@ public class MainFrameActivity extends AppCompatActivity implements View.OnClick
     public static FragmentManager fragmentManager;
     
     @SuppressLint("StaticFieldLeak")
-    public static FrameLayout  frameTop;
+    public static FrameLayout frameTop;
     
     @SuppressLint("StaticFieldLeak")
-    public static FrameLayout  frameBottom;
+    public static FrameLayout frameBottom;
     
     @SuppressLint("StaticFieldLeak")
     public static LinearLayout blind;
@@ -94,6 +95,8 @@ public class MainFrameActivity extends AppCompatActivity implements View.OnClick
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frame);
+        getWindow( ).setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         
         fragmentManager = getSupportFragmentManager( );
         
