@@ -40,11 +40,13 @@ public class AlarmSaveRequest {
     // 알람이 등록될 그룹
             String group;
 
+    @Builder.Default
     // 소리
-    Boolean sound = Boolean.TRUE;
+            Boolean sound = Boolean.TRUE;
 
+    @Builder.Default
     // 진동
-    Boolean vibe = Boolean.TRUE;
+            Boolean vibe = Boolean.TRUE;
 
     // 반복
     Repetition repetition;

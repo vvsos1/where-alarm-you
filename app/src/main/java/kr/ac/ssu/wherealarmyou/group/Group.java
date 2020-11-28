@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import reactor.util.annotation.NonNull;
 
 @Getter
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Group {

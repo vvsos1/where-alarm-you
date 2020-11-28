@@ -39,7 +39,6 @@
             android:screenOrientation="portrait"/>
 
         <!-- Naver Mobile Dynamic Map SDK를 위한 설정 -->
-        <activity android:name=".view.fragment.FrameActivity" /> <!-- Naver Mobile Dynamic Map SDK를 위한 설정 -->
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/naver_cloud_platform_client_id" />

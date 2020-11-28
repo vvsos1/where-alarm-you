@@ -174,17 +174,20 @@ public class AlarmService {
 
     // 알람을 Realtime Database에 저장
     public Mono<Alarm> save(AlarmSaveRequest request) {
-        return null;
+        Alarm alarm = request.toAlarm();
+
+        return alarmRepository.save(alarm);
     }
 
     // 알람을 Realtime Database에서 수정
     public Mono<Alarm> modify(AlarmModifyRequest request) {
-        return null;
+        Alarm alarm = request.toAlarm();
+        return alarmRepository.upda;
     }
 
     // 알람을 Realtime Database에서 삭제
     public Mono<Void> delete(Alarm alarm) {
-        return null;
+        return alarmRepository.deleteByUid(alarm.getUid());
     }
 
 
