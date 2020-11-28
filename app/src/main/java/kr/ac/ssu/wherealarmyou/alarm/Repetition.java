@@ -1,5 +1,7 @@
 package kr.ac.ssu.wherealarmyou.alarm;
 
+import java.io.Serializable;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public class Repetition {
+public class Repetition implements Serializable {
 
     //반복 횟수
     Integer repeatCount;

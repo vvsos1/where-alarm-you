@@ -1,5 +1,6 @@
 package kr.ac.ssu.wherealarmyou.alarm;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public class DaysAlarm extends Alarm {
+public class DaysAlarm extends Alarm implements Serializable {
     // 알람이 활성화될 기간
     Period activePeriod;
 

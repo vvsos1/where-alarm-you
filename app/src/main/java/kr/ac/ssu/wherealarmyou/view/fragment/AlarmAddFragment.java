@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -233,11 +234,12 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void registerAlarm(Time time) {
-        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
-        Date date = new Date(now.getYear()
+        Date date = new Date(
+                now.getDayOfMonth()
                 , now.getMonth().getValue()
-                , now.getDayOfMonth());
+                , now.getYear());
 
         AlarmSaveRequest req = AlarmSaveRequest.builder(time)
                 .dates(List.of(date))

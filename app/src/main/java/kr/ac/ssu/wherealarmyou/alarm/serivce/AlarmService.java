@@ -31,7 +31,7 @@ import reactor.core.publisher.Mono;
 
 public class AlarmService {
 
-    AlarmManager alarmManager;
+    private AlarmManager alarmManager;
     private Context context;
 
 
@@ -81,6 +81,7 @@ public class AlarmService {
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                                 (alarm.getUid() + date.toString()).hashCode(),
                                 toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+
                         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, rtcTime, toAlarmPendingIntent);
                     }
                 }
