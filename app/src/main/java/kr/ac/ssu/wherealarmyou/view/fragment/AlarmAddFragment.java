@@ -18,8 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.alarm.Alarm;
-import kr.ac.ssu.wherealarmyou.alarm.DatesAlarm;
+import kr.ac.ssu.wherealarmyou.alarm.Time;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddContentViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddTimeViewModel;
@@ -39,7 +38,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     private static final int MEMO     = 4;
     private static final int DETAIL   = 5;
     
-    private Alarm alarm;
+    private Time time;
     
     private Bundle bundle;
     
@@ -57,7 +56,8 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        alarm           = new DatesAlarm( );
+        time = new Time( );
+        
         bundle          = Objects.requireNonNull(getArguments( ));
         fragmentManager = Objects.requireNonNull(getActivity( )).getSupportFragmentManager( );
         
@@ -128,7 +128,9 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
             AlarmAddTimeViewModel alarmAddTimeViewModel =
                     new ViewModelProvider(requireActivity( )).get(AlarmAddTimeViewModel.class);
             alarmAddTimeViewModel.getTimeData( ).observe(getViewLifecycleOwner( ), time -> {
-                if (time != null) alarm.setTime(time);
+                if (time != null) {
+                    this.time = time;
+                }
             });
             alarmAddTimeViewModel.getInfoString( )
                                  .observe(getViewLifecycleOwner( ), string -> setInfo(string, category));
@@ -212,8 +214,8 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     public void onStop( )
     {
         super.onStop( );
-        if (alarm.getTime( ) != null) {
-            Toast.makeText(getContext( ), alarm.getTime( ).getHours( ) + "시" + alarm.getTime( ).getMinutes( ) + "분",
+        if (time != null) {
+            Toast.makeText(getContext( ), time.getHours( ) + "시 " + time.getMinutes( ) + "분",
                     Toast.LENGTH_SHORT).show( );
         }
     }

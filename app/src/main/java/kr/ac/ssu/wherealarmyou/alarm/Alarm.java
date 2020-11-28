@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 
 @ToString
 @Getter
-@Setter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public abstract class Alarm

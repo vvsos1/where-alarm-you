@@ -7,7 +7,6 @@ import java.util.List;
 
 @ToString(callSuper = true)
 @Getter
-@Setter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class DatesAlarm extends Alarm
