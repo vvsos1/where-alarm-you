@@ -5,6 +5,7 @@ import com.google.firebase.database.DataSnapshot;
 import java.io.Serializable;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 
 @ToString
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public abstract class Alarm implements Serializable {
