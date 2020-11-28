@@ -58,7 +58,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     private AlarmService alarmService;
 
     public AlarmAddFragment(Context context) {
-        alarmService.getInstance(context);
+        alarmService = AlarmService.getInstance(context);
     }
 
     public static AlarmAddFragment getInstance(Context context) {
