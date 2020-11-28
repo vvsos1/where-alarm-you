@@ -72,4 +72,16 @@ dependencies {
     // Reactor Test
 //    androidTestImplementation 'io.projectreactor:reactor-test:3.2.3.RELEASE'
 //    testImplementation 'io.projectreactor:reactor-test:3.2.3.RELEASE'
+
+    // Floating Action Buttons
+    implementation 'me.jahirfiquitiva:FABsMenu:1.1.4'
+
+    // Recycler View
+    implementation 'androidx.recyclerview:recyclerview'
+
+    // View Model
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
 }

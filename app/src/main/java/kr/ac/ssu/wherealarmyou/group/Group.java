@@ -59,4 +59,11 @@ public class Group {
     void setUid(@NonNull String uid) {
         this.uid = uid;
     }
+    
+    // test
+    public Group(String name, Icon icon)
+    {
+        this.name = name;
+        this.icon = icon;
+    }
 }

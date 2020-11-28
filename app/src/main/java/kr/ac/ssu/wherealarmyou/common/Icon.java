@@ -1,5 +1,6 @@
 package kr.ac.ssu.wherealarmyou.common;
 
+import android.graphics.Color;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,4 +17,12 @@ public class Icon
     String colorHex;
     
     String text;
+    
+    //text
+    public Icon(String colorHex, String text)
+    {
+        this.colorHex = colorHex;
+        this.text     = text;
+    }
+    
 }

@@ -1,11 +1,7 @@
 package kr.ac.ssu.wherealarmyou.alarm;
 
 import com.google.firebase.database.DataSnapshot;
-
-import java.io.Serializable;
-
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -18,13 +14,13 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public abstract class Alarm implements Serializable {
     String uid;
-
+    
     // 알람의 제목
     String title;
-
+    
     // 알람의 설명 or 내용
     String description;
-
+    
     // 알람이 울릴 시간
     Time time;
     

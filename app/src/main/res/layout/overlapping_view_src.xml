@@ -42,7 +42,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="5dp"
                 android:layout_toStartOf="@id/overlap_buttonBack"
-                android:background="@drawable/add" />
+                android:background="@drawable/ic_add" />
 
             <Button
                 android:id="@+id/overlap_buttonBack"
@@ -52,7 +52,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="5dp"
                 android:layout_toStartOf="@id/overlap_buttonHide"
-                android:background="@drawable/back" />
+                android:background="@drawable/ic_back" />
 
             <Button
                 android:id="@+id/overlap_buttonHide"
@@ -61,7 +61,7 @@
                 android:layout_height="28dp"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/overlap_buttonBaseline"
-                android:background="@drawable/hide" />
+                android:background="@drawable/ic_hide" />
 
             <View
                 android:id="@+id/overlap_buttonBaseline"

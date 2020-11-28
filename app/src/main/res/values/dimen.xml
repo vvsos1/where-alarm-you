@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="alarmAddFrag_oldHeadPadding">7dp</dimen>
+    <dimen name="alarmAddFrag_newHeadPadding">20dp</dimen>
+    <dimen name="alarmAddFrag_oldPictogram">16dp</dimen>
+    <dimen name="alarmAddFrag_newPictogram">24dp</dimen>
+    <dimen name="alarmAddFrag_oldCategoryName">14dip</dimen>
+    <dimen name="alarmAddFrag_newCategoryName">18dip</dimen>
+    <dimen name="alarmAddFrag_oldCategoryInfo">11dip</dimen>
+    <dimen name="alarmAddFrag_newCategoryInfo">14dip</dimen>
+</resources>
