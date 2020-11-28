@@ -87,6 +87,6 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
     public void onStop( )
     {
         super.onStop( );
-        alarmAddTimeViewModel.selectAmPm("");
+        alarmAddTimeViewModel.resetLiveData( );
     }
 }
