@@ -10,6 +10,7 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 // 알람이 활성화될 장소의 조건
+@SuppressWarnings("serial")
 @ToString
 @Getter
 @NoArgsConstructor

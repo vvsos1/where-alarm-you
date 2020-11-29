@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -77,7 +78,9 @@ public class AlarmService {
                         rtcTime = zonedDateTime
                                 .toInstant().toEpochMilli();
                         Intent toAlarm = new Intent(context, AlarmRegisterReceiver.class);
-                        toAlarm.putExtra("Alarm", alarm);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("alarm", alarm);
+                        toAlarm.putExtra("bundle", bundle);
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                                 (alarm.getUid() + date.toString()).hashCode(),
                                 toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);

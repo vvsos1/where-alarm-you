@@ -10,6 +10,7 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 @ToString
+@SuppressWarnings("serial")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

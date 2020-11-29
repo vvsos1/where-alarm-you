@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
+@SuppressWarnings("serial")
 @ToString
 @Getter
 @AllArgsConstructor
