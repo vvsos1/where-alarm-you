@@ -1,6 +1,5 @@
 package kr.ac.ssu.wherealarmyou.view.login;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.dto.UpdateRequest;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
-import kr.ac.ssu.wherealarmyou.view.fragment.FrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.MainFrameActivity;
 
 import java.util.Objects;
 
@@ -65,7 +64,7 @@ public class SetUserInfoActivity extends AppCompatActivity implements View.OnCli
         userService.updateUserInfo(new UpdateRequest(email, userName))
                    .doOnSuccess(user -> {
                        Toast.makeText(SetUserInfoActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show( );
-                       startActivity(new Intent(getApplicationContext( ), FrameActivity.class));
+                       startActivity(new Intent(getApplicationContext( ), MainFrameActivity.class));
                        finish( );
                    })
                    .doOnError(throwable ->

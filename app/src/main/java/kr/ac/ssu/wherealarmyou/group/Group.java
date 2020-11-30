@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import reactor.util.annotation.NonNull;
 
 @Getter
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Group {
@@ -132,5 +134,12 @@ public class Group {
     // 새 group을 DB에서 생성한 뒤 uid를 설정해주기 위한 메서드
     void setUid(@NonNull String uid) {
         this.uid = uid;
+    }
+    
+    // test
+    public Group(String name, Icon icon)
+    {
+        this.name = name;
+        this.icon = icon;
     }
 }

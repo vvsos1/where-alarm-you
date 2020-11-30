@@ -1,16 +1,21 @@
 package kr.ac.ssu.wherealarmyou.alarm;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import java.io.Serializable;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+@SuppressWarnings("serial")
 @ToString
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Time
-{
+public class Time implements Serializable {
     Integer hours;
-    
+
     Integer minutes;
 }

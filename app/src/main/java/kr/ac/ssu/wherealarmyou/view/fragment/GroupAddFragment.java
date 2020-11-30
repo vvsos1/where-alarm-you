@@ -5,19 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 
+import java.util.Objects;
+
 public class GroupAddFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
 {
-    private FrameActivity   frameActivity;
+    private Bundle bundle;
     
-    private View            view;
     private OverlappingView overlappingView;
-    
-    private Button buttonBack;
     
     public static GroupAddFragment getInstance( )
     {
@@ -27,41 +25,32 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        frameActivity = (FrameActivity)getActivity( );
+        bundle = Objects.requireNonNull(getArguments( ));
         
-        view = inflater.inflate(R.layout.frame_overlap_content, container, false);
+        View frameView   = inflater.inflate(R.layout.frame_overlap_content, container, false);
+        View contentView = inflater.inflate(R.layout.content_group_add, null);
         
-        overlappingView = view.findViewById(R.id.overlap_view);
-        overlappingView.setTitle("그룹 추가");
-        overlappingView.setButtonBack(true);
-        overlappingView.setContent(inflater.inflate(R.layout.content_group_add, null));
-
-        buttonBack = view.findViewById(R.id.overlap_buttonBack);
+        // Frame View Setting
+        overlappingView = frameView.findViewById(R.id.overlap_view);
+        overlappingView.setAtOnce(bundle, frameView, contentView, "그룹 추가", false, true);
         
-        buttonBack.setOnClickListener(this);
-        
-        return view;
+        return frameView;
     }
     
     @Override
-    public void onClick(View view)
-    {
-        if (view == buttonBack) {
-            Toast.makeText(getContext( ), "BACK 버튼", Toast.LENGTH_SHORT).show( );
-            frameActivity.backTopFragment(this);
-        }
-    }
+    public void onClick(View view) { }
     
     @Override
     public void onBackPressed( )
     {
-        frameActivity.backTopFragment(this);
+        if (bundle.getBoolean("backButton")) { MainFrameActivity.backTopFragment(this); }
+        else if (bundle.getBoolean("hideButton")) { MainFrameActivity.hideTopFragment(this); }
     }
     
     @Override
     public void onResume( )
     {
         super.onResume( );
-        frameActivity.setOnBackPressedListener(this);
+        MainFrameActivity.setOnBackPressedListener(this);
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="overlappingView">
+        <attr name="title" format="reference|string" />
+        <attr name="button_add" format="reference|boolean" />
+        <attr name="button_back" format="reference|boolean" />
+        <attr name="button_hide" format="reference|boolean" />
+    </declare-styleable>
+</resources>

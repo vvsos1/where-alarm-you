@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.dto.LoginRequest;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
-import kr.ac.ssu.wherealarmyou.view.fragment.FrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.MainFrameActivity;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         userService.login(new LoginRequest(email, password))
                    .doOnSuccess(user -> {
                        Toast.makeText(getApplicationContext( ), "반갑습니다", Toast.LENGTH_LONG).show( );
-                       Intent intent = new Intent(getApplicationContext( ), FrameActivity.class);
+                       Intent intent = new Intent(getApplicationContext( ), MainFrameActivity.class);
                        intent.putExtra("uid", user.getUid( ));
                        startActivity(intent);
                        finish( );
