@@ -11,14 +11,13 @@ import kr.ac.ssu.wherealarmyou.alarm.LocationCondition;
 import kr.ac.ssu.wherealarmyou.alarm.Period;
 import kr.ac.ssu.wherealarmyou.alarm.Repetition;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.experimental.FieldDefaults;
+import lombok.ToString;
+import lombok.Value;
 import reactor.util.annotation.Nullable;
 
-@AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
+@Value
 @Builder(builderMethodName = "privateBuilder")
 public class AlarmSaveRequest {
 
@@ -65,7 +64,6 @@ public class AlarmSaveRequest {
     public static AlarmSaveRequestBuilder builder(Time time) {
 
         return privateBuilder().time(time)
-                .sound(Boolean.TRUE).vibe(Boolean.TRUE)
                 .repetition(new Repetition(1))
                 .title("").description("");
     }

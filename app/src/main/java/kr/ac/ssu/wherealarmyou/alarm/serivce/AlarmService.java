@@ -4,6 +4,9 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -22,30 +25,38 @@ import kr.ac.ssu.wherealarmyou.alarm.DaysAlarm;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmModifyRequest;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
+import kr.ac.ssu.wherealarmyou.user.UserRepository;
 import kr.ac.ssu.wherealarmyou.view.alarm.AlarmRegisterReceiver;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class AlarmService {
 
-    AlarmManager alarmManager;
+    private AlarmManager alarmManager;
     private Context context;
 
 
     private static AlarmService instance;
 
     private AlarmRepository alarmRepository;
+    private UserRepository userRepository;
 
-    private AlarmService(AlarmRepository alarmRepository, Context context) {
+    private AlarmService(AlarmRepository alarmRepository, UserRepository userRepository, Context context) {
         this.alarmRepository = alarmRepository;
+        this.userRepository = userRepository;
         this.context = context;
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
     public static AlarmService getInstance(Context context) {
         if (instance == null)
-            instance = new AlarmService(AlarmRepository.getInstance(), context);
+            instance = new AlarmService(AlarmRepository.getInstance(), UserRepository.getInstance(), context);
+        instance.setContext(context);
         return instance;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     // 알람을 Alarm Manager에 등록
@@ -67,10 +78,13 @@ public class AlarmService {
                         rtcTime = zonedDateTime
                                 .toInstant().toEpochMilli();
                         Intent toAlarm = new Intent(context, AlarmRegisterReceiver.class);
-                        toAlarm.putExtra("Alarm", alarm);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("alarm", alarm);
+                        toAlarm.putExtra("bundle", bundle);
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                                 (alarm.getUid() + date.toString()).hashCode(),
                                 toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+
                         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, rtcTime, toAlarmPendingIntent);
                     }
                 }
@@ -174,15 +188,34 @@ public class AlarmService {
 
     // 알람을 Realtime Database에 저장
     public Mono<Alarm> save(AlarmSaveRequest request) {
-        Alarm alarm = request.toAlarm();
+        String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        return alarmRepository.save(alarm);
+//        Alarm alarm = request.toAlarm();
+        Alarm alarm = DatesAlarm.builder()
+                .dates(request.getDates())
+                .time(request.getTime())
+                .build();
+
+        return alarmRepository.save(alarm)
+                .map(Alarm::getUid)
+                .flatMap(alarmUid -> userRepository.addAlarm(currentUid, alarmUid))
+                .thenReturn(alarm);
     }
 
+    // TODO: modify DTO 다시 설계
     // 알람을 Realtime Database에서 수정
     public Mono<Alarm> modify(AlarmModifyRequest request) {
-        Alarm alarm = request.toAlarm();
-        return alarmRepository.upda;
+//        Alarm origin = request.getOrigin();
+//        Alarm alarm = request.toAlarm();
+//
+//        // Dirty checking
+//        if (alarm.getTitle() != null)
+//        origin.updateTitle(alarm.getTitle());
+//
+//
+//        return alarmRepository.update(origin)
+//                .thenReturn(origin);
+        return null;
     }
 
     // 알람을 Realtime Database에서 삭제

@@ -1,5 +1,6 @@
 package kr.ac.ssu.wherealarmyou.alarm;
 
+import java.io.Serializable;
 import java.util.List;
 
 import lombok.AccessLevel;
@@ -8,12 +9,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-
+@SuppressWarnings("serial")
 @ToString(callSuper = true)
 @Getter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public class DatesAlarm extends Alarm {
+public class DatesAlarm extends Alarm implements Serializable {
 
 
     List<Date> dates;

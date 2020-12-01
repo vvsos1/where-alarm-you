@@ -58,12 +58,9 @@ public class AlarmModifyRequest {
     @Nullable
     List<Date> dates;
 
-    public static AlarmModifyRequestBuilder builder(Time time) {
-
-        return privateBuilder().time(time)
-                .sound(Boolean.TRUE).vibe(Boolean.TRUE)
-                .repetition(new Repetition(1))
-                .title("").description("");
+    public static AlarmModifyRequestBuilder builder(Alarm origin) {
+        return privateBuilder()
+                .origin(origin);
     }
 
     // uid 값이 없는 알람 객체를 만들어 리턴

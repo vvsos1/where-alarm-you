@@ -6,10 +6,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import kr.ac.ssu.wherealarmyou.R;
 
 public class MainFrameActivity extends AppCompatActivity implements View.OnClickListener
@@ -111,7 +113,7 @@ public class MainFrameActivity extends AppCompatActivity implements View.OnClick
         
         // Bottom FrameLayout에 Main Fragment 실행
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.add(R.id.frameBottom, MainFragment.getInstance( )).commit( );
+        fragmentTransaction.add(R.id.frameBottom, MainFragment.getInstance()).commit();
     }
     
     @Override

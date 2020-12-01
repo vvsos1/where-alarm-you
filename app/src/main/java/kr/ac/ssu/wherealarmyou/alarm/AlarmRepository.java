@@ -52,8 +52,17 @@ public class AlarmRepository
 
         alarm.setUid(newUid);
 
-        return update(alarm)
-                .thenReturn(alarm);
+        return Mono.create(alarmMonoSink -> {
+            newAlarmRef.setValue(alarm, (error, ref) -> {
+                if (error != null)
+                    alarmMonoSink.error(error.toException());
+                else
+                    alarmMonoSink.success(alarm);
+            });
+        });
+//
+//        return update(alarm)
+//                .thenReturn(alarm);
     }
 
     public Mono<Void> update(Alarm alarm) {

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
+@SuppressWarnings("serial")
 @ToString
 @Getter
 @NoArgsConstructor
@@ -27,10 +28,10 @@ public abstract class Alarm implements Serializable {
 
     // 알람이 울릴 시간
     Time time;
-    
+
     // 알람이 활성화될 장소의 조건
     LocationCondition locationCondition;
-    
+
     // 알람이 등록될 그룹
     String group;
 
@@ -67,8 +68,19 @@ public abstract class Alarm implements Serializable {
         }
     }
 
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    ;
+
     // AlarmRepository 전용
     void setUid(String newUid) {
         this.uid = newUid;
     }
+
 }

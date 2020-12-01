@@ -84,21 +84,32 @@ public class UserRepository
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error)
-                        {
-                            userMonoSink.error(error.toException( ));
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            userMonoSink.error(error.toException());
                         }
                     });
         });
     }
 
-    public Mono<Void> delete(User user)
-    {
-        return deleteByUid(user.getUid( ));
+    public Mono<Void> addAlarm(String userUid, String alarmUid) {
+        return Mono.create(voidMonoSink -> {
+            usersRef.child(userUid)
+                    .child("alarms")
+                    .child(alarmUid)
+                    .setValue(true, (error, ref) -> {
+                        if (error != null)
+                            voidMonoSink.error(error.toException());
+                        else
+                            voidMonoSink.success();
+                    });
+        });
     }
 
-    public Mono<Void> deleteByUid(String uid)
-    {
+    public Mono<Void> delete(User user) {
+        return deleteByUid(user.getUid());
+    }
+
+    public Mono<Void> deleteByUid(String uid) {
         return Mono.create(voidMonoSink -> {
             usersRef.child(uid).removeValue((error, ref) -> {
                 if (error != null) { voidMonoSink.error(error.toException( )); }
