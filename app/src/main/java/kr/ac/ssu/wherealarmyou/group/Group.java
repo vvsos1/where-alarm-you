@@ -6,7 +6,6 @@ import java.util.TreeMap;
 
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +13,6 @@ import lombok.experimental.FieldDefaults;
 import reactor.util.annotation.NonNull;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Group {
@@ -41,6 +38,14 @@ public class Group {
 
     Map<String, Boolean> waitingUsers;
 
+    @Builder
+    public Group(String adminUid, String name, Icon icon, String description) {
+        this.setAdmin(adminUid);
+        this.name = name;
+        this.icon = icon;
+        this.description = description;
+    }
+
     // 관리자 설정
     public void setAdmin(String userUid) {
         if (members == null)
@@ -50,7 +55,7 @@ public class Group {
         if (roles == null)
             roles = new TreeMap<>();
 
-        roles.put("ADMIN", new Authority(true, true, true, true));
+        roles.put(ROLE_ADMIN, new Authority(true, true, true, true));
     }
 
     public Boolean hasMembersAuthority(String userUid) {

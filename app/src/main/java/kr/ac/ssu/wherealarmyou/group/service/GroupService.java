@@ -11,6 +11,7 @@ import kr.ac.ssu.wherealarmyou.group.dto.GroupCreateRequest;
 import kr.ac.ssu.wherealarmyou.group.dto.GroupModifyRequest;
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -19,15 +20,17 @@ public class GroupService {
 
     private GroupRepository groupRepository;
     private UserRepository userRepository;
+    private UserService userService;
 
-    public GroupService(GroupRepository groupRepository, UserRepository userRepository) {
+    public GroupService(GroupRepository groupRepository, UserRepository userRepository, UserService userService) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public static GroupService getInstance() {
         if (instance == null)
-            instance = new GroupService(GroupRepository.getInstance(), UserRepository.getInstance());
+            instance = new GroupService(GroupRepository.getInstance(), UserRepository.getInstance(), UserService.getInstance());
         return instance;
     }
 
@@ -43,7 +46,11 @@ public class GroupService {
 
     public Mono<Group> createGroup(GroupCreateRequest request) {
         Group group = request.toGroup();
-        return groupRepository.save(group);
+        String adminUid = group.getMembers().keySet().iterator().next();
+        return groupRepository.save(group)
+                .map(Group::getUid)
+                .flatMap(groupUid -> userService.addGroup(adminUid, groupUid))
+                .thenReturn(group);
     }
 
     public Mono<Group> modifyGroup(GroupModifyRequest request) {
