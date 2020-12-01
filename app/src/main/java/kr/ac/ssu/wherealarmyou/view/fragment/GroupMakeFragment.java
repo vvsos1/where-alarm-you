@@ -1,13 +1,18 @@
 package kr.ac.ssu.wherealarmyou.view.fragment;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,6 +31,9 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
 {
     private Bundle bundle;
     
+    private LinearLayout linearLayoutName;
+    private LinearLayout linearLayoutIcon;
+    
     private EditText editTextGroupName;
     private EditText editTextIconText;
     private EditText editTextGroupInfo;
@@ -41,6 +49,7 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
         return new GroupMakeFragment( );
     }
     
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -74,6 +83,9 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
         
         
         // Content View Setting
+        LinearLayout linearLayoutParent = contentView.findViewById(R.id.groupMake_linearLayoutParent);
+        linearLayoutName  = contentView.findViewById(R.id.groupMake_linearLayoutName);
+        linearLayoutIcon  = contentView.findViewById(R.id.groupMake_linearLayoutIcon);
         editTextGroupName = contentView.findViewById(R.id.groupMake_editTextGroupName);
         editTextIconText  = contentView.findViewById(R.id.groupMake_editTextIconText);
         editTextGroupInfo = contentView.findViewById(R.id.groupMake_editTextGroupInfo);
@@ -96,6 +108,21 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
         recyclerView.setLayoutManager(linearLayoutManager);
         
         buttonComplete.setOnClickListener(this);
+        linearLayoutParent.setOnClickListener(view -> {
+            linearLayoutName.setVisibility(View.VISIBLE);
+            linearLayoutIcon.setVisibility(View.VISIBLE);
+            InputMethodManager systemService =
+                    (InputMethodManager)Objects.requireNonNull(getActivity( ))
+                                               .getSystemService(Context.INPUT_METHOD_SERVICE);
+            systemService.hideSoftInputFromWindow(editTextGroupInfo.getWindowToken( ), 0);
+        });
+        editTextGroupInfo.setOnTouchListener((v, event) -> {
+            if (event.getAction( ) == MotionEvent.ACTION_UP) {
+                linearLayoutName.setVisibility(View.GONE);
+                linearLayoutIcon.setVisibility(View.GONE);
+            }
+            return false;
+        });
         
         return frameView;
     }
@@ -130,9 +157,9 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
     }
     
     @Override
-    public void onStop()
+    public void onStop( )
     {
-        super.onStop();
+        super.onStop( );
         GradientDrawable backgroundGradient = (GradientDrawable)buttonIconColor.getBackground( );
         backgroundGradient.setColor(Color.WHITE);
     }
