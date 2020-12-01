@@ -1,16 +1,20 @@
 package kr.ac.ssu.wherealarmyou.user;
 
 import android.util.ArrayMap;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.util.Map;
+import java.util.TreeMap;
+
 import kr.ac.ssu.wherealarmyou.location.Location;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Map;
+import reactor.util.annotation.NonNull;
 
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -57,14 +61,19 @@ public class User
     {
         this.uid = uid;
     }
-    
-    public void changeEmail(String email)
-    {
+
+    public void changeEmail(String email) {
         this.email = email;
     }
-    
-    public void addLocation(Location location)
-    {
-        this.userLocations.put(location.getUid( ), true);
+
+    public void addLocation(Location location) {
+        this.userLocations.put(location.getUid(), true);
+    }
+
+    public void addGroup(@NonNull String groupUid) {
+        if (groups == null)
+            groups = new TreeMap<>();
+        groups.put(groupUid, Boolean.TRUE);
+
     }
 }
