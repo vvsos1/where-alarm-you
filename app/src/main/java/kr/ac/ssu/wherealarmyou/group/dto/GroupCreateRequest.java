@@ -14,11 +14,15 @@ public class GroupCreateRequest {
 
     String description;
 
+    String adminUid;
+
     public Group toGroup() {
         return Group.builder()
                 .name(groupName)
                 .icon(new Icon(iconColorHex, iconText))
                 .description(description)
+                .adminUid(adminUid)
                 .build();
+
     }
 }
