@@ -11,10 +11,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/icon_round_corners"
-        android:backgroundTint="#7871D7"
-        android:text="GRP"
-        android:textColor="#FFF"
-        android:textSize="11sp" />
-
+        android:stateListAnimator="@null" />
 </LinearLayout>
 

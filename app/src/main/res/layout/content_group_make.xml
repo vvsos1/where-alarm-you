@@ -53,36 +53,37 @@
             android:id="@+id/groupMake_textViewUnused2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_alignBottom="@id/groupMake_textViewUnused1"
+            android:layout_marginBottom="2dp"
             android:layout_toEndOf="@id/groupMake_textViewUnused1"
             android:text=" |  "
-            android:textSize="13sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/groupMake_textViewUnused3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_alignBottom="@id/groupMake_textViewUnused1"
             android:layout_toEndOf="@id/groupMake_textViewUnused2"
             android:text="현재 선택된 색"
             android:textSize="14sp" />
 
-        <ImageView
-            android:id="@+id/groupMake_imageViewIconColor"
-            android:layout_width="13sp"
-            android:layout_height="13sp"
+        <Button
+            android:id="@+id/groupMake_buttonIconColor"
+            android:layout_width="15sp"
+            android:layout_height="15sp"
             android:layout_alignBottom="@id/groupMake_textViewUnused3"
             android:layout_marginStart="5dp"
+            android:layout_marginBottom="1dp"
             android:layout_toEndOf="@id/groupMake_textViewUnused3"
-            android:background="@drawable/round_corners"
-            android:backgroundTint="#85ACFF" />
+            android:background="@drawable/round_corners_ultra_mini"
+            android:stateListAnimator="@null" />
 
         <TextView
             android:id="@+id/groupMake_textViewNewColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/groupMake_textViewUnused3"
-            android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"
             android:layout_toStartOf="@id/groupMake_imageViewNewColor"
             android:text="사용자 지정색 추가"
@@ -101,11 +102,12 @@
         android:id="@+id/groupMake_recyclerViewColor"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:gravity="center_vertical"
         android:layout_marginStart="7dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="7dp"
         android:background="@drawable/round_corners_icon_list"
+        android:gravity="center_vertical"
+        android:overScrollMode="never"
         android:paddingTop="10dp"
         android:paddingBottom="10dp" />
 
