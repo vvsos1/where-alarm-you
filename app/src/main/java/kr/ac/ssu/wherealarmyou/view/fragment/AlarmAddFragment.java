@@ -1,6 +1,5 @@
 package kr.ac.ssu.wherealarmyou.view.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -20,14 +18,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
@@ -39,39 +29,41 @@ import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class AlarmAddFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
 {
     private static final int TIME     = 0;
     private static final int WEEK     = 1;
     private static final int LOCATION = 2;
     private static final int GROUP    = 3;
-    private static final int MEMO = 4;
-    private static final int DETAIL = 5;
-
+    private static final int MEMO     = 4;
+    private static final int DETAIL   = 5;
+    
     private Time time;
-
+    
     private Bundle bundle;
-
+    
     private RecyclerView.LayoutManager layoutManager;
-
-    private FragmentManager fragmentManager;
-
-    private AlarmService alarmService;
-
-    public AlarmAddFragment(Context context) {
-        alarmService = AlarmService.getInstance(context);
+    
+    public AlarmAddFragment( ) { }
+    
+    public static AlarmAddFragment getInstance( )
+    {
+        return new AlarmAddFragment( );
     }
-
-    public static AlarmAddFragment getInstance(Context context) {
-        return new AlarmAddFragment(context);
-    }
-
+    
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        time = new Time();
-
-        bundle = Objects.requireNonNull(getArguments());
-        fragmentManager = Objects.requireNonNull(getActivity( )).getSupportFragmentManager( );
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        time = new Time( );
+        
+        bundle = Objects.requireNonNull(getArguments( ));
         
         View frameView   = inflater.inflate(R.layout.frame_overlap_content, container, false);
         View contentView = inflater.inflate(R.layout.content_alarm_add, null);
@@ -115,6 +107,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     
     private void startCategoryFragment(int category)
     {
+        FragmentManager     fragmentManager     = Objects.requireNonNull(getActivity( )).getSupportFragmentManager( );
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
         
         Fragment fragment = null;
@@ -223,38 +216,35 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     }
     
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onStop( )
+    {
+        super.onStop( );
         if (time != null) {
-            Toast.makeText(getContext(), time.getHours() + "시 " + time.getMinutes() + "분",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext( ), time.getHours( ) + "시 " + time.getMinutes( ) + "분",
+                    Toast.LENGTH_SHORT).show( );
             registerAlarm(time);
         }
-
+        
     }
-
-    private void registerAlarm(Time time) {
+    
+    private void registerAlarm(Time time)
+    {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-
-        Date date = new Date(
-                now.getDayOfMonth()
-                , now.getMonth().getValue()
-                , now.getYear());
-
+        
+        Date date = new Date(now.getDayOfMonth( ), now.getMonth( ).getValue( ), now.getYear( ));
+        
+        AlarmService alarmService = AlarmService.getInstance(getContext( ));
         AlarmSaveRequest req = AlarmSaveRequest.builder(time)
-                .dates(List.of(date))
-                .build();
-
-        Log.d("AlarmAddFragment", req.toString());
-
-        alarmService
-                .save(req)
-                .doOnError(throwable -> Log.e("AlarmAddFragment", throwable.getMessage()))
-                .flatMap(alarmService::register)
-                .publishOn(Schedulers.elastic())
-                .subscribeOn(Schedulers.elastic())
-                .subscribe();
-
-
+                                               .dates(List.of(date))
+                                               .build( );
+        
+        Log.d("AlarmAddFragment", req.toString( ));
+        
+        alarmService.save(req)
+                    .doOnError(throwable -> Log.e("AlarmAddFragment", throwable.getMessage( )))
+                    .flatMap(alarmService::register)
+                    .publishOn(Schedulers.elastic( ))
+                    .subscribeOn(Schedulers.elastic( ))
+                    .subscribe( );
     }
 }
