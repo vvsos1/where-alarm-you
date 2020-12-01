@@ -15,9 +15,15 @@ import jahirfiquitiva.libs.fabsmenu.FABsMenuListener;
 import jahirfiquitiva.libs.fabsmenu.TitleFAB;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.alarm.AlarmAddFragment;
+import kr.ac.ssu.wherealarmyou.view.fragment.group.GroupAddFragment;
+import kr.ac.ssu.wherealarmyou.view.fragment.group.GroupFragment;
+import kr.ac.ssu.wherealarmyou.view.fragment.location.LocationAddFragment;
+import kr.ac.ssu.wherealarmyou.view.fragment.location.LocationFragment;
 import kr.ac.ssu.wherealarmyou.view.login.ProfileActivity;
 
-public class MainFragment extends Fragment implements View.OnClickListener
+public class BottomFragment extends Fragment implements View.OnClickListener
 {
     private MainFrameActivity mainFrameActivity;
     
@@ -36,23 +42,23 @@ public class MainFragment extends Fragment implements View.OnClickListener
     private TextView text_5;
     private TextView text_6;
     
-    public static MainFragment getInstance( )
+    public static BottomFragment getInstance( )
     {
-        return new MainFragment( );
+        return new BottomFragment( );
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.content_main, container, false);
+        View contentView = inflater.inflate(R.layout.content_main, container, false);
         mainFrameActivity = (MainFrameActivity)getActivity( );
         
         // FAB Setting
-        fabsMenu  = view.findViewById(R.id.fabsMenu);
-        fabsBlind = view.findViewById(R.id.blind_fabs);
-        TitleFAB buttonAddAlarm    = view.findViewById(R.id.addAlarmFab);
-        TitleFAB buttonAddLocation = view.findViewById(R.id.addLocationFab);
-        TitleFAB buttonAddGroup    = view.findViewById(R.id.addGroupFab);
+        fabsMenu  = contentView.findViewById(R.id.bottom_fabsMenu);
+        fabsBlind = contentView.findViewById(R.id.bottom_viewFabsBlind);
+        TitleFAB buttonAddAlarm    = contentView.findViewById(R.id.bottom_fabsButtonAddAlarm);
+        TitleFAB buttonAddLocation = contentView.findViewById(R.id.bottom_fabsButtonAddLocation);
+        TitleFAB buttonAddGroup    = contentView.findViewById(R.id.bottom_fabsButtonAddGroup);
         
         buttonAddAlarm.setOnClickListener(this);
         buttonAddLocation.setOnClickListener(this);
@@ -75,15 +81,15 @@ public class MainFragment extends Fragment implements View.OnClickListener
         });
         
         // test
-        buttonLocation  = view.findViewById(R.id.buttonLocation);
-        buttonGroup     = view.findViewById(R.id.buttonGroup);
-        buttonTemporary = view.findViewById(R.id.buttonProfile);
-        text_1          = view.findViewById(R.id.textView1);
-        text_2          = view.findViewById(R.id.textView2);
-        text_3          = view.findViewById(R.id.textView3);
-        text_4          = view.findViewById(R.id.textView4);
-        text_5          = view.findViewById(R.id.textView5);
-        text_6          = view.findViewById(R.id.textView6);
+        buttonLocation  = contentView.findViewById(R.id.buttonLocation);
+        buttonGroup     = contentView.findViewById(R.id.buttonGroup);
+        buttonTemporary = contentView.findViewById(R.id.buttonProfile);
+        text_1          = contentView.findViewById(R.id.textView1);
+        text_2          = contentView.findViewById(R.id.textView2);
+        text_3          = contentView.findViewById(R.id.textView3);
+        text_4          = contentView.findViewById(R.id.textView4);
+        text_5          = contentView.findViewById(R.id.textView5);
+        text_6          = contentView.findViewById(R.id.textView6);
         
         buttonLocation.setOnClickListener(this);
         buttonGroup.setOnClickListener(this);
@@ -91,7 +97,7 @@ public class MainFragment extends Fragment implements View.OnClickListener
         
         getUserInfo( );
         
-        return view;
+        return contentView;
     }
     
     @Override
@@ -108,15 +114,15 @@ public class MainFragment extends Fragment implements View.OnClickListener
                 startActivity(new Intent(mainFrameActivity.getApplicationContext( ), ProfileActivity.class));
                 mainFrameActivity.finish( );
                 break;
-            case (R.id.addAlarmFab):
+            case (R.id.bottom_fabsButtonAddAlarm):
                 MainFrameActivity.showTopFragment(AlarmAddFragment.getInstance( ));
                 fabsMenu.collapse( );
                 break;
-            case (R.id.addLocationFab):
+            case (R.id.bottom_fabsButtonAddLocation):
                 MainFrameActivity.showTopFragment(LocationAddFragment.getInstance( ));
                 fabsMenu.collapse( );
                 break;
-            case (R.id.addGroupFab):
+            case (R.id.bottom_fabsButtonAddGroup):
                 MainFrameActivity.showTopFragment(GroupAddFragment.getInstance( ));
                 fabsMenu.collapse( );
                 break;

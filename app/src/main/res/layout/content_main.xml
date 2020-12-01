@@ -75,7 +75,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/blind_fabs"
+        android:id="@+id/bottom_viewFabsBlind"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#3000"
@@ -88,7 +88,7 @@
         app:fabs_menu_overlayColor="@android:color/transparent">
 
         <jahirfiquitiva.libs.fabsmenu.FABsMenu
-            android:id="@+id/fabsMenu"
+            android:id="@+id/bottom_fabsMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -102,7 +102,7 @@
             app:fab_moreButtonSize="normal">
 
             <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                android:id="@+id/addAlarmFab"
+                android:id="@+id/bottom_fabsButtonAddAlarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:backgroundTint="#FFEDAC"
@@ -113,7 +113,7 @@
                 app:srcCompat="@drawable/ic_alarm_add" />
 
             <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                android:id="@+id/addLocationFab"
+                android:id="@+id/bottom_fabsButtonAddLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:backgroundTint="#BDBDF9"
@@ -124,7 +124,7 @@
                 app:srcCompat="@drawable/ic_location_add" />
 
             <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                android:id="@+id/addGroupFab"
+                android:id="@+id/bottom_fabsButtonAddGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:backgroundTint="#FFE5FB"

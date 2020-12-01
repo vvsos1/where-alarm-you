@@ -175,6 +175,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="60dp"
         android:background="@drawable/round_corners_button"
+        android:stateListAnimator="@null"
         android:text="그룹 만들기"
         android:textColor="@color/colorAccent"
         android:textSize="15sp" />

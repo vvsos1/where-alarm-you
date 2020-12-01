@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/groupContentView"
+    android:id="@+id/group_linearLayoutParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -8,7 +8,7 @@
     android:paddingEnd="20dp">
 
     <TextView
-        android:id="@+id/textViewMakeGroup_groupAdd"
+        android:id="@+id/groupAdd_textViewMakeGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
@@ -19,7 +19,7 @@
         android:textSize="15sp" />
 
     <EditText
-        android:id="@+id/editTextFindGroup_groupAdd"
+        android:id="@+id/groupAdd_editTextFindGroup"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:layout_marginTop="5dp"
@@ -52,7 +52,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewGroupAdd"
+        android:id="@+id/groupAdd_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="20dp"

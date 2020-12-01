@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.fragment;
+package kr.ac.ssu.wherealarmyou.view.fragment.location;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 
 import java.util.Objects;
 
@@ -26,7 +28,7 @@ public class LocationAddFragment extends Fragment implements View.OnClickListene
     {
         bundle = Objects.requireNonNull(getArguments( ));
         
-        View frameView   = inflater.inflate(R.layout.frame_overlap_content, container, false);
+        View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_location_add, null);
         
         // Frame View Setting

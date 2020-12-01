@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.fragment;
+package kr.ac.ssu.wherealarmyou.view;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.view.fragment.BottomFragment;
+import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 
 public class MainFrameActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -113,7 +115,7 @@ public class MainFrameActivity extends AppCompatActivity implements View.OnClick
         
         // Bottom FrameLayout에 Main Fragment 실행
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.add(R.id.frameBottom, MainFragment.getInstance()).commit();
+        fragmentTransaction.add(R.id.frameBottom, BottomFragment.getInstance()).commit();
     }
     
     @Override

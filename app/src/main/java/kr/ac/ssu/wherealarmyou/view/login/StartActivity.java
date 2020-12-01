@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
-import kr.ac.ssu.wherealarmyou.view.fragment.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 
 import java.util.regex.Pattern;
 

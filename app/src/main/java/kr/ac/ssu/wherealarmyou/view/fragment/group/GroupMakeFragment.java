@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.fragment;
+package kr.ac.ssu.wherealarmyou.view.fragment.group;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -22,6 +22,8 @@ import kr.ac.ssu.wherealarmyou.common.Icon;
 import kr.ac.ssu.wherealarmyou.group.dto.GroupCreateRequest;
 import kr.ac.ssu.wherealarmyou.view.custom_view.IconRecyclerViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +57,7 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
     {
         bundle = Objects.requireNonNull(getArguments( ));
         
-        View frameView   = inflater.inflate(R.layout.frame_overlap_content, container, false);
+        View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_group_make, null);
         
         // Frame View Setting
@@ -97,10 +99,9 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
         IconRecyclerViewAdapter iconRecyclerViewAdapter = new IconRecyclerViewAdapter(getContext( ), icons);
         
         iconRecyclerViewAdapter.setOnItemClickListener((itemView, icon) -> {
-            GradientDrawable backgroundGradient = (GradientDrawable)buttonIconColor.getBackground( );
-            backgroundGradient.setColor(Color.parseColor(icon.getColorHex( )));
+            GradientDrawable drawable = (GradientDrawable)buttonIconColor.getBackground( );
+            drawable.setColor(Color.parseColor(icon.getColorHex( )));
             iconColor = icon.getColorHex( );
-            Toast.makeText(getContext( ), icon.getColorHex( ) + "색 선택 완료", Toast.LENGTH_SHORT).show( );
         });
         
         linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);

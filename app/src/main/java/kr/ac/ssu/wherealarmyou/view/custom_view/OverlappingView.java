@@ -9,11 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.view.fragment.MainFrameActivity;
-import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 
 public class OverlappingView extends LinearLayout implements View.OnClickListener
 {

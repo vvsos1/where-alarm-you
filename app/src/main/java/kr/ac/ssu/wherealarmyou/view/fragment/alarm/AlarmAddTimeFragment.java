@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.fragment;
+package kr.ac.ssu.wherealarmyou.view.fragment.alarm;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,9 +16,9 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
 {
     private AlarmAddTimeViewModel alarmAddTimeViewModel;
     
-    private LinearLayout layoutSetAMPM;
-    private LinearLayout layoutSetHours;
-    private LinearLayout layoutSetMinutes;
+    private LinearLayout linearLayoutSetAMPM;
+    private LinearLayout linearLayoutSetHours;
+    private LinearLayout linearLayoutSetMinutes;
     
     private Button buttonAm;
     private Button buttonPm;
@@ -39,15 +39,15 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
         
         alarmAddTimeViewModel = new ViewModelProvider(requireActivity( )).get(AlarmAddTimeViewModel.class);
         
-        layoutSetAMPM    = contentView.findViewById(R.id.layoutSetAMPM);
-        layoutSetHours   = contentView.findViewById(R.id.layoutSetHours);
-        layoutSetMinutes = contentView.findViewById(R.id.layoutSetMinutes);
+        linearLayoutSetAMPM    = contentView.findViewById(R.id.alarmAddTime_linearLayoutSetAMPM);
+        linearLayoutSetHours   = contentView.findViewById(R.id.alarmAddTime_linearLayoutSetHours);
+        linearLayoutSetMinutes = contentView.findViewById(R.id.alarmAddTime_linearLayoutSetMinutes);
         
-        editTextHours   = contentView.findViewById(R.id.editTextHours);
-        editTextMinutes = contentView.findViewById(R.id.editTextMinutes);
+        editTextHours   = contentView.findViewById(R.id.alarmAddTime_editTextHours);
+        editTextMinutes = contentView.findViewById(R.id.alarmAddTime_editTextMinutes);
         
-        buttonAm = contentView.findViewById(R.id.buttonAM);
-        buttonPm = contentView.findViewById(R.id.buttonPM);
+        buttonAm = contentView.findViewById(R.id.alarmAddTime_buttonAM);
+        buttonPm = contentView.findViewById(R.id.alarmAddTime_buttonPM);
         
         buttonAm.setOnClickListener(this);
         buttonPm.setOnClickListener(this);
@@ -60,26 +60,26 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view)
     {
-        if (layoutSetAMPM.getVisibility( ) == View.VISIBLE) {
+        if (linearLayoutSetAMPM.getVisibility( ) == View.VISIBLE) {
             if (view == buttonAm) {
                 alarmAddTimeViewModel.selectAmPm("AM");
             }
             if (view == buttonPm) {
                 alarmAddTimeViewModel.selectAmPm("PM");
             }
-            layoutSetAMPM.setVisibility(View.GONE);
-            layoutSetHours.setVisibility(View.VISIBLE);
+            linearLayoutSetAMPM.setVisibility(View.GONE);
+            linearLayoutSetHours.setVisibility(View.VISIBLE);
         }
-        else if (layoutSetHours.getVisibility( ) == View.VISIBLE) {
+        else if (linearLayoutSetHours.getVisibility( ) == View.VISIBLE) {
             int hours = Integer.parseInt("" + editTextHours.getText( ));
             alarmAddTimeViewModel.selectHours(hours);
-            layoutSetHours.setVisibility(View.GONE);
-            layoutSetMinutes.setVisibility(View.VISIBLE);
+            linearLayoutSetHours.setVisibility(View.GONE);
+            linearLayoutSetMinutes.setVisibility(View.VISIBLE);
         }
-        else if (layoutSetMinutes.getVisibility( ) == View.VISIBLE) {
+        else if (linearLayoutSetMinutes.getVisibility( ) == View.VISIBLE) {
             int minute = Integer.parseInt("" + editTextMinutes.getText( ));
             alarmAddTimeViewModel.selectMinute(minute);
-            layoutSetMinutes.setVisibility(View.GONE);
+            linearLayoutSetMinutes.setVisibility(View.GONE);
         }
     }
     

@@ -1,34 +1,27 @@
-package kr.ac.ssu.wherealarmyou.view.fragment;
+package kr.ac.ssu.wherealarmyou.view.fragment.location;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 
 import java.util.Objects;
 
-public class GroupDetailFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
+public class LocationFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
 {
     private Bundle bundle;
     
     private OverlappingView overlappingView;
     
-    private final Group group;
-    
-    public GroupDetailFragment(Group group)
+    public static LocationFragment getInstance( )
     {
-        this.group = group;
-    }
-    
-    public static GroupDetailFragment getInstance(Group group)
-    {
-        return new GroupDetailFragment(group);
+        return new LocationFragment( );
     }
     
     @Override
@@ -36,22 +29,26 @@ public class GroupDetailFragment extends Fragment implements View.OnClickListene
     {
         bundle = Objects.requireNonNull(getArguments( ));
         
-        View frameView   = inflater.inflate(R.layout.frame_overlap_content, container, false);
-        View contentView = inflater.inflate(R.layout.content_group_info, null);
+        View frameView = inflater.inflate(R.layout.frame_overlap, container, false);
+        View contentView = inflater.inflate(R.layout.content_location, null);
         
         // Frame View Setting
         overlappingView = frameView.findViewById(R.id.overlap_view);
-        overlappingView.setAtOnce(bundle, frameView, contentView, "그룹 정보", false, true);
+        overlappingView.setAtOnce(bundle, frameView, contentView, "장소", true, true);
         
-        // test
-        TextView groupName = frameView.findViewById(R.id.textViewGroupName);
-        groupName.setText(group.getName( ));
+        Button buttonAdd = frameView.findViewById(R.id.overlap_buttonAdd);
+        buttonAdd.setOnClickListener(this);
         
         return frameView;
     }
     
     @Override
-    public void onClick(View view) { }
+    public void onClick(View view)
+    {
+        if (view.getId( ) == R.id.overlap_buttonAdd) {
+            overlappingView.onAddClick(LocationAddFragment.getInstance( ));
+        }
+    }
     
     @Override
     public void onBackPressed( )

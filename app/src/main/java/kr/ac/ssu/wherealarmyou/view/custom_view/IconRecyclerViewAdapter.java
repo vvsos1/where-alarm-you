@@ -39,13 +39,13 @@ public class IconRecyclerViewAdapter extends RecyclerView.Adapter<IconRecyclerVi
     public void onBindViewHolder(@NonNull GroupContentViewHolder holder, int position)
     {
         Icon icon = icons.get(position);
-        //holder.icon.setBackgroundColor(group.getIcon( ).getColorHex( ));
-        GradientDrawable backgroundGradient = (GradientDrawable)holder.buttonIcon.getBackground( );
-        backgroundGradient.setColor(Color.parseColor(icon.getColorHex( )));
+        
+        GradientDrawable drawable = (GradientDrawable)holder.buttonIcon.getBackground( );
+        drawable.setColor(Color.parseColor(icon.getColorHex( )));
         holder.buttonIcon.setOnClickListener(view -> {
-                if ((position != RecyclerView.NO_POSITION) && (listener != null)) {
-                    listener.onItemClick(view, icon);
-                }
+            if ((position != RecyclerView.NO_POSITION) && (listener != null)) {
+                listener.onItemClick(view, icon);
+            }
         });
     }
     

@@ -1,17 +1,20 @@
-package kr.ac.ssu.wherealarmyou.view.fragment;
+package kr.ac.ssu.wherealarmyou.view.fragment.group;
 
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 
 import java.util.Objects;
 
@@ -38,7 +41,7 @@ public class GroupJoinFragment extends Fragment implements View.OnClickListener,
     {
         bundle = Objects.requireNonNull(getArguments( ));
         
-        View frameView   = inflater.inflate(R.layout.frame_overlap_content, container, false);
+        View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_group_join, null);
         
         // Frame View Setting
@@ -46,13 +49,17 @@ public class GroupJoinFragment extends Fragment implements View.OnClickListener,
         overlappingView.setAtOnce(bundle, frameView, contentView, "그룹 가입", false, true);
         
         // Content View Setting
-        ImageView imageViewIcon = contentView.findViewById(R.id.groupJoin_imageViewIcon);
-        TextView  textViewName  = contentView.findViewById(R.id.groupJoin_textViewName);
-        TextView  textViewAdmin = contentView.findViewById(R.id.groupJoin_textViewAdmin);
-        TextView  textViewInfo  = contentView.findViewById(R.id.groupJoin_textViewInfo);
+        Button   buttonIcon    = contentView.findViewById(R.id.groupJoin_buttonIcon);
+        TextView textViewName  = contentView.findViewById(R.id.groupJoin_textViewName);
+        TextView textViewAdmin = contentView.findViewById(R.id.groupJoin_textViewAdmin);
+        TextView textViewInfo  = contentView.findViewById(R.id.groupJoin_textViewInfo);
         buttonJoin = contentView.findViewById(R.id.groupJoin_buttonJoin);
         
-        String groupAdmin = "";
+        String groupAdmin = "(미구현)";
+        
+        GradientDrawable drawable = (GradientDrawable)buttonIcon.getBackground( );
+        drawable.setColor(Color.parseColor(group.getIcon( ).getColorHex( )));
+        buttonIcon.setText(group.getIcon( ).getText( ));
         textViewName.setText(group.getName( ));
         textViewAdmin.setText("관리자 : " + groupAdmin);
         textViewInfo.setText(group.getDescription( ));

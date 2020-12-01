@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.fragment;
+package kr.ac.ssu.wherealarmyou.view.fragment.alarm;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +27,8 @@ import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddContentViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.ZoneId;
@@ -65,7 +67,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
         
         bundle = Objects.requireNonNull(getArguments( ));
         
-        View frameView   = inflater.inflate(R.layout.frame_overlap_content, container, false);
+        View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_alarm_add, null);
         
         // Frame View Setting
@@ -82,7 +84,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
         items.add(new AlarmAddFrameItem(R.drawable.ic_add_box, "세부 설정", ""));
         
         // Content View Setting
-        RecyclerView               recyclerView               = frameView.findViewById(R.id.recyclerView);
+        RecyclerView               recyclerView               = frameView.findViewById(R.id.alarmAdd_recyclerView);
         AlarmAddContentViewAdapter alarmAddContentViewAdapter = new AlarmAddContentViewAdapter(getContext( ), items);
         LinearLayoutManager        linearLayoutManager        = new LinearLayoutManager(getContext( ));
         DividerItemDecoration decoration = new DividerItemDecoration(Objects.requireNonNull(getContext( )),
@@ -120,7 +122,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
         
         if (fragment != null) {
             fragmentTransaction//.setCustomAnimations(R.anim.fade_in, R.anim.test_anim, R.anim.fade_in, R.anim.test_anim)
-                               .replace(R.id.contentAlarmAddFrameItem, fragment)
+                               .replace(R.id.item_alarmAddCategory_frameLayoutContent, fragment)
                                .addToBackStack(null)
                                .commit( );
         }
@@ -151,7 +153,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     private void setInfo(String string, int position)
     {
         TextView infoText = Objects.requireNonNull(layoutManager.findViewByPosition(position))
-                                   .findViewById(R.id.infoAlarmAddFrameItem);
+                                   .findViewById(R.id.item_alarmAddCategory_textViewInfo);
         infoText.setText(string);
     }
     
@@ -160,14 +162,14 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
         View oldView = Objects.requireNonNull(layoutManager.findViewByPosition(position_oldView));
         View newView = Objects.requireNonNull(layoutManager.findViewByPosition(position_newView));
         
-        RelativeLayout oldHead      = oldView.findViewById(R.id.headAlarmAddFrameItem);
-        RelativeLayout newHead      = newView.findViewById(R.id.headAlarmAddFrameItem);
-        ImageView      oldPictogram = oldView.findViewById(R.id.pictogramAlarmAddFrameItem);
-        ImageView      newPictogram = newView.findViewById(R.id.pictogramAlarmAddFrameItem);
-        TextView       oldNameView  = oldView.findViewById(R.id.nameAlarmAddFrameItem);
-        TextView       newNameView  = newView.findViewById(R.id.nameAlarmAddFrameItem);
-        TextView       oldInfoView  = oldView.findViewById(R.id.infoAlarmAddFrameItem);
-        TextView       newInfoView  = newView.findViewById(R.id.infoAlarmAddFrameItem);
+        RelativeLayout oldHead      = oldView.findViewById(R.id.item_alarmAddCategory_relativeLayoutHead);
+        RelativeLayout newHead      = newView.findViewById(R.id.item_alarmAddCategory_relativeLayoutHead);
+        ImageView      oldPictogram = oldView.findViewById(R.id.item_alarmAddCategory_imageViewPictogram);
+        ImageView      newPictogram = newView.findViewById(R.id.item_alarmAddCategory_imageViewPictogram);
+        TextView       oldNameView  = oldView.findViewById(R.id.item_alarmAddCategory_textViewName);
+        TextView       newNameView  = newView.findViewById(R.id.item_alarmAddCategory_textViewName);
+        TextView       oldInfoView  = oldView.findViewById(R.id.item_alarmAddCategory_textViewInfo);
+        TextView       newInfoView  = newView.findViewById(R.id.item_alarmAddCategory_textViewInfo);
         
         int oldPadding = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_oldHeadPadding);
         int newPadding = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_newHeadPadding);
@@ -194,8 +196,8 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
         oldInfoView.setTextSize(TypedValue.COMPLEX_UNIT_PX, oldInfoSize);
         newInfoView.setTextSize(TypedValue.COMPLEX_UNIT_PX, newInfoSize);
         
-        oldView.findViewById(R.id.contentAlarmAddFrameItem).setVisibility(View.GONE);
-        newView.findViewById(R.id.contentAlarmAddFrameItem).setVisibility(View.VISIBLE);
+        oldView.findViewById(R.id.item_alarmAddCategory_frameLayoutContent).setVisibility(View.GONE);
+        newView.findViewById(R.id.item_alarmAddCategory_frameLayoutContent).setVisibility(View.VISIBLE);
     }
     
     @Override

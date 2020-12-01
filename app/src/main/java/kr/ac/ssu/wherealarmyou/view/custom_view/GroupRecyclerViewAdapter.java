@@ -1,6 +1,8 @@
 package kr.ac.ssu.wherealarmyou.view.custom_view;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +16,14 @@ import kr.ac.ssu.wherealarmyou.group.Group;
 
 import java.util.List;
 
-public class GroupContentViewAdapter extends RecyclerView.Adapter<GroupContentViewAdapter.GroupContentViewHolder>
+public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecyclerViewAdapter.GroupContentViewHolder>
 {
     private Context     context;
     private List<Group> groups;
     
     private OnGroupClickListener listener = null;
     
-    public GroupContentViewAdapter(Context context, List<Group> groups)
+    public GroupRecyclerViewAdapter(Context context, List<Group> groups)
     {
         this.context = context;
         this.groups  = groups;
@@ -39,7 +41,10 @@ public class GroupContentViewAdapter extends RecyclerView.Adapter<GroupContentVi
     public void onBindViewHolder(GroupContentViewHolder holder, int position)
     {
         Group group = groups.get(position);
-        //holder.icon.setBackgroundColor(group.getIcon( ).getColorHex( ));
+        
+        GradientDrawable drawable = (GradientDrawable)holder.icon.getBackground( );
+        drawable.setColor(Color.parseColor(group.getIcon( ).getColorHex( )));
+        
         holder.icon.setText(group.getIcon( ).getText( ));
         holder.name.setText(group.getName( ));
     }
@@ -69,18 +74,18 @@ public class GroupContentViewAdapter extends RecyclerView.Adapter<GroupContentVi
         public GroupContentViewHolder(View itemView)
         {
             super(itemView);
-            group = itemView.findViewById(R.id.relativeLayoutGroup);
-            icon  = itemView.findViewById(R.id.buttonIcon);
-            name  = itemView.findViewById(R.id.textViewName);
+            group = itemView.findViewById(R.id.item_icon_and_title_relativeLayoutParent);
+            icon  = itemView.findViewById(R.id.item_icon_and_title_buttonIcon);
+            name  = itemView.findViewById(R.id.item_icon_and_title_textViewTitle);
             
             itemView.setOnClickListener(this);
         }
         
         public void onClick(View view)
         {
-            if (view.getId( ) == R.id.relativeLayoutGroup
-                || view.getId( ) == R.id.buttonIcon
-                || view.getId( ) == R.id.textViewName) {
+            if (view.getId( ) == R.id.item_icon_and_title_relativeLayoutParent
+                || view.getId( ) == R.id.item_icon_and_title_buttonIcon
+                || view.getId( ) == R.id.item_icon_and_title_textViewTitle) {
                 int position = getAdapterPosition( );
                 if ((position != RecyclerView.NO_POSITION) && (listener != null)) {
                     listener.onItemClick(view, groups.get(position));
