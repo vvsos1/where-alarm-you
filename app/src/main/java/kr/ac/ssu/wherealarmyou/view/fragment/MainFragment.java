@@ -21,10 +21,13 @@ public class MainFragment extends Fragment implements View.OnClickListener
 {
     private MainFrameActivity mainFrameActivity;
     
-    private Button buttonLocation;
-    private Button buttonGroup;
+    // FAB ( Floating Action Button )
+    private FABsMenu fabsMenu;
+    private View     fabsBlind;
     
     // test
+    private Button   buttonLocation;
+    private Button   buttonGroup;
     private Button   buttonTemporary;
     private TextView text_1;
     private TextView text_2;
@@ -32,12 +35,6 @@ public class MainFragment extends Fragment implements View.OnClickListener
     private TextView text_4;
     private TextView text_5;
     private TextView text_6;
-    // FAB ( Floating Action Button )
-    private FABsMenu fabsMenu;
-    private View     fabsBlind;
-    private TitleFAB buttonAddAlarm;
-    private TitleFAB buttonAddLocation;
-    private TitleFAB buttonAddGroup;
     
     public static MainFragment getInstance( )
     {
@@ -50,28 +47,12 @@ public class MainFragment extends Fragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.content_main, container, false);
         mainFrameActivity = (MainFrameActivity)getActivity( );
         
-        buttonLocation = view.findViewById(R.id.buttonLocation);
-        buttonGroup    = view.findViewById(R.id.buttonGroup);
-        
-        buttonLocation.setOnClickListener(this);
-        buttonGroup.setOnClickListener(this);
-        
-        // test
-        buttonTemporary = view.findViewById(R.id.buttonProfile);
-        buttonTemporary.setOnClickListener(this);
-        text_1            = view.findViewById(R.id.textView1);
-        text_2            = view.findViewById(R.id.textView2);
-        text_3            = view.findViewById(R.id.textView3);
-        text_4            = view.findViewById(R.id.textView4);
-        text_5            = view.findViewById(R.id.textView5);
-        text_6            = view.findViewById(R.id.textView6);
-        fabsMenu          = view.findViewById(R.id.fabsMenu);
-        fabsBlind         = view.findViewById(R.id.blind_fabs);
-        buttonAddAlarm    = view.findViewById(R.id.addAlarmFab);
-        buttonAddLocation = view.findViewById(R.id.addLocationFab);
-        buttonAddGroup    = view.findViewById(R.id.addGroupFab);
-        
-        getUserInfo( );
+        // FAB Setting
+        fabsMenu  = view.findViewById(R.id.fabsMenu);
+        fabsBlind = view.findViewById(R.id.blind_fabs);
+        TitleFAB buttonAddAlarm    = view.findViewById(R.id.addAlarmFab);
+        TitleFAB buttonAddLocation = view.findViewById(R.id.addLocationFab);
+        TitleFAB buttonAddGroup    = view.findViewById(R.id.addGroupFab);
         
         buttonAddAlarm.setOnClickListener(this);
         buttonAddLocation.setOnClickListener(this);
@@ -92,6 +73,23 @@ public class MainFragment extends Fragment implements View.OnClickListener
                 fabsBlind.setVisibility(View.GONE);
             }
         });
+        
+        // test
+        buttonLocation  = view.findViewById(R.id.buttonLocation);
+        buttonGroup     = view.findViewById(R.id.buttonGroup);
+        buttonTemporary = view.findViewById(R.id.buttonProfile);
+        text_1          = view.findViewById(R.id.textView1);
+        text_2          = view.findViewById(R.id.textView2);
+        text_3          = view.findViewById(R.id.textView3);
+        text_4          = view.findViewById(R.id.textView4);
+        text_5          = view.findViewById(R.id.textView5);
+        text_6          = view.findViewById(R.id.textView6);
+        
+        buttonLocation.setOnClickListener(this);
+        buttonGroup.setOnClickListener(this);
+        buttonTemporary.setOnClickListener(this);
+        
+        getUserInfo( );
         
         return view;
     }
@@ -125,6 +123,7 @@ public class MainFragment extends Fragment implements View.OnClickListener
         }
     }
     
+    // test
     private void getUserInfo( )
     {
         FirebaseUser   firebaseUser   = FirebaseAuth.getInstance( ).getCurrentUser( );
@@ -142,7 +141,6 @@ public class MainFragment extends Fragment implements View.OnClickListener
                           })
                           .doOnError(throwable -> text_4.setText("User를 찾지 못했습니다."))
                           .subscribe( );
-            
         }
         else {
             text_1.setText("FirebaseUser를 찾지 못했습니다.");

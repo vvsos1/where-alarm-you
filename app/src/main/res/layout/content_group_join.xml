@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/groupJoin_imageViewIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/icon_round_corners"
+        android:backgroundTint="#7871D7"
+        android:text="GRP"
+        android:textColor="#FFF"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/groupJoin_textViewName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="그룹 이름"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/groupJoin_textViewAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:text="관리자 : 홍길동"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/groupJoin_textViewInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="그룹 상세 설명 영역입니다" />
+
+    <Button
+        android:id="@+id/groupJoin_buttonJoin"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="@color/colorAccent"
+        android:stateListAnimator="@null"
+        android:text="가입 신청"
+        android:textColor="@color/colorBasic" />
+
+</LinearLayout>

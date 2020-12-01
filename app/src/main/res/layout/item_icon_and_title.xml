@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relativeLayoutGroup"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <Button
         android:id="@+id/buttonIcon"
@@ -19,9 +21,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="13dp"
         android:layout_toEndOf="@id/buttonIcon"
         android:text="GROUP NAME"
-        android:textSize="14dp" />
+        android:textSize="13dp" />
 </RelativeLayout>
 
