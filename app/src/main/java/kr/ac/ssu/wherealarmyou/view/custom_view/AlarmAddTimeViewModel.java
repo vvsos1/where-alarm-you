@@ -16,10 +16,10 @@ public class AlarmAddTimeViewModel extends ViewModel
     public void selectAmPm(String value)
     {
         if (value.equals("AM")) {
-            timeData.setValue(new Time(0, 0));
+            timeData.setValue(new Time(0, null));
         }
         if (value.equals("PM")) {
-            timeData.setValue(new Time(12, 0));
+            timeData.setValue(new Time(12, null));
         }
         infoString.setValue(value);
     }
@@ -28,7 +28,7 @@ public class AlarmAddTimeViewModel extends ViewModel
     {
         Time time  = Objects.requireNonNull(timeData.getValue( ));
         int  hours = time.getHours( ) + hours_;
-        timeData.setValue(new Time(hours, 0));
+        timeData.setValue(new Time(hours, null));
         
         infoString.setValue(infoString.getValue( ) + "  " + hours_);
     }

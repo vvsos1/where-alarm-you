@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,10 +22,13 @@ import java.util.Objects;
 
 public class GroupAddFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
 {
-    // Content View
-    TextView makeGroup;
-    EditText findGroup;
     private Bundle bundle;
+    
+    private OverlappingView overlappingView;
+    
+    // Content View
+    private TextView makeGroup;
+    private EditText findGroup;
     
     public static GroupAddFragment getInstance( )
     {
@@ -42,7 +44,7 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener, 
         View contentView = inflater.inflate(R.layout.content_group_add, null);
         
         // Frame View Setting
-        OverlappingView overlappingView = frameView.findViewById(R.id.overlap_view);
+        overlappingView = frameView.findViewById(R.id.overlap_view);
         overlappingView.setAtOnce(bundle, frameView, contentView, "그룹 추가", false, true);
         
         // test group data
@@ -63,7 +65,7 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener, 
         makeGroup.setOnClickListener(this);
         groupContentViewAdapter.setOnGroupClickListener((itemView, group) ->
                 MainFrameActivity.addTopFragment(GroupJoinFragment.getInstance(group)));
-    
+        
         recyclerView.setAdapter(groupContentViewAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(recyclerViewDecoration);
@@ -75,7 +77,7 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View view)
     {
         if (view == makeGroup) {
-            Toast.makeText(getContext( ), "그룹 생성 페이지(미구현)", Toast.LENGTH_SHORT).show( );
+            MainFrameActivity.addTopFragment(GroupMakeFragment.getInstance( ));
         }
     }
     

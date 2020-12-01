@@ -219,7 +219,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     public void onStop( )
     {
         super.onStop( );
-        if (time != null) {
+        if (time.getMinutes( ) != null) {
             Toast.makeText(getContext( ), time.getHours( ) + "시 " + time.getMinutes( ) + "분",
                     Toast.LENGTH_SHORT).show( );
             registerAlarm(time);
@@ -229,11 +229,12 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     
     private void registerAlarm(Time time)
     {
+        AlarmService alarmService = AlarmService.getInstance(getContext( ));
+        
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         
         Date date = new Date(now.getDayOfMonth( ), now.getMonth( ).getValue( ), now.getYear( ));
         
-        AlarmService alarmService = AlarmService.getInstance(getContext( ));
         AlarmSaveRequest req = AlarmSaveRequest.builder(time)
                                                .dates(List.of(date))
                                                .build( );
