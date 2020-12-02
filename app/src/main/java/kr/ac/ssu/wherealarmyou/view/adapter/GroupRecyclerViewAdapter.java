@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.custom_view;
+package kr.ac.ssu.wherealarmyou.view.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -78,6 +78,7 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
             icon  = itemView.findViewById(R.id.item_icon_and_title_buttonIcon);
             name  = itemView.findViewById(R.id.item_icon_and_title_textViewTitle);
             
+            icon.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
         

@@ -23,7 +23,7 @@ import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
 import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
-import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddContentViewAdapter;
+import kr.ac.ssu.wherealarmyou.view.adapter.AlarmAddContentViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;

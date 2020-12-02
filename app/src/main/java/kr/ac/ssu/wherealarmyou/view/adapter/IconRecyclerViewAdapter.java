@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.custom_view;
+package kr.ac.ssu.wherealarmyou.view.adapter;
 
 import android.content.Context;
 import android.graphics.Color;

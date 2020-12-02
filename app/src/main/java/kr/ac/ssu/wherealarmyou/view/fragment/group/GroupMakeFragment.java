@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import kr.ac.ssu.wherealarmyou.group.dto.GroupCreateRequest;
-import kr.ac.ssu.wherealarmyou.view.custom_view.IconRecyclerViewAdapter;
+import kr.ac.ssu.wherealarmyou.view.adapter.IconRecyclerViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;

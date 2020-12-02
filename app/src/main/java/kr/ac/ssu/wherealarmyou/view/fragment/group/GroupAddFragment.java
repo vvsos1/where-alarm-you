@@ -13,7 +13,7 @@ import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
-import kr.ac.ssu.wherealarmyou.view.custom_view.GroupRecyclerViewAdapter;
+import kr.ac.ssu.wherealarmyou.view.adapter.GroupRecyclerViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.custom_view.RecyclerViewDecoration;
 import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;

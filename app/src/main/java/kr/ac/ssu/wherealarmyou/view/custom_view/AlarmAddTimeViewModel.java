@@ -17,11 +17,12 @@ public class AlarmAddTimeViewModel extends ViewModel
     {
         if (value.equals("AM")) {
             timeData.setValue(new Time(0, null));
+            infoString.setValue("오전");
         }
         if (value.equals("PM")) {
             timeData.setValue(new Time(12, null));
+            infoString.setValue("오후");
         }
-        infoString.setValue(value);
     }
     
     public void selectHours(int hours_)
@@ -33,13 +34,13 @@ public class AlarmAddTimeViewModel extends ViewModel
         infoString.setValue(infoString.getValue( ) + "  " + hours_);
     }
     
-    public void selectMinute(int minute_)
+    public void selectMinute(int minute)
     {
         Time time  = Objects.requireNonNull(timeData.getValue( ));
         int  hours = time.getHours( );
-        timeData.setValue(new Time(hours, minute_));
+        timeData.setValue(new Time(hours, minute));
         
-        infoString.setValue(infoString.getValue( ) + "  " + minute_);
+        infoString.setValue(infoString.getValue( ) + "  " + minute);
     }
     
     public void resetLiveData( )

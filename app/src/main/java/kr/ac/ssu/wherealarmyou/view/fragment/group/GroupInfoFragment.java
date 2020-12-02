@@ -1,35 +1,39 @@
 package kr.ac.ssu.wherealarmyou.view.fragment.group;
 
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
-import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 
 import java.util.Objects;
 
-public class GroupDetailFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
+public class GroupInfoFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
 {
-    private Bundle bundle;
-    
-    private OverlappingView overlappingView;
-    
     private final Group group;
     
-    public GroupDetailFragment(Group group)
+    private Bundle bundle;
+    
+    // Content View Item
+    private TextView textViewGroupExit;
+    
+    public GroupInfoFragment(Group group)
     {
         this.group = group;
     }
     
-    public static GroupDetailFragment getInstance(Group group)
+    public static GroupInfoFragment getInstance(Group group)
     {
-        return new GroupDetailFragment(group);
+        return new GroupInfoFragment(group);
     }
     
     @Override
@@ -41,12 +45,24 @@ public class GroupDetailFragment extends Fragment implements View.OnClickListene
         View contentView = inflater.inflate(R.layout.content_group_info, null);
         
         // Frame View Setting
-        overlappingView = frameView.findViewById(R.id.overlap_view);
+        OverlappingView overlappingView = frameView.findViewById(R.id.overlap_view);
         overlappingView.setAtOnce(bundle, frameView, contentView, "그룹 정보", false, true);
         
-        // test
-        TextView groupName = frameView.findViewById(R.id.groupInfo_textViewName);
-        groupName.setText(group.getName( ));
+        // Content View Setting
+        Button   buttonIcon           = contentView.findViewById(R.id.groupInfo_buttonIcon);
+        TextView textViewName         = contentView.findViewById(R.id.groupInfo_textViewName);
+        TextView textViewAdmin        = contentView.findViewById(R.id.groupInfo_textViewAdmin);
+        TextView textViewIntroduction = contentView.findViewById(R.id.groupInfo_textViewIntroduction);
+        textViewGroupExit = contentView.findViewById(R.id.groupInfo_textViewGroupExit);
+        
+        GradientDrawable drawable = (GradientDrawable)buttonIcon.getBackground( );
+        drawable.setColor(Color.parseColor(group.getIcon( ).getColorHex( )));
+        buttonIcon.setText(group.getIcon( ).getText( ));
+        textViewName.setText(group.getName( ));
+        textViewAdmin.setText("(미구현)");
+        textViewIntroduction.setText(group.getDescription( ));
+        
+        
         
         return frameView;
     }
