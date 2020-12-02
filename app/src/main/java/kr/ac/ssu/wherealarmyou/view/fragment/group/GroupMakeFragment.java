@@ -5,6 +5,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,13 +20,17 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import kr.ac.ssu.wherealarmyou.group.dto.GroupCreateRequest;
+import kr.ac.ssu.wherealarmyou.group.service.GroupService;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.adapter.IconRecyclerViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +50,8 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
     private Button   buttonIconColor;
     
     private String iconColor;
+    
+    private long lastClickTime = 0;
     
     public GroupMakeFragment( ) { }
     
@@ -128,18 +137,61 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
         return frameView;
     }
     
+    private void makeGroup(GroupCreateRequest groupCreateRequest)
+    {
+        GroupService groupService = GroupService.getInstance( );
+        UserService  userService  = UserService.getInstance( );
+        
+        /* 요청 실패 */
+        // 그룹 이름 미입력
+        if (TextUtils.isEmpty(groupCreateRequest.getGroupName( ))) {
+            Toast.makeText(getContext( ), "그룹 이름을 입력해주세요", Toast.LENGTH_SHORT).show( );
+            return;
+        }
+        // 아이콘 색 미선택
+        if (TextUtils.isEmpty(groupCreateRequest.getIconColorHex( ))) {
+            Toast.makeText(getContext( ), "아이콘 색을 선택해주세요", Toast.LENGTH_SHORT).show( );
+            return;
+        }
+        // 아이콘 문구 미입력
+        if (TextUtils.isEmpty(groupCreateRequest.getIconText( ))) {
+            Toast.makeText(getContext( ), "아이콘 문구를 설정해주세요", Toast.LENGTH_SHORT).show( );
+            return;
+        }
+        // 아이콘 최대 길이 조건 부합
+        if (groupCreateRequest.getIconText( ).length( ) > 6) {
+            Toast.makeText(getContext( ), "아이콘 문구는 6글자까지 가능합니다", Toast.LENGTH_SHORT).show( );
+            return;
+        }
+        
+        /* 요청 성공 */
+        // 그룹 생성 요청
+        groupService.createGroup(groupCreateRequest)
+                    .doOnError(throwable -> Log.d("GroupMakeFragment", "실패"))
+                    .publishOn(Schedulers.elastic( ))
+                    .subscribeOn(Schedulers.elastic( ))
+                    .subscribe( );
+        MainFrameActivity.hideTopFragment(this);
+        MainFrameActivity.showTopFragment(GroupFragment.getInstance( ));
+    }
+    
     @Override
     public void onClick(View view)
     {
         if (view == buttonComplete) {
-            String groupName = editTextGroupName.getText( ).toString( ).trim( );
-            String iconText  = editTextIconText.getText( ).toString( ).trim( );
-            String groupInfo = editTextGroupInfo.getText( ).toString( ).trim( );
+            // 중복 호출 방지
+            if (SystemClock.elapsedRealtime( ) - lastClickTime < 1000) {
+                return;
+            }
+            lastClickTime = SystemClock.elapsedRealtime( );
             
-            GroupCreateRequest request = new GroupCreateRequest(groupName, iconColor, iconText, groupInfo);
+            String groupName  = editTextGroupName.getText( ).toString( ).trim( );
+            String iconText   = editTextIconText.getText( ).toString( ).trim( );
+            String groupInfo  = editTextGroupInfo.getText( ).toString( ).trim( );
+            String groupAdmin = FirebaseAuth.getInstance( ).getUid( );
             
-            Toast.makeText(getContext( ), "컬러" + request.getIconColorHex( ), Toast.LENGTH_SHORT).show( );
-            MainFrameActivity.backTopFragment(this);
+            GroupCreateRequest request = new GroupCreateRequest(groupName, iconColor, iconText, groupInfo, groupAdmin);
+            makeGroup(request);
         }
     }
     

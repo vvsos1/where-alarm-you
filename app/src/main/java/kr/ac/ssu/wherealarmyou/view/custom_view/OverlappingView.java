@@ -2,11 +2,13 @@ package kr.ac.ssu.wherealarmyou.view.custom_view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.*;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
@@ -55,10 +57,10 @@ public class OverlappingView extends LinearLayout implements View.OnClickListene
         frameLayoutContent = findViewById(R.id.overlap_content);
         distinguishBar     = findViewById(R.id.overlap_bar);
         
-        AnimationDrawable animationDrawable = (AnimationDrawable)distinguishBar.getBackground( );
-        animationDrawable.setEnterFadeDuration(1000);
-        animationDrawable.setExitFadeDuration(1000);
-        animationDrawable.start( );
+        //AnimationDrawable animationDrawable = (AnimationDrawable)distinguishBar.getBackground( );
+        //animationDrawable.setEnterFadeDuration(500);
+        //animationDrawable.setExitFadeDuration(300);
+        //animationDrawable.start( );
     }
     
     private void getAttrs(AttributeSet attrs)
@@ -122,7 +124,12 @@ public class OverlappingView extends LinearLayout implements View.OnClickListene
     
     public void setContent(View view)
     {
-        this.frameLayoutContent.addView(view);
+        Animation animation = new AlphaAnimation(0, 1);
+        animation.setInterpolator(new DecelerateInterpolator( ));
+        animation.setDuration(800);
+        view.setAnimation(animation);
+        frameLayoutContent.addView(view);
+        animation.start( );
     }
     
     public void setAtOnce(Bundle bundle, View frameView, View contentView, String title,
@@ -133,7 +140,7 @@ public class OverlappingView extends LinearLayout implements View.OnClickListene
         this.setButtonBack(bundle.getBoolean("backButton"));
         this.setButtonHide(bundle.getBoolean("hideButton"));
         this.setContent(contentView);
-    
+        
         if (setBackHideButtonEvent) {
             frameView.findViewById(R.id.overlap_buttonBack).setOnClickListener(this);
             frameView.findViewById(R.id.overlap_buttonHide).setOnClickListener(this);

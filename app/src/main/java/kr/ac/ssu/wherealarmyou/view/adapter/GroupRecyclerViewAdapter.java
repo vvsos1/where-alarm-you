@@ -6,6 +6,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -67,16 +69,19 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
     
     public class GroupContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
-        RelativeLayout group;
+        RelativeLayout layout;
         Button         icon;
         TextView       name;
         
         public GroupContentViewHolder(View itemView)
         {
             super(itemView);
-            group = itemView.findViewById(R.id.item_icon_and_title_relativeLayoutParent);
-            icon  = itemView.findViewById(R.id.item_icon_and_title_buttonIcon);
-            name  = itemView.findViewById(R.id.item_icon_and_title_textViewTitle);
+            layout = itemView.findViewById(R.id.item_icon_and_title_relativeLayoutParent);
+            icon   = itemView.findViewById(R.id.item_icon_and_title_buttonIcon);
+            name   = itemView.findViewById(R.id.item_icon_and_title_textViewTitle);
+            
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_to_left);
+            layout.setAnimation(animation);
             
             icon.setOnClickListener(this);
             itemView.setOnClickListener(this);

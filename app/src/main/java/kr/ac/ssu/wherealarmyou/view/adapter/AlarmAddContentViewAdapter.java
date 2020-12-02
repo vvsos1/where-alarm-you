@@ -17,7 +17,8 @@ import java.util.List;
 
 public class AlarmAddContentViewAdapter extends RecyclerView.Adapter<AlarmAddContentViewAdapter.AlarmAddContentViewHolder>
 {
-    private Context                 context;
+    private Context context;
+    
     private List<AlarmAddFrameItem> frameItems;
     
     private OnItemClickListener onItemClickListener = null;
