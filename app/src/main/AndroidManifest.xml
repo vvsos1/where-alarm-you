@@ -16,15 +16,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver
-            android:name=".alarm.component.AlarmCalledReceiver"
+            android:name=".alarm.component.AlarmRegisterReceiver"
             android:enabled="true"
             android:exported="false"></receiver>
+        <receiver
+            android:name=".alarm.component.AlarmNotifyReceiver"
+            android:enabled="true"
+            android:exported="false" />
         <receiver
             android:name=".alarm.component.AlarmBootReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 

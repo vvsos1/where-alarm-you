@@ -24,7 +24,7 @@ import kr.ac.ssu.wherealarmyou.alarm.DatesAlarm;
 import kr.ac.ssu.wherealarmyou.alarm.DaysAlarm;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
 import kr.ac.ssu.wherealarmyou.alarm.component.AlarmBootReceiver;
-import kr.ac.ssu.wherealarmyou.alarm.component.AlarmCalledReceiver;
+import kr.ac.ssu.wherealarmyou.alarm.component.AlarmNotifyReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmModifyRequest;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
@@ -80,7 +80,7 @@ public class AlarmService {
                     if (zonedDateTime.isAfter(currentTime)) {
                         rtcTime = zonedDateTime
                                 .toInstant().toEpochMilli();
-                        Intent toAlarm = new Intent(context, AlarmCalledReceiver.class);
+                        Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
                         toAlarm.putExtra("Bundle", bundle);
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                                 (alarm.getUid() + date.toString()).hashCode(),
@@ -131,7 +131,7 @@ public class AlarmService {
                                         .atZone(ZoneId.of("Asia/Seoul"))
                                         .toInstant()
                                         .toEpochMilli();
-                                Intent toAlarm = new Intent(context, AlarmCalledReceiver.class);
+                                Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
                                 toAlarm.putExtra("Bundle", bundle);
                                 PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                                         (alarm.getUid() + dayOfWeek).hashCode(),
@@ -147,7 +147,7 @@ public class AlarmService {
                                         .atZone(ZoneId.of("Asia/Seoul"))
                                         .toInstant()
                                         .toEpochMilli();
-                                Intent toAlarm = new Intent(context, AlarmCalledReceiver.class);
+                                Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
                                 toAlarm.putExtra("Bundle", bundle);
                                 PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                                         (alarm.getUid() + dayOfWeek).hashCode(),
@@ -174,7 +174,7 @@ public class AlarmService {
 
                 Time time = alarm.getTime();
                 for (Date date : dates) {
-                    Intent toAlarm = new Intent(context, AlarmCalledReceiver.class);
+                    Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
                     toAlarm.putExtra("Alarm", alarm);
                     PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                             (alarm.getUid() + date.toString()).hashCode(),
@@ -185,7 +185,7 @@ public class AlarmService {
                 }
             } else if (alarm instanceof DaysAlarm) {
                 if (((DaysAlarm) alarm).getDaysOfWeek().containsKey("EVERY_DAY")) {
-                    Intent toAlarm = new Intent(context, AlarmCalledReceiver.class);
+                    Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
                     toAlarm.putExtra("Alarm", alarm);
                     PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                             (alarm.getUid()).hashCode(),
@@ -193,7 +193,7 @@ public class AlarmService {
                     alarmManager.cancel(toAlarmPendingIntent);
                 } else {
                     for (String dayOfWeek : ((DaysAlarm) alarm).getDaysOfWeek().keySet()) {
-                        Intent toAlarm = new Intent(context, AlarmCalledReceiver.class);
+                        Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                                 (alarm.getUid() + dayOfWeek).hashCode(),
                                 toAlarm, PendingIntent.FLAG_NO_CREATE);
