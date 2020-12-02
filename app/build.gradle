@@ -87,4 +87,7 @@ dependencies {
 
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
+
+    // Guava
+    implementation("com.google.guava:guava:28.2-android")
 }

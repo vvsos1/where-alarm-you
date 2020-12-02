@@ -44,7 +44,7 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
     {
         Group group = groups.get(position);
     
-        Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_to_left);
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.fade_in_fast);
         holder.layout.setAnimation(animation);
         
         GradientDrawable drawable = (GradientDrawable)holder.icon.getBackground( );

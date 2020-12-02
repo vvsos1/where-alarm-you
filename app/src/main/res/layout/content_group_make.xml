@@ -32,7 +32,9 @@
             android:background="@drawable/round_corners_edittext"
             android:hint="그룹 이름을 입력해주세요"
             android:padding="10dp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:maxLength="20"
+            android:maxLines="1"/>
     </LinearLayout>
 
     <LinearLayout
@@ -145,7 +147,9 @@
             android:background="@drawable/round_corners_edittext"
             android:hint="아이콘에 삽입할 문구를 입력해주세요"
             android:padding="10dp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:maxLength="6"
+            android:maxLines="1"/>
     </LinearLayout>
 
     <TextView
@@ -166,7 +170,8 @@
         android:background="@drawable/round_corners_edittext"
         android:hint="그룹 소개를 해주세요"
         android:padding="10dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:maxLines="3"/>
 
     <Button
         android:id="@+id/groupMake_buttonComplete"

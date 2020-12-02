@@ -96,6 +96,30 @@
             android:textSize="14sp" />
 
         <LinearLayout
+            android:id="@+id/groupInfo_linearLayoutWaiter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/groupInfo_textViewWaiter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="가입 요청"
+                android:textSize="18sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/groupInfo_recyclerViewWaiter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -106,7 +130,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/groupInfo_textVIewUnused2"
+                    android:id="@+id/groupInfo_textViewUnused2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="그룹 알람"
@@ -115,7 +139,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/groupInfo_textVIewUnused2"
+                    android:layout_alignBottom="@id/groupInfo_textViewUnused2"
                     android:layout_marginEnd="15dp"
                     android:layout_toStartOf="@id/groupInfo_buttonHideGroupAlarm"
                     android:text="+ 알람 추가"
@@ -125,7 +149,7 @@
                     android:id="@+id/groupInfo_buttonHideGroupAlarm"
                     android:layout_width="21dp"
                     android:layout_height="21dp"
-                    android:layout_alignBottom="@id/groupInfo_textVIewUnused2"
+                    android:layout_alignBottom="@id/groupInfo_textViewUnused2"
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/ic_hide"
                     android:stateListAnimator="@null" />
@@ -151,7 +175,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/groupInfo_textVIewUnused3"
+                    android:id="@+id/groupInfo_textViewUnused3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="그룹원"
@@ -160,7 +184,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/groupInfo_textVIewUnused3"
+                    android:layout_alignBottom="@id/groupInfo_textViewUnused3"
                     android:layout_marginEnd="15dp"
                     android:layout_toStartOf="@id/groupInfo_buttonHideMember"
                     android:text="그룹원 관리"
@@ -170,19 +194,52 @@
                     android:id="@+id/groupInfo_buttonHideMember"
                     android:layout_width="21dp"
                     android:layout_height="21dp"
-                    android:layout_alignBottom="@id/groupInfo_textVIewUnused3"
+                    android:layout_alignBottom="@id/groupInfo_textViewUnused3"
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/ic_hide"
                     android:stateListAnimator="@null" />
             </RelativeLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/groupInfo_recyclerViewMember"
+            <LinearLayout
+                android:id="@+id/groupInfo_linearLayoutMember"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:paddingStart="7dp"
-                android:paddingEnd="7dp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="14dp"
+                    android:paddingStart="10dp"
+                    android:text="관리자"
+                    android:textSize="16sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/groupInfo_recyclerViewAdmin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="7dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="5dp"
+                    android:paddingStart="10dp"
+                    android:text="그룹원"
+                    android:textSize="16sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/groupInfo_recyclerViewNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="7dp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

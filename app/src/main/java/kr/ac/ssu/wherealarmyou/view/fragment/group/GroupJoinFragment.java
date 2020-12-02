@@ -12,7 +12,10 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
+import kr.ac.ssu.wherealarmyou.group.service.GroupService;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Objects;
 
@@ -65,11 +68,24 @@ public class GroupJoinFragment extends Fragment implements View.OnClickListener
         return frameView;
     }
     
+    private void joinGroup(String groupUid)
+    {
+        GroupService groupService = GroupService.getInstance( );
+        
+        groupService.requestJoinGroup(groupUid)
+                    .doOnSuccess(unused -> Toast.makeText(getContext( ), "가입 요청 성공", Toast.LENGTH_SHORT).show( ))
+                    .publishOn(Schedulers.elastic( ))
+                    .subscribeOn(Schedulers.elastic( ))
+                    .subscribe( );
+        MainFrameActivity.hideTopFragment( );
+        MainFrameActivity.showTopFragment(GroupFragment.getInstance( ));
+    }
+    
     @Override
     public void onClick(View view)
     {
         if (view == buttonJoin) {
-            Toast.makeText(getContext( ), "그룹 가입 요청(미구현)", Toast.LENGTH_SHORT).show( );
+            joinGroup(group.getUid( ));
         }
     }
 }

@@ -28,8 +28,6 @@ import java.util.Objects;
 
 public class GroupAddFragment extends Fragment implements View.OnClickListener
 {
-    GroupRecyclerViewAdapter groupRecyclerViewAdapter;
-    
     List<Group> groups = new ArrayList<>( );
     
     // Content View
@@ -57,10 +55,10 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
         textViewMakeGroup = contentView.findViewById(R.id.groupAdd_textViewMakeGroup);
         editTextFindGroup = contentView.findViewById(R.id.groupAdd_editTextFindGroup);
         
-        RecyclerView        recyclerView        = frameView.findViewById(R.id.groupAdd_recyclerView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext( ));
-        groupRecyclerViewAdapter = new GroupRecyclerViewAdapter(getContext( ), groups);
-        RecyclerViewDecoration recyclerViewDecoration = new RecyclerViewDecoration(30);
+        RecyclerView             recyclerView             = frameView.findViewById(R.id.groupAdd_recyclerView);
+        GroupRecyclerViewAdapter groupRecyclerViewAdapter = new GroupRecyclerViewAdapter(getContext( ), groups);
+        LinearLayoutManager      linearLayoutManager      = new LinearLayoutManager(getContext( ));
+        RecyclerViewDecoration   recyclerViewDecoration   = new RecyclerViewDecoration(30);
         
         textViewMakeGroup.setOnClickListener(this);
         groupRecyclerViewAdapter.setOnGroupClickListener((itemView, group) -> {
@@ -71,9 +69,6 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
             systemService.hideSoftInputFromWindow(editTextFindGroup.getWindowToken( ), 0);
         });
         
-        recyclerView.setAdapter(groupRecyclerViewAdapter);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addItemDecoration(recyclerViewDecoration);
         editTextFindGroup.addTextChangedListener(new TextWatcher( )
         {
             @Override
@@ -82,25 +77,28 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-                findGroup(s);
+                findGroup(s, groupRecyclerViewAdapter);
             }
             
             @Override
             public void afterTextChanged(Editable s) { }
         });
         
+        recyclerView.setAdapter(groupRecyclerViewAdapter);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(recyclerViewDecoration);
         return frameView;
     }
     
-    private void findGroup(CharSequence sequence)
+    private void findGroup(CharSequence sequence, GroupRecyclerViewAdapter adapter)
     {
         groups.clear( );
-        groupRecyclerViewAdapter.notifyDataSetChanged( );
+        adapter.notifyDataSetChanged( );
         GroupService groupService = GroupService.getInstance( );
         groupService.findGroupsByName(sequence.toString( ))
                     .doOnNext(group -> {
-                        groups.add(0, group);
-                        groupRecyclerViewAdapter.notifyDataSetChanged( );
+                        groups.add(group);
+                        adapter.notifyDataSetChanged( );
                     })
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))

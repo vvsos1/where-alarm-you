@@ -3,14 +3,12 @@ package kr.ac.ssu.wherealarmyou.user.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
 import kr.ac.ssu.wherealarmyou.user.dto.DeleteRequest;
 import kr.ac.ssu.wherealarmyou.user.dto.LoginRequest;
 import kr.ac.ssu.wherealarmyou.user.dto.SignUpRequest;
 import kr.ac.ssu.wherealarmyou.user.dto.UpdateRequest;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -150,5 +148,16 @@ public class UserService
         return userRepository.findUserByUid(adminUid)
                              .doOnNext(user -> user.addGroup(groupUid))
                              .flatMap(userRepository::update);
+    }
+    
+    public Mono<String> getUserNameByUid(String userUid)
+    {
+        return userRepository.findUserByUid(userUid)
+                             .map(User::getName);
+    }
+    
+    public Mono<User> findUser(String userUid)
+    {
+        return userRepository.findUserByUid(userUid);
     }
 }
