@@ -43,6 +43,9 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
     public void onBindViewHolder(GroupContentViewHolder holder, int position)
     {
         Group group = groups.get(position);
+    
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_to_left);
+        holder.layout.setAnimation(animation);
         
         GradientDrawable drawable = (GradientDrawable)holder.icon.getBackground( );
         drawable.setColor(Color.parseColor(group.getIcon( ).getColorHex( )));
@@ -79,9 +82,6 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
             layout = itemView.findViewById(R.id.item_icon_and_title_relativeLayoutParent);
             icon   = itemView.findViewById(R.id.item_icon_and_title_buttonIcon);
             name   = itemView.findViewById(R.id.item_icon_and_title_textViewTitle);
-            
-            Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_to_left);
-            layout.setAnimation(animation);
             
             icon.setOnClickListener(this);
             itemView.setOnClickListener(this);

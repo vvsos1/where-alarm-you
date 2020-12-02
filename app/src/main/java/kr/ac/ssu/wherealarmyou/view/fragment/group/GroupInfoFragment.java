@@ -8,20 +8,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
+import kr.ac.ssu.wherealarmyou.group.service.GroupService;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Objects;
 
-public class GroupInfoFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
+public class GroupInfoFragment extends Fragment implements View.OnClickListener
 {
     private final Group group;
-    
-    private Bundle bundle;
     
     // Content View Item
     private TextView textViewGroupExit;
@@ -39,7 +40,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        bundle = Objects.requireNonNull(getArguments( ));
+        Bundle bundle = Objects.requireNonNull(getArguments( ));
         
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_group_info, null);
@@ -62,25 +63,35 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         textViewAdmin.setText("(미구현)");
         textViewIntroduction.setText(group.getDescription( ));
         
-        
+        textViewGroupExit.setOnClickListener(this);
         
         return frameView;
     }
     
-    @Override
-    public void onClick(View view) { }
-    
-    @Override
-    public void onBackPressed( )
+    private void groupExit( )
     {
-        if (bundle.getBoolean("backButton")) { MainFrameActivity.backTopFragment(this); }
-        else if (bundle.getBoolean("hideButton")) { MainFrameActivity.hideTopFragment(this); }
+        GroupService groupService = GroupService.getInstance( );
+        
+        groupService.requestLeaveGroup(group.getUid( ))
+                    .doOnSuccess(unused -> Toast.makeText(getContext( ), "탈퇴가 완료되었습니다", Toast.LENGTH_SHORT).show( ))
+                    .publishOn(Schedulers.elastic())
+                    .subscribeOn(Schedulers.elastic())
+                    .subscribe( );
+        MainFrameActivity.hideTopFragment( );
+        MainFrameActivity.showTopFragment(GroupFragment.getInstance( ));
     }
     
     @Override
-    public void onResume( )
+    public void onClick(View view)
     {
-        super.onResume( );
-        MainFrameActivity.setOnBackPressedListener(this);
+        if (view == textViewGroupExit) {
+            AlertDialog.Builder alertDialogDeleteUser = new AlertDialog.Builder(Objects.requireNonNull(getContext( )));
+            alertDialogDeleteUser.setMessage("그룹 탈퇴를 원하시나요?"+group.getUid())
+                                 .setCancelable(false)
+                                 .setPositiveButton("예", (dialogInterface, i) -> groupExit( ))
+                                 .setNegativeButton("아니요", (dialogInterface, i) ->
+                                         Toast.makeText(getContext( ), "탈퇴가 취소되었습니다", Toast.LENGTH_LONG).show( ))
+                                 .show( );
+        }
     }
 }

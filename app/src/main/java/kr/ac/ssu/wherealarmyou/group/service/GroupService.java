@@ -76,6 +76,10 @@ public class GroupService {
     public Mono<Group> findGroup(String groupUid) {
         return groupRepository.findGroupByUid(groupUid);
     }
+    
+    public Flux<Group> findGroupsByName(String groupName) {
+        return groupRepository.findGroupsByName(groupName);
+    }
 
     public Mono<Void> requestJoinGroup(String groupUid) {
         String currentUserUid = FirebaseAuth.getInstance().getCurrentUser().getUid();

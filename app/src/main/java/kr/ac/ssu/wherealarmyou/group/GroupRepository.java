@@ -76,11 +76,11 @@ public class GroupRepository
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 snapshot.getChildren().forEach(dataSnapshot -> {
                                     Group group = dataSnapshot.getValue(Group.class);
-                                     fluxSink.next(group);
+                                    fluxSink.next(group);
                                  });
                                  fluxSink.complete( );
                              }
-                    
+                        
                              @Override
                              public void onCancelled(@NonNull DatabaseError error)
                              {

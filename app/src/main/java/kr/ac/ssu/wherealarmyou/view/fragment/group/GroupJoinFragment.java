@@ -12,17 +12,13 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
-import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 
 import java.util.Objects;
 
-public class GroupJoinFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
+public class GroupJoinFragment extends Fragment implements View.OnClickListener
 {
     private final Group group;
-    
-    private Bundle bundle;
     
     private Button buttonJoin;
     
@@ -39,7 +35,7 @@ public class GroupJoinFragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        bundle = Objects.requireNonNull(getArguments( ));
+        Bundle bundle = Objects.requireNonNull(getArguments( ));
         
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_group_join, null);
@@ -75,19 +71,5 @@ public class GroupJoinFragment extends Fragment implements View.OnClickListener,
         if (view == buttonJoin) {
             Toast.makeText(getContext( ), "그룹 가입 요청(미구현)", Toast.LENGTH_SHORT).show( );
         }
-    }
-    
-    @Override
-    public void onBackPressed( )
-    {
-        if (bundle.getBoolean("backButton")) { MainFrameActivity.backTopFragment(this); }
-        else if (bundle.getBoolean("hideButton")) { MainFrameActivity.hideTopFragment(this); }
-    }
-    
-    @Override
-    public void onResume( )
-    {
-        super.onResume( );
-        MainFrameActivity.setOnBackPressedListener(this);
     }
 }

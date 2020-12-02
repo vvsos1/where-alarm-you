@@ -25,21 +25,18 @@ import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import kr.ac.ssu.wherealarmyou.group.dto.GroupCreateRequest;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
-import kr.ac.ssu.wherealarmyou.user.service.UserService;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.adapter.IconRecyclerViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class GroupMakeFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
+public class GroupMakeFragment extends Fragment implements View.OnClickListener
 {
-    private Bundle bundle;
-    
+    private LinearLayout linearLayoutParent;
     private LinearLayout linearLayoutName;
     private LinearLayout linearLayoutIcon;
     
@@ -64,7 +61,7 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        bundle = Objects.requireNonNull(getArguments( ));
+        Bundle bundle = Objects.requireNonNull(getArguments( ));
         
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_group_make, null);
@@ -92,16 +89,15 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
         icons.add(new Icon("#1fe3ff", null));
         icons.add(new Icon("#0fe3ff", null));
         
-        
         // Content View Setting
-        LinearLayout linearLayoutParent = contentView.findViewById(R.id.groupMake_linearLayoutParent);
-        linearLayoutName  = contentView.findViewById(R.id.groupMake_linearLayoutName);
-        linearLayoutIcon  = contentView.findViewById(R.id.groupMake_linearLayoutIcon);
-        editTextGroupName = contentView.findViewById(R.id.groupMake_editTextGroupName);
-        editTextIconText  = contentView.findViewById(R.id.groupMake_editTextIconText);
-        editTextGroupInfo = contentView.findViewById(R.id.groupMake_editTextGroupInfo);
-        buttonComplete    = contentView.findViewById(R.id.groupMake_buttonComplete);
-        buttonIconColor   = contentView.findViewById(R.id.groupMake_buttonIconColor);
+        linearLayoutParent = contentView.findViewById(R.id.groupMake_linearLayoutParent);
+        linearLayoutName   = contentView.findViewById(R.id.groupMake_linearLayoutName);
+        linearLayoutIcon   = contentView.findViewById(R.id.groupMake_linearLayoutIcon);
+        editTextGroupName  = contentView.findViewById(R.id.groupMake_editTextGroupName);
+        editTextIconText   = contentView.findViewById(R.id.groupMake_editTextIconText);
+        editTextGroupInfo  = contentView.findViewById(R.id.groupMake_editTextGroupInfo);
+        buttonComplete     = contentView.findViewById(R.id.groupMake_buttonComplete);
+        buttonIconColor    = contentView.findViewById(R.id.groupMake_buttonIconColor);
         
         RecyclerView            recyclerView            = frameView.findViewById(R.id.groupMake_recyclerViewColor);
         LinearLayoutManager     linearLayoutManager     = new LinearLayoutManager(getContext( ));
@@ -118,14 +114,7 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
         recyclerView.setLayoutManager(linearLayoutManager);
         
         buttonComplete.setOnClickListener(this);
-        linearLayoutParent.setOnClickListener(view -> {
-            linearLayoutName.setVisibility(View.VISIBLE);
-            linearLayoutIcon.setVisibility(View.VISIBLE);
-            InputMethodManager systemService =
-                    (InputMethodManager)Objects.requireNonNull(getActivity( ))
-                                               .getSystemService(Context.INPUT_METHOD_SERVICE);
-            systemService.hideSoftInputFromWindow(editTextGroupInfo.getWindowToken( ), 0);
-        });
+        linearLayoutParent.setOnClickListener(this);
         editTextGroupInfo.setOnTouchListener((v, event) -> {
             if (event.getAction( ) == MotionEvent.ACTION_UP) {
                 linearLayoutName.setVisibility(View.GONE);
@@ -140,7 +129,6 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
     private void makeGroup(GroupCreateRequest groupCreateRequest)
     {
         GroupService groupService = GroupService.getInstance( );
-        UserService  userService  = UserService.getInstance( );
         
         /* 요청 실패 */
         // 그룹 이름 미입력
@@ -171,7 +159,7 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))
                     .subscribe( );
-        MainFrameActivity.hideTopFragment(this);
+        MainFrameActivity.hideTopFragment( );
         MainFrameActivity.showTopFragment(GroupFragment.getInstance( ));
     }
     
@@ -193,20 +181,15 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener,
             GroupCreateRequest request = new GroupCreateRequest(groupName, iconColor, iconText, groupInfo, groupAdmin);
             makeGroup(request);
         }
-    }
-    
-    @Override
-    public void onBackPressed( )
-    {
-        if (bundle.getBoolean("backButton")) { MainFrameActivity.backTopFragment(this); }
-        else if (bundle.getBoolean("hideButton")) { MainFrameActivity.hideTopFragment(this); }
-    }
-    
-    @Override
-    public void onResume( )
-    {
-        super.onResume( );
-        MainFrameActivity.setOnBackPressedListener(this);
+        
+        if (view == linearLayoutParent) {
+            linearLayoutName.setVisibility(View.VISIBLE);
+            linearLayoutIcon.setVisibility(View.VISIBLE);
+            InputMethodManager systemService =
+                    (InputMethodManager)Objects.requireNonNull(getActivity( ))
+                                               .getSystemService(Context.INPUT_METHOD_SERVICE);
+            systemService.hideSoftInputFromWindow(editTextGroupInfo.getWindowToken( ), 0);
+        }
     }
     
     @Override
