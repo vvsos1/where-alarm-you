@@ -8,16 +8,11 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
-import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 
 import java.util.Objects;
 
-public class LocationFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
+public class LocationFragment extends Fragment implements View.OnClickListener
 {
-    private Bundle bundle;
-    
-    private OverlappingView overlappingView;
     
     public static LocationFragment getInstance( )
     {
@@ -27,40 +22,21 @@ public class LocationFragment extends Fragment implements View.OnClickListener, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        bundle = Objects.requireNonNull(getArguments( ));
+        Bundle bundle = Objects.requireNonNull(getArguments( ));
         
-        View frameView = inflater.inflate(R.layout.frame_overlap, container, false);
+        View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_location, null);
         
         // Frame View Setting
-        overlappingView = frameView.findViewById(R.id.overlap_view);
+        OverlappingView overlappingView = frameView.findViewById(R.id.overlap_view);
         overlappingView.setAtOnce(bundle, frameView, contentView, "장소", true, true);
         
         Button buttonAdd = frameView.findViewById(R.id.overlap_buttonAdd);
-        buttonAdd.setOnClickListener(this);
+        buttonAdd.setOnClickListener(view -> overlappingView.onAddClick(LocationAddFragment.getInstance( )));
         
         return frameView;
     }
     
     @Override
-    public void onClick(View view)
-    {
-        if (view.getId( ) == R.id.overlap_buttonAdd) {
-            overlappingView.onAddClick(LocationAddFragment.getInstance( ));
-        }
-    }
-    
-    @Override
-    public void onBackPressed( )
-    {
-        if (bundle.getBoolean("backButton")) { MainFrameActivity.backTopFragment(this); }
-        else if (bundle.getBoolean("hideButton")) { MainFrameActivity.hideTopFragment(this); }
-    }
-    
-    @Override
-    public void onResume( )
-    {
-        super.onResume( );
-        MainFrameActivity.setOnBackPressedListener(this);
-    }
+    public void onClick(View view) { }
 }

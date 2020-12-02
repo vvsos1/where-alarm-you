@@ -155,11 +155,11 @@ public class OverlappingView extends LinearLayout implements View.OnClickListene
                 break;
             case (R.id.overlap_buttonBack):
                 Toast.makeText(getContext( ), "MAIN BACK 버튼", Toast.LENGTH_SHORT).show( );
-                MainFrameActivity.backTopFragment(MainFrameActivity.fragmentManager.findFragmentById(R.id.frameTop));
+                MainFrameActivity.backTopFragment( );
                 break;
             case (R.id.overlap_buttonHide):
                 Toast.makeText(getContext( ), "MAIN HIDE 버튼", Toast.LENGTH_SHORT).show( );
-                MainFrameActivity.hideTopFragment(MainFrameActivity.fragmentManager.findFragmentById(R.id.frameTop));
+                MainFrameActivity.hideTopFragment( );
                 break;
         }
     }

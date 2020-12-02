@@ -27,8 +27,6 @@ import kr.ac.ssu.wherealarmyou.view.adapter.AlarmAddContentViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
-import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.ZoneId;
@@ -38,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AlarmAddFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
+public class AlarmAddFragment extends Fragment implements View.OnClickListener
 {
     private static final int TIME     = 0;
     private static final int WEEK     = 1;
@@ -48,8 +46,6 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     private static final int DETAIL   = 5;
     
     private Time time;
-    
-    private Bundle bundle;
     
     private RecyclerView.LayoutManager layoutManager;
     
@@ -64,8 +60,8 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         time = new Time( );
-        
-        bundle = Objects.requireNonNull(getArguments( ));
+    
+        Bundle bundle = Objects.requireNonNull(getArguments( ));
         
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_alarm_add, null);
@@ -202,20 +198,6 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     
     @Override
     public void onClick(View view) { }
-    
-    @Override
-    public void onBackPressed( )
-    {
-        if (bundle.getBoolean("backButton")) { MainFrameActivity.backTopFragment(this); }
-        else if (bundle.getBoolean("hideButton")) MainFrameActivity.hideTopFragment(this);
-    }
-    
-    @Override
-    public void onResume( )
-    {
-        super.onResume( );
-        MainFrameActivity.setOnBackPressedListener(this);
-    }
     
     @Override
     public void onStop( )
