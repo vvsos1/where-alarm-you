@@ -39,24 +39,25 @@ public class AlarmNotifyReceiver extends BroadcastReceiver {
                 .setContentIntent(notificationPendingIntent)
                 .setFullScreenIntent(notificationPendingIntent, true)
                 .addAction(R.drawable.ic_action_re_alarm, "다시 울림",
-                        PendingIntent.getBroadcast(context, "reAlarm".hashCode(),
-                                new Intent(context, AlarmRegisterReceiver.class).putExtra("Bundle", bundle)
+                        PendingIntent.getBroadcast(context, "re_alarm".hashCode(),
+                                new Intent(context, AlarmRegisterReceiver.class)
+                                        .putExtra("Bundle", bundle)
+                                        .putExtra("Action", "re_alarm")
                                 , PendingIntent.FLAG_UPDATE_CURRENT)
                 )
-                .addAction(R.drawable.ic_action_cancel_alarm, "알람 해제",
-                        PendingIntent.getBroadcast(context, "reAlarm".hashCode(),
-                                new Intent(context, AlarmRegisterReceiver.class).putExtra("Bundle", bundle)
+                .addAction(R.drawable.ic_action_cancel_alarm, "그만 울림",
+                        PendingIntent.getBroadcast(context, "cancel".hashCode(),
+                                new Intent(context, AlarmRegisterReceiver.class)
+                                        .putExtra("Bundle", bundle)
+                                        .putExtra("Action", "cancel")
                                 , PendingIntent.FLAG_UPDATE_CURRENT)
                 );
 
         NotificationChannel notificationChannel = new NotificationChannel(
                 notification_channel_id, notification_channel_name, NotificationManager.IMPORTANCE_HIGH);
-        notificationChannel.enableVibration(true);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(notificationChannel);
         notificationManager.notify(notificationCode, notificationBuilder.build());
-
-
     }
 }
