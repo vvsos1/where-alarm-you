@@ -1,6 +1,5 @@
-package kr.ac.ssu.wherealarmyou.view.fragment;
+package kr.ac.ssu.wherealarmyou.view.fragment.alarm;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -20,6 +18,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.alarm.Date;
+import kr.ac.ssu.wherealarmyou.alarm.Time;
+import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
+import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
+import kr.ac.ssu.wherealarmyou.view.adapter.AlarmAddContentViewAdapter;
+import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
+import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
+import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -28,52 +36,34 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.alarm.Date;
-import kr.ac.ssu.wherealarmyou.alarm.Time;
-import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
-import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
-import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddContentViewAdapter;
-import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
-import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddTimeViewModel;
-import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import reactor.core.scheduler.Schedulers;
-
-public class AlarmAddFragment extends Fragment implements View.OnClickListener, OnBackPressedListener
+public class AlarmAddFragment extends Fragment implements View.OnClickListener
 {
     private static final int TIME     = 0;
     private static final int WEEK     = 1;
     private static final int LOCATION = 2;
     private static final int GROUP    = 3;
-    private static final int MEMO = 4;
-    private static final int DETAIL = 5;
-
+    private static final int MEMO     = 4;
+    private static final int DETAIL   = 5;
+    
     private Time time;
-
-    private Bundle bundle;
-
+    
     private RecyclerView.LayoutManager layoutManager;
-
-    private FragmentManager fragmentManager;
-
-    private AlarmService alarmService;
-
-    public AlarmAddFragment(Context context) {
-        alarmService = AlarmService.getInstance(context);
+    
+    public AlarmAddFragment( ) { }
+    
+    public static AlarmAddFragment getInstance( )
+    {
+        return new AlarmAddFragment( );
     }
-
-    public static AlarmAddFragment getInstance(Context context) {
-        return new AlarmAddFragment(context);
-    }
-
+    
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        time = new Time();
-
-        bundle = Objects.requireNonNull(getArguments());
-        fragmentManager = Objects.requireNonNull(getActivity( )).getSupportFragmentManager( );
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        time = new Time( );
+    
+        Bundle bundle = Objects.requireNonNull(getArguments( ));
         
-        View frameView   = inflater.inflate(R.layout.frame_overlap_content, container, false);
+        View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_alarm_add, null);
         
         // Frame View Setting
@@ -90,7 +80,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
         items.add(new AlarmAddFrameItem(R.drawable.ic_add_box, "세부 설정", ""));
         
         // Content View Setting
-        RecyclerView               recyclerView               = frameView.findViewById(R.id.recyclerView);
+        RecyclerView               recyclerView               = frameView.findViewById(R.id.alarmAdd_recyclerView);
         AlarmAddContentViewAdapter alarmAddContentViewAdapter = new AlarmAddContentViewAdapter(getContext( ), items);
         LinearLayoutManager        linearLayoutManager        = new LinearLayoutManager(getContext( ));
         DividerItemDecoration decoration = new DividerItemDecoration(Objects.requireNonNull(getContext( )),
@@ -115,6 +105,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     
     private void startCategoryFragment(int category)
     {
+        FragmentManager     fragmentManager     = Objects.requireNonNull(getActivity( )).getSupportFragmentManager( );
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
         
         Fragment fragment = null;
@@ -127,7 +118,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
         
         if (fragment != null) {
             fragmentTransaction//.setCustomAnimations(R.anim.fade_in, R.anim.test_anim, R.anim.fade_in, R.anim.test_anim)
-                               .replace(R.id.contentAlarmAddFrameItem, fragment)
+                               .replace(R.id.item_alarmAddCategory_frameLayoutContent, fragment)
                                .addToBackStack(null)
                                .commit( );
         }
@@ -158,7 +149,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
     private void setInfo(String string, int position)
     {
         TextView infoText = Objects.requireNonNull(layoutManager.findViewByPosition(position))
-                                   .findViewById(R.id.infoAlarmAddFrameItem);
+                                   .findViewById(R.id.item_alarmAddCategory_textViewInfo);
         infoText.setText(string);
     }
     
@@ -167,14 +158,14 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
         View oldView = Objects.requireNonNull(layoutManager.findViewByPosition(position_oldView));
         View newView = Objects.requireNonNull(layoutManager.findViewByPosition(position_newView));
         
-        RelativeLayout oldHead      = oldView.findViewById(R.id.headAlarmAddFrameItem);
-        RelativeLayout newHead      = newView.findViewById(R.id.headAlarmAddFrameItem);
-        ImageView      oldPictogram = oldView.findViewById(R.id.pictogramAlarmAddFrameItem);
-        ImageView      newPictogram = newView.findViewById(R.id.pictogramAlarmAddFrameItem);
-        TextView       oldNameView  = oldView.findViewById(R.id.nameAlarmAddFrameItem);
-        TextView       newNameView  = newView.findViewById(R.id.nameAlarmAddFrameItem);
-        TextView       oldInfoView  = oldView.findViewById(R.id.infoAlarmAddFrameItem);
-        TextView       newInfoView  = newView.findViewById(R.id.infoAlarmAddFrameItem);
+        RelativeLayout oldHead      = oldView.findViewById(R.id.item_alarmAddCategory_relativeLayoutHead);
+        RelativeLayout newHead      = newView.findViewById(R.id.item_alarmAddCategory_relativeLayoutHead);
+        ImageView      oldPictogram = oldView.findViewById(R.id.item_alarmAddCategory_imageViewPictogram);
+        ImageView      newPictogram = newView.findViewById(R.id.item_alarmAddCategory_imageViewPictogram);
+        TextView       oldNameView  = oldView.findViewById(R.id.item_alarmAddCategory_textViewName);
+        TextView       newNameView  = newView.findViewById(R.id.item_alarmAddCategory_textViewName);
+        TextView       oldInfoView  = oldView.findViewById(R.id.item_alarmAddCategory_textViewInfo);
+        TextView       newInfoView  = newView.findViewById(R.id.item_alarmAddCategory_textViewInfo);
         
         int oldPadding = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_oldHeadPadding);
         int newPadding = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_newHeadPadding);
@@ -201,60 +192,44 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener, 
         oldInfoView.setTextSize(TypedValue.COMPLEX_UNIT_PX, oldInfoSize);
         newInfoView.setTextSize(TypedValue.COMPLEX_UNIT_PX, newInfoSize);
         
-        oldView.findViewById(R.id.contentAlarmAddFrameItem).setVisibility(View.GONE);
-        newView.findViewById(R.id.contentAlarmAddFrameItem).setVisibility(View.VISIBLE);
+        oldView.findViewById(R.id.item_alarmAddCategory_frameLayoutContent).setVisibility(View.GONE);
+        newView.findViewById(R.id.item_alarmAddCategory_frameLayoutContent).setVisibility(View.VISIBLE);
     }
     
     @Override
     public void onClick(View view) { }
     
     @Override
-    public void onBackPressed( )
+    public void onStop( )
     {
-        if (bundle.getBoolean("backButton")) { MainFrameActivity.backTopFragment(this); }
-        else if (bundle.getBoolean("hideButton")) MainFrameActivity.hideTopFragment(this);
-    }
-    
-    @Override
-    public void onResume( )
-    {
-        super.onResume( );
-        MainFrameActivity.setOnBackPressedListener(this);
-    }
-    
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (time != null) {
-            Toast.makeText(getContext(), time.getHours() + "시 " + time.getMinutes() + "분",
-                    Toast.LENGTH_SHORT).show();
+        super.onStop( );
+        if (time.getMinutes( ) != null) {
+            Toast.makeText(getContext( ), time.getHours( ) + "시 " + time.getMinutes( ) + "분",
+                    Toast.LENGTH_SHORT).show( );
             registerAlarm(time);
         }
-
+        
     }
-
-    private void registerAlarm(Time time) {
+    
+    private void registerAlarm(Time time)
+    {
+        AlarmService alarmService = AlarmService.getInstance(getContext( ));
+        
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-
-        Date date = new Date(
-                now.getDayOfMonth()
-                , now.getMonth().getValue()
-                , now.getYear());
-
+        
+        Date date = new Date(now.getDayOfMonth( ), now.getMonth( ).getValue( ), now.getYear( ));
+        
         AlarmSaveRequest req = AlarmSaveRequest.builder(time)
-                .dates(List.of(date))
-                .build();
-
-        Log.d("AlarmAddFragment", req.toString());
-
-        alarmService
-                .save(req)
-                .doOnError(throwable -> Log.e("AlarmAddFragment", throwable.getMessage()))
-                .flatMap(alarmService::register)
-                .publishOn(Schedulers.elastic())
-                .subscribeOn(Schedulers.elastic())
-                .subscribe();
-
-
+                                               .dates(List.of(date))
+                                               .build( );
+        
+        Log.d("AlarmAddFragment", req.toString( ));
+        
+        alarmService.save(req)
+                    .doOnError(throwable -> Log.e("AlarmAddFragment", throwable.getMessage( )))
+                    .flatMap(alarmService::register)
+                    .publishOn(Schedulers.elastic( ))
+                    .subscribeOn(Schedulers.elastic( ))
+                    .subscribe( );
     }
 }

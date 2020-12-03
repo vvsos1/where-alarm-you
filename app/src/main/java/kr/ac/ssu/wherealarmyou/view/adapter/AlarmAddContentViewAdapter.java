@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.custom_view;
+package kr.ac.ssu.wherealarmyou.view.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,12 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 
 import java.util.List;
 
 public class AlarmAddContentViewAdapter extends RecyclerView.Adapter<AlarmAddContentViewAdapter.AlarmAddContentViewHolder>
 {
-    private Context                 context;
+    private Context context;
+    
     private List<AlarmAddFrameItem> frameItems;
     
     private OnItemClickListener onItemClickListener = null;
@@ -74,11 +76,11 @@ public class AlarmAddContentViewAdapter extends RecyclerView.Adapter<AlarmAddCon
         public AlarmAddContentViewHolder(View itemView)
         {
             super(itemView);
-            pictogram    = itemView.findViewById(R.id.pictogramAlarmAddFrameItem);
-            categoryName = itemView.findViewById(R.id.nameAlarmAddFrameItem);
-            categoryInfo = itemView.findViewById(R.id.infoAlarmAddFrameItem);
-            contentHead  = itemView.findViewById(R.id.headAlarmAddFrameItem);
-            contentFrame = itemView.findViewById(R.id.contentAlarmAddFrameItem);
+            pictogram    = itemView.findViewById(R.id.item_alarmAddCategory_imageViewPictogram);
+            categoryName = itemView.findViewById(R.id.item_alarmAddCategory_textViewName);
+            categoryInfo = itemView.findViewById(R.id.item_alarmAddCategory_textViewInfo);
+            contentHead  = itemView.findViewById(R.id.item_alarmAddCategory_relativeLayoutHead);
+            contentFrame = itemView.findViewById(R.id.item_alarmAddCategory_frameLayoutContent);
         }
     }
 }

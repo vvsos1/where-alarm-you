@@ -1,20 +1,23 @@
-package kr.ac.ssu.wherealarmyou.view.fragment;
+package kr.ac.ssu.wherealarmyou.view;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.view.fragment.BottomFragment;
 
-public class MainFrameActivity extends AppCompatActivity implements View.OnClickListener
+public class MainFrameActivity extends AppCompatActivity
 {
     public static FragmentManager fragmentManager;
     
@@ -27,22 +30,18 @@ public class MainFrameActivity extends AppCompatActivity implements View.OnClick
     @SuppressLint("StaticFieldLeak")
     public static LinearLayout blind;
     
-    public static OnBackPressedListener onBackPressedListener;
-    
     /* 시작 */
     // Top FrameLayout을 띄우고 Fragment를 나타내기
     public static void showTopFragment(Fragment fragment)
     {
-        blind.setVisibility(View.VISIBLE);
-        
         Bundle bundle = new Bundle(2);
         bundle.putBoolean("backButton", false);
         bundle.putBoolean("hideButton", true);
         fragment.setArguments(bundle);
         
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction//.setCustomAnimations(R.anim.anim_in, R.anim.test_anim, R.anim.anim_in, R.anim.test_anim)
-                           .replace(R.id.frameTop, fragment)
+        fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+                           .add(R.id.frameTop, fragment)
                            .addToBackStack(null)
                            .commit( );
     }
@@ -57,40 +56,24 @@ public class MainFrameActivity extends AppCompatActivity implements View.OnClick
         fragment.setArguments(bundle);
         
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction//.setCustomAnimations(R.anim.fade_in, R.anim.test_anim, R.anim.fade_in, R.anim.test_anim)
-                           .replace(R.id.frameTop, fragment)
+        fragmentTransaction.setCustomAnimations(0, R.anim.fade_out, 0, R.anim.fade_out)
+                           .add(R.id.frameTop, fragment)
                            .addToBackStack(null)
                            .commit( );
-        
     }
     
     /* 뒤로 가기 */
     // 이전 Fragment로 돌아가기
-    public static void backTopFragment(Fragment fragment)
+    public static void backTopFragment( )
     {
-        onBackPressedListener = null;
-        
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.remove(fragment).commit( );
         fragmentManager.popBackStack( );
     }
     
     /* 종료 */
     // Top FrameLayout을 없애고 모든 Fragment 종료하기
-    public static void hideTopFragment(Fragment fragment)
+    public static void hideTopFragment( )
     {
-        blind.setVisibility(View.GONE);
-        onBackPressedListener = null;
-        
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.remove(fragment).commit( );
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-    }
-    
-    // Fragment에서 설정한 BackPressedListener가 존재하면 프래그먼트에서 이벤트 처리
-    public static void setOnBackPressedListener(OnBackPressedListener listener)
-    {
-        onBackPressedListener = listener;
     }
     
     public void onCreate(Bundle savedInstanceState)
@@ -108,26 +91,31 @@ public class MainFrameActivity extends AppCompatActivity implements View.OnClick
         blind       = findViewById(R.id.blind);
         
         // Set On Event Listener
-        frameTop.setOnClickListener(this);
-        blind.setOnClickListener(this);
+        frameTop.setOnClickListener(null);
+        blind.setOnClickListener(v -> hideTopFragment());
         
         // Bottom FrameLayout에 Main Fragment 실행
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.add(R.id.frameBottom, MainFragment.getInstance()).commit();
-    }
-    
-    @Override
-    public void onClick(View view)
-    {
-        if (view == blind) {
-            hideTopFragment(fragmentManager.findFragmentById(R.id.frameTop));
-        }
-    }
-    
-    @Override
-    public void onBackPressed( )
-    {
-        if (onBackPressedListener != null) { onBackPressedListener.onBackPressed( ); }
-        else { super.onBackPressed( ); }
+        fragmentTransaction.add(R.id.frameBottom, BottomFragment.getInstance( )).commit( );
+        
+        // Blind Visibility Controller
+        fragmentManager.addOnBackStackChangedListener(( ) -> {
+            if (fragmentManager.getBackStackEntryCount( ) == 0) {
+                Animation animation = new AlphaAnimation(1, 0);
+                animation.setInterpolator(new DecelerateInterpolator( ));
+                animation.setDuration(500);
+                blind.setAnimation(animation);
+                blind.setVisibility(View.GONE);
+            }
+            else {
+                if (blind.getVisibility() != View.VISIBLE) {
+                    Animation animation = new AlphaAnimation(0, 1);
+                    animation.setInterpolator(new DecelerateInterpolator( ));
+                    animation.setDuration(500);
+                    blind.setAnimation(animation);
+                }
+                blind.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }

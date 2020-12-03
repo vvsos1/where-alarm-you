@@ -1,11 +1,273 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp">
 
-    <TextView
-        android:id="@+id/textViewGroupName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"/>
-</LinearLayout>
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/groupInfo_linearLayoutAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:paddingEnd="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/groupInfo_textViewGroupDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="그룹 삭제"
+                android:textColor="@color/colorWarning"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/groupInfo_textViewGroupSetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="그룹 설정"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="15dp"
+            android:paddingBottom="10dp">
+
+            <Button
+                android:id="@+id/groupInfo_buttonIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/icon_round_corners"
+                android:stateListAnimator="@null"
+                android:text="GRP"
+                android:textColor="#FFF"
+                android:textSize="14sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:paddingEnd="10dp">
+
+                <TextView
+                    android:id="@+id/groupInfo_textViewUnused1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="그룹 이름"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/groupInfo_textViewName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/groupInfo_textViewUnused1"
+                    android:text="그룹 이름 영역입니다"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/groupInfo_textViewGroupExit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="그룹 탈퇴"
+                    android:textColor="@color/colorWarning"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/groupInfo_textViewName"
+                    android:layout_toStartOf="@id/groupInfo_textViewAdmin"
+                    android:text="관리자 : "
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/groupInfo_textViewAdmin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/groupInfo_textViewName"
+                    android:layout_alignParentEnd="true"
+                    android:text="홍길동"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="소개글"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/groupInfo_textViewIntroduction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="소개글 작성 영역입니다"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:id="@+id/groupInfo_linearLayoutWaiter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/groupInfo_textViewWaiter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="가입 요청"
+                android:textSize="18sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/groupInfo_recyclerViewWaiter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/groupInfo_textViewUnused2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="그룹 알람"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/groupInfo_textViewUnused2"
+                    android:layout_marginEnd="15dp"
+                    android:layout_toStartOf="@id/groupInfo_buttonHideGroupAlarm"
+                    android:text="+ 알람 추가"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/groupInfo_buttonHideGroupAlarm"
+                    android:layout_width="21dp"
+                    android:layout_height="21dp"
+                    android:layout_alignBottom="@id/groupInfo_textViewUnused2"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/ic_hide"
+                    android:stateListAnimator="@null" />
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/groupInfo_recyclerViewAlarm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/groupInfo_textViewUnused3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="그룹원"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/groupInfo_textViewManageMember"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/groupInfo_textViewUnused3"
+                    android:layout_marginEnd="15dp"
+                    android:layout_toStartOf="@id/groupInfo_buttonHideMember"
+                    android:text="그룹원 관리"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/groupInfo_buttonHideMember"
+                    android:layout_width="21dp"
+                    android:layout_height="21dp"
+                    android:layout_alignBottom="@id/groupInfo_textViewUnused3"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/ic_hide"
+                    android:stateListAnimator="@null" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/groupInfo_linearLayoutMember"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="14dp"
+                    android:paddingStart="10dp"
+                    android:text="관리자"
+                    android:textSize="16sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/groupInfo_recyclerViewAdmin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="7dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="5dp"
+                    android:paddingStart="10dp"
+                    android:text="그룹원"
+                    android:textSize="16sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/groupInfo_recyclerViewNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="7dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/relativeLayoutGroup"
+    android:id="@+id/item_icon_and_title_relativeLayoutParent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
 
     <Button
-        android:id="@+id/buttonIcon"
+        android:id="@+id/item_icon_and_title_buttonIcon"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/icon_round_corners"
-        android:backgroundTint="#7871D7"
+        android:stateListAnimator="@null"
         android:text="GRP"
         android:textColor="#FFF"
         android:textSize="11sp" />
 
     <TextView
-        android:id="@+id/textViewName"
+        android:id="@+id/item_icon_and_title_textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="13dp"
-        android:layout_toEndOf="@id/buttonIcon"
+        android:layout_toEndOf="@id/item_icon_and_title_buttonIcon"
         android:text="GROUP NAME"
         android:textSize="13dp" />
 </RelativeLayout>

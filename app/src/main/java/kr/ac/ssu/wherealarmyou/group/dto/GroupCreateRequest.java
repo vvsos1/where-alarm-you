@@ -23,6 +23,5 @@ public class GroupCreateRequest {
                 .description(description)
                 .adminUid(adminUid)
                 .build();
-
     }
 }

@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.dto.LoginRequest;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
-import kr.ac.ssu.wherealarmyou.view.fragment.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener
 {

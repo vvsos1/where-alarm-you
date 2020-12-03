@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.custom_view;
+package kr.ac.ssu.wherealarmyou.view.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -16,30 +16,31 @@ public class AlarmAddTimeViewModel extends ViewModel
     public void selectAmPm(String value)
     {
         if (value.equals("AM")) {
-            timeData.setValue(new Time(0, 0));
+            timeData.setValue(new Time(0, null));
+            infoString.setValue("오전");
         }
         if (value.equals("PM")) {
-            timeData.setValue(new Time(12, 0));
+            timeData.setValue(new Time(12, null));
+            infoString.setValue("오후");
         }
-        infoString.setValue(value);
     }
     
     public void selectHours(int hours_)
     {
         Time time  = Objects.requireNonNull(timeData.getValue( ));
         int  hours = time.getHours( ) + hours_;
-        timeData.setValue(new Time(hours, 0));
+        timeData.setValue(new Time(hours, null));
         
         infoString.setValue(infoString.getValue( ) + "  " + hours_);
     }
     
-    public void selectMinute(int minute_)
+    public void selectMinute(int minute)
     {
         Time time  = Objects.requireNonNull(timeData.getValue( ));
         int  hours = time.getHours( );
-        timeData.setValue(new Time(hours, minute_));
+        timeData.setValue(new Time(hours, minute));
         
-        infoString.setValue(infoString.getValue( ) + "  " + minute_);
+        infoString.setValue(infoString.getValue( ) + "  " + minute);
     }
     
     public void resetLiveData( )

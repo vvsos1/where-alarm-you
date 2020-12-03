@@ -4,14 +4,14 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/layoutSetAMPM"
+        android:id="@+id/alarmAddTime_linearLayoutSetAMPM"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/buttonAM"
+            android:id="@+id/alarmAddTime_buttonAM"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="오전" />
@@ -23,35 +23,35 @@
             android:layout_margin="50dp"/>
 
         <Button
-            android:id="@+id/buttonPM"
+            android:id="@+id/alarmAddTime_buttonPM"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="오후" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/layoutSetHours"
+        android:id="@+id/alarmAddTime_linearLayoutSetHours"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone">
 
         <EditText
-            android:id="@+id/editTextHours"
+            android:id="@+id/alarmAddTime_editTextHours"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/layoutSetMinutes"
+        android:id="@+id/alarmAddTime_linearLayoutSetMinutes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone">
 
         <EditText
-            android:id="@+id/editTextMinutes"
+            android:id="@+id/alarmAddTime_editTextMinutes"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:inputType="number"/>

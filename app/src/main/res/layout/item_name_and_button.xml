@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_icon_and_title_relativeLayoutParent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="5dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="5dp"
+    tools:ignore="RtlSymmetry">
+
+    <TextView
+        android:id="@+id/item_name_and_button_textViewName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="@bool/is_right_to_left"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:layout_toLeftOf="@id/item_name_and_button_buttonCheck"
+        android:text=""
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/item_name_and_button_buttonCheck"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="7dp"
+        android:layout_toLeftOf="@id/item_name_and_button_buttonCancel"
+        android:background="@drawable/ic_check"
+        android:stateListAnimator="@null"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/item_name_and_button_buttonCancel"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/item_name_and_button_unused"
+        android:background="@drawable/ic_cancel"
+        android:stateListAnimator="@null"
+        android:visibility="invisible" />
+
+    <View
+        android:id="@+id/item_name_and_button_unused"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
+

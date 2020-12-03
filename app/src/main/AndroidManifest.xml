@@ -50,7 +50,7 @@
         <activity android:name=".view.login.ProfileActivity" />
         <activity android:name=".view.login.SetUserInfoActivity" />
         <activity
-            android:name=".view.fragment.MainFrameActivity"
+            android:name=".view.MainFrameActivity"
             android:screenOrientation="portrait" /> <!-- Naver Mobile Dynamic Map SDK를 위한 설정 -->
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"

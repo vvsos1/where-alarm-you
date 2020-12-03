@@ -3,10 +3,6 @@ package kr.ac.ssu.wherealarmyou.user.service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-
-import java.time.Duration;
-import java.util.Objects;
-
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
 import kr.ac.ssu.wherealarmyou.user.dto.DeleteRequest;
@@ -14,6 +10,9 @@ import kr.ac.ssu.wherealarmyou.user.dto.LoginRequest;
 import kr.ac.ssu.wherealarmyou.user.dto.SignUpRequest;
 import kr.ac.ssu.wherealarmyou.user.dto.UpdateRequest;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
+import java.util.Objects;
 
 public class UserService
 {
@@ -133,20 +132,32 @@ public class UserService
         String name = request.getName( );
         
         UserProfileChangeRequest userProfileChangeRequest =
-                new UserProfileChangeRequest.Builder().setDisplayName(name).build();
-
+                new UserProfileChangeRequest.Builder( ).setDisplayName(name).build( );
+        
         return Mono.<FirebaseUser>create(userMonoSink ->
-                Objects.requireNonNull(firebaseAuth.getCurrentUser()).updateProfile(userProfileChangeRequest)
-                        .addOnSuccessListener(unused -> userMonoSink.success(firebaseAuth.getCurrentUser()))
-                        .addOnFailureListener(userMonoSink::error))
+                Objects.requireNonNull(firebaseAuth.getCurrentUser( )).updateProfile(userProfileChangeRequest)
+                       .addOnSuccessListener(unused -> userMonoSink.success(firebaseAuth.getCurrentUser( )))
+                       .addOnFailureListener(userMonoSink::error))
                 .map(FirebaseUser::getUid)
                 .map(request::toUser)
                 .flatMap(userRepository::save);    // TODO | update는 리턴타입이 Mono<Void>여서 save로 임시 작성
     }
-
-    public Mono<Void> addGroup(String adminUid, String groupUid) {
+    
+    public Mono<Void> addGroup(String adminUid, String groupUid)
+    {
         return userRepository.findUserByUid(adminUid)
-                .doOnNext(user -> user.addGroup(groupUid))
-                .flatMap(userRepository::update);
+                             .doOnNext(user -> user.addGroup(groupUid))
+                             .flatMap(userRepository::update);
+    }
+    
+    public Mono<String> getUserNameByUid(String userUid)
+    {
+        return userRepository.findUserByUid(userUid)
+                             .map(User::getName);
+    }
+    
+    public Mono<User> findUser(String userUid)
+    {
+        return userRepository.findUserByUid(userUid);
     }
 }
