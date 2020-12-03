@@ -103,7 +103,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
         recyclerViewNormal.setLayoutManager(linearLayoutManagerN);
         recyclerViewNormal.addItemDecoration(recyclerViewDecoration);
         
-        // Content View Setting - ADMIN ROLE SETTING
+        // Content View Setting - ADMIN SETTING
         if (Objects.equals(group.getMembers( ).get(FirebaseAuth.getInstance( ).getUid( )), "ADMIN")) {
             LinearLayout linearLayoutAdmin    = contentView.findViewById(R.id.groupInfo_linearLayoutAdmin);
             TextView     textViewGroupDelete  = contentView.findViewById(R.id.groupInfo_textViewGroupDelete);
@@ -111,6 +111,11 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
             TextView     textViewManageMember = contentView.findViewById(R.id.groupInfo_textViewManageMember);
             linearLayoutAdmin.setVisibility(View.VISIBLE);
             textViewManageMember.setVisibility(View.VISIBLE);
+            
+            textViewGroupDelete.setOnClickListener(this);
+            textViewGroupSetting.setOnClickListener(
+                    view -> Toast.makeText(getContext( ), "그룹 설정(미구현)", Toast.LENGTH_SHORT).show( ));
+            textViewManageMember.setOnClickListener(view -> normalRecyclerAdapter.bind(Boolean.TRUE));
             
             if (group.getWaitingUsers( ) != null) {
                 List<String> waiter = Lists.newArrayList(group.getWaitingUsers( ).keySet( ));
@@ -151,24 +156,31 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
                 recyclerViewWaiter.setLayoutManager(linearLayoutManagerW);
                 recyclerViewWaiter.addItemDecoration(recyclerViewDecoration);
                 waiterRecyclerAdapter.bind(Boolean.TRUE);
-                
-                textViewGroupDelete.setOnClickListener(
-                        view -> Toast.makeText(getContext( ), "그룹 삭제(미구현)", Toast.LENGTH_SHORT).show( ));
-                textViewGroupSetting.setOnClickListener(
-                        view -> Toast.makeText(getContext( ), "그룹 설정(미구현)", Toast.LENGTH_SHORT).show( ));
-                textViewManageMember.setOnClickListener(view -> normalRecyclerAdapter.bind(Boolean.TRUE));
             }
         }
         
         return frameView;
     }
     
-    private void exitGroup( )
+    private void exitGroup(String groupUid)
     {
         GroupService groupService = GroupService.getInstance( );
         
-        groupService.requestLeaveGroup(group.getUid( ))
+        groupService.requestLeaveGroup(groupUid)
                     .doOnSuccess(unused -> Toast.makeText(getContext( ), "탈퇴가 완료되었습니다", Toast.LENGTH_SHORT).show( ))
+                    .publishOn(Schedulers.elastic( ))
+                    .subscribeOn(Schedulers.elastic( ))
+                    .subscribe( );
+        MainFrameActivity.hideTopFragment( );
+        MainFrameActivity.showTopFragment(GroupFragment.getInstance( ));
+    }
+    
+    private void deleteGroup(String groupUid)
+    {
+        GroupService groupService = GroupService.getInstance( );
+        
+        groupService.deleteGroup(groupUid)
+                    .doOnSuccess(unused -> Toast.makeText(getContext( ), "그룹 삭제가 완료되었습니다", Toast.LENGTH_SHORT).show( ))
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))
                     .subscribe( );
@@ -183,7 +195,17 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
             AlertDialog.Builder alertDialogDeleteUser = new AlertDialog.Builder(Objects.requireNonNull(getContext( )));
             alertDialogDeleteUser.setMessage("그룹 탈퇴를 원하시나요?")
                                  .setCancelable(false)
-                                 .setPositiveButton("예", (dialogInterface, i) -> exitGroup( ))
+                                 .setPositiveButton("예", (dialogInterface, i) -> exitGroup(group.getUid( )))
+                                 .setNegativeButton("아니요", (dialogInterface, i) ->
+                                         Toast.makeText(getContext( ), "탈퇴가 취소되었습니다", Toast.LENGTH_LONG).show( ))
+                                 .show( );
+        }
+        
+        if (view.getId() == R.id.groupInfo_textViewGroupDelete) {
+            AlertDialog.Builder alertDialogDeleteUser = new AlertDialog.Builder(Objects.requireNonNull(getContext( )));
+            alertDialogDeleteUser.setMessage("그룹 삭제를 원하시나요?")
+                                 .setCancelable(false)
+                                 .setPositiveButton("예", (dialogInterface, i) -> deleteGroup(group.getUid( )))
                                  .setNegativeButton("아니요", (dialogInterface, i) ->
                                          Toast.makeText(getContext( ), "탈퇴가 취소되었습니다", Toast.LENGTH_LONG).show( ))
                                  .show( );

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
 {
     List<Group> groups = new ArrayList<>( );
     
+    InputMethodManager inputManager;
+    
     // Content View
     private TextView textViewMakeGroup;
     private EditText editTextFindGroup;
@@ -45,6 +48,8 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Bundle bundle = Objects.requireNonNull(getArguments( ));
+        inputManager = (InputMethodManager)Objects.requireNonNull(getActivity( ))
+                                                  .getSystemService(Context.INPUT_METHOD_SERVICE);
         
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_group_add, null);
@@ -67,10 +72,15 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
         textViewMakeGroup.setOnClickListener(this);
         groupRecyclerViewAdapter.setOnGroupClickListener((itemView, group) -> {
             MainFrameActivity.addTopFragment(GroupJoinFragment.getInstance(group));
-            InputMethodManager systemService =
-                    (InputMethodManager)Objects.requireNonNull(getActivity( ))
-                                               .getSystemService(Context.INPUT_METHOD_SERVICE);
-            systemService.hideSoftInputFromWindow(editTextFindGroup.getWindowToken( ), 0);
+            inputManager.hideSoftInputFromWindow(editTextFindGroup.getWindowToken( ), 0);
+        });
+        
+        editTextFindGroup.setOnKeyListener((view, keyCode, event) -> {
+            if ((event.getAction( ) == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                inputManager.hideSoftInputFromWindow(editTextFindGroup.getWindowToken( ), 0);
+                return true;
+            }
+            return false;
         });
         
         editTextFindGroup.addTextChangedListener(new TextWatcher( )
@@ -96,9 +106,10 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
     
     private void findGroup(CharSequence sequence, GroupRecyclerViewAdapter groupRecyclerViewAdapter)
     {
+        GroupService groupService = GroupService.getInstance( );
+        
         groups.clear( );
         groupRecyclerViewAdapter.notifyDataSetChanged( );
-        GroupService groupService = GroupService.getInstance( );
         groupService.findGroupsByName(sequence.toString( ))
                     .doOnNext(group -> {
                         groups.add(group);
@@ -112,10 +123,7 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view)
     {
-        InputMethodManager systemService =
-                (InputMethodManager)Objects.requireNonNull(getActivity( ))
-                                           .getSystemService(Context.INPUT_METHOD_SERVICE);
-        systemService.hideSoftInputFromWindow(editTextFindGroup.getWindowToken( ), 0);
+        inputManager.hideSoftInputFromWindow(editTextFindGroup.getWindowToken( ), 0);
         if (view == textViewMakeGroup) {
             MainFrameActivity.addTopFragment(GroupMakeFragment.getInstance( ));
         }

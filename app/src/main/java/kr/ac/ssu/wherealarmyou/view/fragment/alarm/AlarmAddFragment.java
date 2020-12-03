@@ -25,8 +25,8 @@ import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
 import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
 import kr.ac.ssu.wherealarmyou.view.adapter.AlarmAddContentViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
-import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.ZoneId;
@@ -60,7 +60,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         time = new Time( );
-    
+        
         Bundle bundle = Objects.requireNonNull(getArguments( ));
         
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
@@ -99,6 +99,8 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(decoration);
         layoutManager = recyclerView.getLayoutManager( );
+        
+        Log.d("AlarmAddFragment","완료되었습니다");
         
         return frameView;
     }

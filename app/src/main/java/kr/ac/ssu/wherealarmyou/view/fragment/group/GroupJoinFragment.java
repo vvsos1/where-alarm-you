@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
+import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
@@ -72,6 +73,15 @@ public class GroupJoinFragment extends Fragment implements View.OnClickListener
     {
         GroupService groupService = GroupService.getInstance( );
         
+        /* 요청 실패 */
+        // 중복된 가입 요청
+        if (group.getMembers( ).get(FirebaseAuth.getInstance( ).getUid( )) != null) {
+            Toast.makeText(getContext( ), "이미 가입된 그룹입니다.", Toast.LENGTH_SHORT).show( );
+            return;
+        }
+        
+        /* 요청 성공 */
+        // 그룹 가입 요청
         groupService.requestJoinGroup(groupUid)
                     .doOnSuccess(unused -> Toast.makeText(getContext( ), "가입 요청 성공", Toast.LENGTH_SHORT).show( ))
                     .publishOn(Schedulers.elastic( ))

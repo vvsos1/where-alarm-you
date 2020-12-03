@@ -123,6 +123,7 @@ public class GroupService {
                 })
                 .doOnNext(group -> group.acceptWaitingUser(userUid))
                 .flatMap(groupRepository::update)
+                .flatMap(group -> userService.addGroup(userUid, group.getUid()))
                 .then();
     }
 
