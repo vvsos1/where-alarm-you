@@ -80,11 +80,13 @@ public class AlarmService {
                     if (zonedDateTime.isAfter(currentTime)) {
                         rtcTime = zonedDateTime
                                 .toInstant().toEpochMilli();
+                        int requestCode = (alarm.getUid() + date.toString()).hashCode();
                         Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
-                        toAlarm.putExtra("Bundle", bundle);
+                        toAlarm.putExtra("Bundle", bundle)
+                                .putExtra("RequestCode", requestCode)
+                                .putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                                (alarm.getUid() + date.toString()).hashCode(),
-                                toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                                requestCode, toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
 
                         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, rtcTime, toAlarmPendingIntent);
                     }
@@ -113,11 +115,13 @@ public class AlarmService {
                             rtcZonedDateTime.plusDays(1);
                         }
                         rtcTime = rtcZonedDateTime.toInstant().toEpochMilli();
+                        int requestCode = (alarm.getUid()).hashCode();
                         Intent toAlarm = new Intent(context, AlarmBootReceiver.class);
-                        toAlarm.putExtra("Bundle", bundle);
+                        toAlarm.putExtra("Bundle", bundle)
+                                .putExtra("RequestCode", requestCode)
+                                .putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                                (alarm.getUid()).hashCode(),
-                                toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                                requestCode, toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
                         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, rtcTime, toAlarmPendingIntent);
                     } else {
 
@@ -131,11 +135,13 @@ public class AlarmService {
                                         .atZone(ZoneId.of("Asia/Seoul"))
                                         .toInstant()
                                         .toEpochMilli();
+                                int requestCode = (alarm.getUid() + dayOfWeek).hashCode();
                                 Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
-                                toAlarm.putExtra("Bundle", bundle);
+                                toAlarm.putExtra("Bundle", bundle)
+                                        .putExtra("RequestCode", requestCode)
+                                        .putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());
                                 PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                                        (alarm.getUid() + dayOfWeek).hashCode(),
-                                        toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        requestCode, toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
                                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                                         rtcTime, toAlarmPendingIntent);
                             }
@@ -147,11 +153,13 @@ public class AlarmService {
                                         .atZone(ZoneId.of("Asia/Seoul"))
                                         .toInstant()
                                         .toEpochMilli();
+                                int requestCode = (alarm.getUid() + dayOfWeek).hashCode();
                                 Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
-                                toAlarm.putExtra("Bundle", bundle);
+                                toAlarm.putExtra("Bundle", bundle)
+                                        .putExtra("RequestCode", requestCode)
+                                        .putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());
                                 PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                                        (alarm.getUid() + dayOfWeek).hashCode(),
-                                        toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        requestCode, toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
                                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                                         rtcTime, toAlarmPendingIntent);
                             }
