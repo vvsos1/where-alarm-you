@@ -1,5 +1,6 @@
 package kr.ac.ssu.wherealarmyou.view.fragment.group;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -39,6 +40,7 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
         return new GroupAddFragment( );
     }
     
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -60,6 +62,8 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
         LinearLayoutManager      linearLayoutManager      = new LinearLayoutManager(getContext( ));
         RecyclerViewDecoration   recyclerViewDecoration   = new RecyclerViewDecoration(30);
         
+        contentView.setOnClickListener(this);
+        recyclerView.setOnClickListener(this);
         textViewMakeGroup.setOnClickListener(this);
         groupRecyclerViewAdapter.setOnGroupClickListener((itemView, group) -> {
             MainFrameActivity.addTopFragment(GroupJoinFragment.getInstance(group));
@@ -90,15 +94,15 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
         return frameView;
     }
     
-    private void findGroup(CharSequence sequence, GroupRecyclerViewAdapter adapter)
+    private void findGroup(CharSequence sequence, GroupRecyclerViewAdapter groupRecyclerViewAdapter)
     {
         groups.clear( );
-        adapter.notifyDataSetChanged( );
+        groupRecyclerViewAdapter.notifyDataSetChanged( );
         GroupService groupService = GroupService.getInstance( );
         groupService.findGroupsByName(sequence.toString( ))
                     .doOnNext(group -> {
                         groups.add(group);
-                        adapter.notifyDataSetChanged( );
+                        groupRecyclerViewAdapter.notifyDataSetChanged( );
                     })
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))
@@ -108,6 +112,10 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view)
     {
+        InputMethodManager systemService =
+                (InputMethodManager)Objects.requireNonNull(getActivity( ))
+                                           .getSystemService(Context.INPUT_METHOD_SERVICE);
+        systemService.hideSoftInputFromWindow(editTextFindGroup.getWindowToken( ), 0);
         if (view == textViewMakeGroup) {
             MainFrameActivity.addTopFragment(GroupMakeFragment.getInstance( ));
         }

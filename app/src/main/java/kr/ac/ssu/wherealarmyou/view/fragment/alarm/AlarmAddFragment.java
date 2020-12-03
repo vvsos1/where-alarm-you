@@ -25,7 +25,7 @@ import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
 import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
 import kr.ac.ssu.wherealarmyou.view.adapter.AlarmAddContentViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
-import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddTimeViewModel;
+import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import reactor.core.scheduler.Schedulers;
 

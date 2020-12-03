@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.custom_view;
+package kr.ac.ssu.wherealarmyou.view.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

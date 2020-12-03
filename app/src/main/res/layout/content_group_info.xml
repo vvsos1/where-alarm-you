@@ -12,6 +12,33 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/groupInfo_linearLayoutAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:paddingEnd="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/groupInfo_textViewGroupDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="그룹 삭제"
+                android:textColor="@color/colorWarning"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/groupInfo_textViewGroupSetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="그룹 설정"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -28,7 +55,7 @@
                 android:stateListAnimator="@null"
                 android:text="GRP"
                 android:textColor="#FFF"
-                android:textSize="14sp" />>
+                android:textSize="14sp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -48,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/groupInfo_textViewUnused1"
-                    android:text="그룹 이름"
+                    android:text="그룹 이름 영역입니다"
                     android:textSize="17sp" />
 
                 <TextView
@@ -92,15 +119,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="2020년 2학기"
+            android:text="소개글 작성 영역입니다"
             android:textSize="14sp" />
 
         <LinearLayout
             android:id="@+id/groupInfo_linearLayoutWaiter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginTop="20dp"
+            android:orientation="vertical"
             android:visibility="gone">
 
             <TextView
@@ -182,6 +209,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/groupInfo_textViewManageMember"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/groupInfo_textViewUnused3"

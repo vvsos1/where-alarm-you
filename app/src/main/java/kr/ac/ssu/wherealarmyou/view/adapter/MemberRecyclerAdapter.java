@@ -6,7 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.Icon;
@@ -18,6 +21,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class MemberRecyclerAdapter extends RecyclerView.Adapter<MemberRecyclerAdapter.MemberViewHolder>
 {
+    public MutableLiveData<Boolean> showMemberManageButton = new MutableLiveData<>( );
+    
     private Context context;
     
     private List<String> members;
@@ -52,6 +57,22 @@ public class MemberRecyclerAdapter extends RecyclerView.Adapter<MemberRecyclerAd
                        holder.textViewName.setText(user.get( ).getName( ));
                    })
                    .subscribe( );
+        
+        LiveData<Boolean> booleanLiveData = showMemberManageButton;
+        booleanLiveData.observeForever(aBoolean -> {
+            if (showMemberManageButton.getValue( ) == Boolean.TRUE) {
+                holder.buttonCheck.setVisibility(View.VISIBLE);
+                holder.buttonCancel.setVisibility(View.VISIBLE);
+            }
+        });
+        
+        holder.buttonCheck.setOnClickListener(view -> listener.onItemClick(view, memberUid));
+        holder.buttonCancel.setOnClickListener(view -> Toast.makeText(context, "취소(미구현)", Toast.LENGTH_SHORT).show( ));
+    }
+    
+    public void bind(Boolean aBoolean)
+    {
+        showMemberManageButton.setValue(aBoolean);
     }
     
     @Override
@@ -67,12 +88,11 @@ public class MemberRecyclerAdapter extends RecyclerView.Adapter<MemberRecyclerAd
     
     public interface OnItemClickListener
     {
-        void onItemClick(View view, Icon icon);
+        void onItemClick(View view, String userUid);
     }
     
     public static class MemberViewHolder extends RecyclerView.ViewHolder
     {
-        
         TextView textViewName;
         Button   buttonCheck;
         Button   buttonCancel;
@@ -83,6 +103,7 @@ public class MemberRecyclerAdapter extends RecyclerView.Adapter<MemberRecyclerAd
             textViewName = itemView.findViewById(R.id.item_name_and_button_textViewName);
             buttonCheck  = itemView.findViewById(R.id.item_name_and_button_buttonCheck);
             buttonCancel = itemView.findViewById(R.id.item_name_and_button_buttonCancel);
+            
         }
     }
 }

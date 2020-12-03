@@ -2,6 +2,7 @@ package kr.ac.ssu.wherealarmyou.view.custom_view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -57,10 +58,10 @@ public class OverlappingView extends LinearLayout implements View.OnClickListene
         frameLayoutContent = findViewById(R.id.overlap_content);
         distinguishBar     = findViewById(R.id.overlap_bar);
         
-        //AnimationDrawable animationDrawable = (AnimationDrawable)distinguishBar.getBackground( );
-        //animationDrawable.setEnterFadeDuration(500);
-        //animationDrawable.setExitFadeDuration(300);
-        //animationDrawable.start( );
+        AnimationDrawable animationDrawable = (AnimationDrawable)distinguishBar.getBackground( );
+        animationDrawable.setEnterFadeDuration(2000);
+        animationDrawable.setExitFadeDuration(2000);
+        animationDrawable.start( );
     }
     
     private void getAttrs(AttributeSet attrs)
@@ -151,14 +152,10 @@ public class OverlappingView extends LinearLayout implements View.OnClickListene
     public void onClick(View view)
     {
         switch (view.getId( )) {
-            case (R.id.overlap_buttonAdd):
-                break;
             case (R.id.overlap_buttonBack):
-                Toast.makeText(getContext( ), "MAIN BACK 버튼", Toast.LENGTH_SHORT).show( );
                 MainFrameActivity.backTopFragment( );
                 break;
             case (R.id.overlap_buttonHide):
-                Toast.makeText(getContext( ), "MAIN HIDE 버튼", Toast.LENGTH_SHORT).show( );
                 MainFrameActivity.hideTopFragment( );
                 break;
         }

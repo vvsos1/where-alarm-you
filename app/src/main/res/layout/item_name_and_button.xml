@@ -29,7 +29,7 @@
         android:layout_toLeftOf="@id/item_name_and_button_buttonCancel"
         android:background="@drawable/ic_check"
         android:stateListAnimator="@null"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/item_name_and_button_buttonCancel"
@@ -39,7 +39,7 @@
         android:layout_toLeftOf="@id/item_name_and_button_unused"
         android:background="@drawable/ic_cancel"
         android:stateListAnimator="@null"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <View
         android:id="@+id/item_name_and_button_unused"

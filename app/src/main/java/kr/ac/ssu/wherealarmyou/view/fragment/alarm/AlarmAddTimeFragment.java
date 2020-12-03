@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddTimeViewModel;
+import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
 
 public class AlarmAddTimeFragment extends Fragment implements View.OnClickListener
 {
