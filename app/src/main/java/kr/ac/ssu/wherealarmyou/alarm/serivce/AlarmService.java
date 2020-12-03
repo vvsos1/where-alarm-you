@@ -12,7 +12,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Year;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
@@ -23,10 +23,11 @@ import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.DatesAlarm;
 import kr.ac.ssu.wherealarmyou.alarm.DaysAlarm;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
+import kr.ac.ssu.wherealarmyou.alarm.component.AlarmBootReceiver;
+import kr.ac.ssu.wherealarmyou.alarm.component.AlarmNotifyReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmModifyRequest;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
-import kr.ac.ssu.wherealarmyou.view.alarm.AlarmRegisterReceiver;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -64,23 +65,23 @@ public class AlarmService {
         return Mono.create(alarmMonoSink -> {
 
             Time time = alarm.getTime();
+            ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("Alarm", alarm);
 
             if (alarm instanceof DatesAlarm) {
                 List<Date> dates = ((DatesAlarm) alarm).getDates();
-
                 for (Date date : dates) {
                     Long rtcTime;
                     ZonedDateTime zonedDateTime = Year.of(date.getYear())
                             .atMonth(date.getMonth())
                             .atDay(date.getDay())
-                            .atTime(time.getHours(), time.getMinutes()).atZone(ZoneOffset.ofHours(9));
-                    if (zonedDateTime.isAfter(ZonedDateTime.now())) {
+                            .atTime(time.getHours(), time.getMinutes()).atZone(ZoneId.of("Asia/Seoul"));
+                    if (zonedDateTime.isAfter(currentTime)) {
                         rtcTime = zonedDateTime
                                 .toInstant().toEpochMilli();
-                        Intent toAlarm = new Intent(context, AlarmRegisterReceiver.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("alarm", alarm);
-                        toAlarm.putExtra("bundle", bundle);
+                        Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
+                        toAlarm.putExtra("Bundle", bundle);
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                                 (alarm.getUid() + date.toString()).hashCode(),
                                 toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -89,52 +90,74 @@ public class AlarmService {
                     }
                 }
             } else if (alarm instanceof DaysAlarm) {
-                if (((DaysAlarm) alarm).getDaysOfWeek().containsKey("EVERY_DAY")) {
-                    Long rtcTime;
-                    rtcTime = LocalDate.now().atTime(time.getHours(), time.getMinutes())
-                            .toInstant(ZoneOffset.ofHours(9)).toEpochMilli();
-                    Intent toAlarm = new Intent(context, AlarmRegisterReceiver.class);
-                    toAlarm.putExtra("Alarm", alarm);
-                    PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                            (alarm.getUid()).hashCode(),
-                            toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, rtcTime, toAlarmPendingIntent);
-                } else {
+                Date startDate = ((DaysAlarm) alarm).getActivePeriod().getStart();
+                Date endDate = ((DaysAlarm) alarm).getActivePeriod().getEnd();
+                ZonedDateTime startZonedDate = Year.of(startDate.getYear())
+                        .atMonth(startDate.getMonth())
+                        .atDay(startDate.getDay())
+                        .atTime(time.getHours(), time.getMinutes())
+                        .atZone(ZoneId.of("Asia/Seoul"));
+                ZonedDateTime endZonedDateTime = Year.of(endDate.getYear())
+                        .atMonth(endDate.getMonth())
+                        .atDay(endDate.getDay())
+                        .atTime(time.getHours(), time.getMinutes())
+                        .atZone(ZoneId.of("Asia/Seoul"));
 
-                    if (LocalTime.of(time.getHours(), time.getMinutes())
-                            .isAfter(LocalTime.now())) {
-
-                        for (String dayOfWeek : ((DaysAlarm) alarm).getDaysOfWeek().keySet()) {
-                            long rtcTime = LocalDate.now().with(TemporalAdjusters.nextOrSame(
-                                    DayOfWeek.valueOf(dayOfWeek)))
-                                    .atTime(time.getHours(), time.getMinutes())
-                                    .toInstant(ZoneOffset.ofHours(9))
-                                    .toEpochMilli();
-                            Intent toAlarm = new Intent(context, AlarmRegisterReceiver.class);
-                            PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                                    (alarm.getUid() + dayOfWeek).hashCode(),
-                                    toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
-                            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                                    rtcTime, toAlarmPendingIntent);
+                if (currentTime.isAfter(startZonedDate) && currentTime.isBefore(endZonedDateTime)) {
+                    if (((DaysAlarm) alarm).getDaysOfWeek().containsKey("EVERY_DAY")) {
+                        Long rtcTime;
+                        ZonedDateTime rtcZonedDateTime = LocalDate.now()
+                                .atTime(time.getHours(), time.getMinutes())
+                                .atZone(ZoneId.of("Asia/Seoul"));
+                        if (!currentTime.isBefore(rtcZonedDateTime)) {
+                            rtcZonedDateTime.plusDays(1);
                         }
+                        rtcTime = rtcZonedDateTime.toInstant().toEpochMilli();
+                        Intent toAlarm = new Intent(context, AlarmBootReceiver.class);
+                        toAlarm.putExtra("Bundle", bundle);
+                        PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
+                                (alarm.getUid()).hashCode(),
+                                toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, rtcTime, toAlarmPendingIntent);
                     } else {
-                        for (String dayOfWeek : ((DaysAlarm) alarm).getDaysOfWeek().keySet()) {
-                            long rtcTime = LocalDate.now().with(TemporalAdjusters.next(
-                                    DayOfWeek.valueOf(dayOfWeek)))
-                                    .atTime(time.getHours(), time.getMinutes())
-                                    .toInstant(ZoneOffset.ofHours(9))
-                                    .toEpochMilli();
-                            Intent toAlarm = new Intent(context, AlarmRegisterReceiver.class);
-                            toAlarm.putExtra("Alarm", alarm);
-                            PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                                    (alarm.getUid() + dayOfWeek).hashCode(),
-                                    toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
-                            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                                    rtcTime, toAlarmPendingIntent);
+
+                        if (LocalTime.of(time.getHours(), time.getMinutes())
+                                .isAfter(LocalTime.now())) {
+
+                            for (String dayOfWeek : ((DaysAlarm) alarm).getDaysOfWeek().keySet()) {
+                                long rtcTime = LocalDate.now().with(TemporalAdjusters.nextOrSame(
+                                        DayOfWeek.valueOf(dayOfWeek)))
+                                        .atTime(time.getHours(), time.getMinutes())
+                                        .atZone(ZoneId.of("Asia/Seoul"))
+                                        .toInstant()
+                                        .toEpochMilli();
+                                Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
+                                toAlarm.putExtra("Bundle", bundle);
+                                PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
+                                        (alarm.getUid() + dayOfWeek).hashCode(),
+                                        toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                                        rtcTime, toAlarmPendingIntent);
+                            }
+                        } else {
+                            for (String dayOfWeek : ((DaysAlarm) alarm).getDaysOfWeek().keySet()) {
+                                long rtcTime = LocalDate.now().with(TemporalAdjusters.next(
+                                        DayOfWeek.valueOf(dayOfWeek)))
+                                        .atTime(time.getHours(), time.getMinutes())
+                                        .atZone(ZoneId.of("Asia/Seoul"))
+                                        .toInstant()
+                                        .toEpochMilli();
+                                Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
+                                toAlarm.putExtra("Bundle", bundle);
+                                PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
+                                        (alarm.getUid() + dayOfWeek).hashCode(),
+                                        toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                                        rtcTime, toAlarmPendingIntent);
+                            }
                         }
                     }
                 }
-
             }
 
 
@@ -151,7 +174,7 @@ public class AlarmService {
 
                 Time time = alarm.getTime();
                 for (Date date : dates) {
-                    Intent toAlarm = new Intent(context, AlarmRegisterReceiver.class);
+                    Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
                     toAlarm.putExtra("Alarm", alarm);
                     PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                             (alarm.getUid() + date.toString()).hashCode(),
@@ -162,7 +185,7 @@ public class AlarmService {
                 }
             } else if (alarm instanceof DaysAlarm) {
                 if (((DaysAlarm) alarm).getDaysOfWeek().containsKey("EVERY_DAY")) {
-                    Intent toAlarm = new Intent(context, AlarmRegisterReceiver.class);
+                    Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
                     toAlarm.putExtra("Alarm", alarm);
                     PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                             (alarm.getUid()).hashCode(),
@@ -170,7 +193,7 @@ public class AlarmService {
                     alarmManager.cancel(toAlarmPendingIntent);
                 } else {
                     for (String dayOfWeek : ((DaysAlarm) alarm).getDaysOfWeek().keySet()) {
-                        Intent toAlarm = new Intent(context, AlarmRegisterReceiver.class);
+                        Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
                                 (alarm.getUid() + dayOfWeek).hashCode(),
                                 toAlarm, PendingIntent.FLAG_NO_CREATE);

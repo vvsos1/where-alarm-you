@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -15,9 +16,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver
-            android:name=".view.alarm.AlarmRegisterReceiver"
+            android:name=".alarm.component.AlarmRegisterReceiver"
             android:enabled="true"
             android:exported="false"></receiver>
+        <receiver
+            android:name=".alarm.component.AlarmNotifyReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".alarm.component.AlarmBootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <activity android:name=".view.alarm.AlarmActivity" />
         <activity android:name=".view.LocationAddActivity" />
@@ -25,6 +38,7 @@
         <activity android:name=".view.login.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -36,11 +50,11 @@
         <activity android:name=".view.login.ProfileActivity" />
         <activity android:name=".view.login.SetUserInfoActivity" />
         <activity
-            android:name=".view.MainFrameActivity"
-            android:screenOrientation="portrait" />
-        <!-- Naver Mobile Dynamic Map SDK를 위한 설정 -->
+            android:name=".view.fragment.MainFrameActivity"
+            android:screenOrientation="portrait" /> <!-- Naver Mobile Dynamic Map SDK를 위한 설정 -->
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/naver_cloud_platform_client_id" />
     </application>
+
 </manifest>
