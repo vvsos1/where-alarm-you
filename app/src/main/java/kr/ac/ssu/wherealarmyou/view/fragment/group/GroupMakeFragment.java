@@ -8,10 +8,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -117,7 +114,7 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
         linearLayoutParent.setOnClickListener(this);
         editTextGroupInfo.setOnTouchListener((v, event) -> {
             if (event.getAction( ) == MotionEvent.ACTION_UP) {
-                linearLayoutName.setVisibility(View.GONE);
+                editTextGroupName.setVisibility(View.GONE);
                 linearLayoutIcon.setVisibility(View.GONE);
             }
             return false;
@@ -183,7 +180,7 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
         }
         
         if (view == linearLayoutParent) {
-            linearLayoutName.setVisibility(View.VISIBLE);
+            editTextGroupName.setVisibility(View.VISIBLE);
             linearLayoutIcon.setVisibility(View.VISIBLE);
             InputMethodManager systemService =
                     (InputMethodManager)Objects.requireNonNull(getActivity( ))
