@@ -14,14 +14,14 @@ import kr.ac.ssu.wherealarmyou.common.Icon;
 
 import java.util.List;
 
-public class IconRecyclerViewAdapter extends RecyclerView.Adapter<IconRecyclerViewAdapter.GroupContentViewHolder>
+public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.GroupContentViewHolder>
 {
     private Context    context;
     private List<Icon> icons;
     
     private OnItemClickListener listener = null;
     
-    public IconRecyclerViewAdapter(Context context, List<Icon> icons)
+    public IconItemAdapter(Context context, List<Icon> icons)
     {
         this.context = context;
         this.icons   = icons;

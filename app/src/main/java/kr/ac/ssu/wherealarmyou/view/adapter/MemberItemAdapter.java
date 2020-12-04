@@ -12,14 +12,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.common.Icon;
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class MemberRecyclerAdapter extends RecyclerView.Adapter<MemberRecyclerAdapter.MemberViewHolder>
+public class MemberItemAdapter extends RecyclerView.Adapter<MemberItemAdapter.MemberViewHolder>
 {
     public MutableLiveData<Boolean> showMemberManageButton = new MutableLiveData<>( );
     
@@ -29,7 +28,7 @@ public class MemberRecyclerAdapter extends RecyclerView.Adapter<MemberRecyclerAd
     
     private OnItemClickListener listener = null;
     
-    public MemberRecyclerAdapter(Context context, List<String> members)
+    public MemberItemAdapter(Context context, List<String> members)
     {
         this.context = context;
         this.members = members;

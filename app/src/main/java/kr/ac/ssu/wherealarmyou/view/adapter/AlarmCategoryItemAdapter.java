@@ -15,7 +15,7 @@ import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 
 import java.util.List;
 
-public class AlarmAddContentViewAdapter extends RecyclerView.Adapter<AlarmAddContentViewAdapter.AlarmAddContentViewHolder>
+public class AlarmCategoryItemAdapter extends RecyclerView.Adapter<AlarmCategoryItemAdapter.AlarmAddContentViewHolder>
 {
     private Context context;
     
@@ -23,7 +23,7 @@ public class AlarmAddContentViewAdapter extends RecyclerView.Adapter<AlarmAddCon
     
     private OnItemClickListener onItemClickListener = null;
     
-    public AlarmAddContentViewAdapter(Context context, List<AlarmAddFrameItem> frameItems)
+    public AlarmCategoryItemAdapter(Context context, List<AlarmAddFrameItem> frameItems)
     {
         this.context    = context;
         this.frameItems = frameItems;

@@ -1,5 +1,6 @@
 package kr.ac.ssu.wherealarmyou.user.service;
 
+import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -147,6 +148,13 @@ public class UserService
     {
         return userRepository.findUserByUid(adminUid)
                              .doOnNext(user -> user.addGroup(groupUid))
+                             .flatMap(userRepository::update);
+    }
+    
+    public Mono<Void> deleteGroup(String userUid, String groupUid)
+    {
+        return userRepository.findUserByUid(userUid)
+                             .doOnNext(user -> user.deleteGroup(groupUid))
                              .flatMap(userRepository::update);
     }
     

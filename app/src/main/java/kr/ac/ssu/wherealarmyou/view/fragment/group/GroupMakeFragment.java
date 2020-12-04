@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,8 +26,9 @@ import kr.ac.ssu.wherealarmyou.common.Icon;
 import kr.ac.ssu.wherealarmyou.group.dto.GroupCreateRequest;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
-import kr.ac.ssu.wherealarmyou.view.adapter.IconRecyclerViewAdapter;
+import kr.ac.ssu.wherealarmyou.view.adapter.IconItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import kr.ac.ssu.wherealarmyou.view.DataManager;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
@@ -33,6 +37,8 @@ import java.util.Objects;
 
 public class GroupMakeFragment extends Fragment implements View.OnClickListener
 {
+    private final DataManager dataManager = DataManager.getInstance( );
+    
     private LinearLayout linearLayoutParent;
     private LinearLayout linearLayoutName;
     private LinearLayout linearLayoutIcon;
@@ -96,18 +102,18 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
         buttonComplete     = contentView.findViewById(R.id.groupMake_buttonComplete);
         buttonIconColor    = contentView.findViewById(R.id.groupMake_buttonIconColor);
         
-        RecyclerView            recyclerView            = frameView.findViewById(R.id.groupMake_recyclerViewColor);
-        LinearLayoutManager     linearLayoutManager     = new LinearLayoutManager(getContext( ));
-        IconRecyclerViewAdapter iconRecyclerViewAdapter = new IconRecyclerViewAdapter(getContext( ), icons);
+        RecyclerView        recyclerView        = frameView.findViewById(R.id.groupMake_recyclerViewColor);
+        IconItemAdapter     iconItemAdapter     = new IconItemAdapter(getContext( ), icons);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext( ));
         
-        iconRecyclerViewAdapter.setOnItemClickListener((itemView, icon) -> {
+        iconItemAdapter.setOnItemClickListener((itemView, icon) -> {
             GradientDrawable drawable = (GradientDrawable)buttonIconColor.getBackground( );
             drawable.setColor(Color.parseColor(icon.getColorHex( )));
             iconColor = icon.getColorHex( );
         });
         
         linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        recyclerView.setAdapter(iconRecyclerViewAdapter);
+        recyclerView.setAdapter(iconItemAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
         
         buttonComplete.setOnClickListener(this);
@@ -152,6 +158,7 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
         /* 요청 성공 */
         // 그룹 생성 요청
         groupService.createGroup(groupCreateRequest)
+                    .doOnSuccess(dataManager::addGroupLiveData)
                     .doOnError(throwable -> Log.d("GroupMakeFragment", "실패"))
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))

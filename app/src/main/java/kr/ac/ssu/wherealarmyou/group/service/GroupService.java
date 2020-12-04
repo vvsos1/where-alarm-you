@@ -1,5 +1,6 @@
 package kr.ac.ssu.wherealarmyou.group.service;
 
+import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Map;
@@ -96,6 +97,7 @@ public class GroupService {
         return groupRepository.findGroupByUid(groupUid)
                 .doOnNext(group -> group.requestLeave(currentUserUid))
                 .flatMap(groupRepository::update)
+                .flatMap(group -> userService.deleteGroup(currentUserUid, groupUid))
                 .then();
     }
 
@@ -108,7 +110,8 @@ public class GroupService {
                         throw new IllegalArgumentException("권한이 없습니다");
                     return group;
                 })
-                .flatMap(groupRepository::delete);
+                .flatMap(groupRepository::delete)
+                .flatMap(unused -> userService.deleteGroup(currentUserUid, groupUid));
     }
 
     public Mono<Void> acceptWaitingUser(String groupUid, String userUid) {

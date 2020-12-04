@@ -13,13 +13,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
+import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
-import kr.ac.ssu.wherealarmyou.view.adapter.GroupRecyclerViewAdapter;
+import kr.ac.ssu.wherealarmyou.view.adapter.GroupItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.custom_view.RecyclerViewDecoration;
 import reactor.core.scheduler.Schedulers;
@@ -30,9 +32,11 @@ import java.util.Objects;
 
 public class GroupAddFragment extends Fragment implements View.OnClickListener
 {
-    List<Group> groups = new ArrayList<>( );
+    private final DataManager dataManager = DataManager.getInstance();
     
-    InputMethodManager inputManager;
+    LiveData<List<Group>> groups = dataManager.getGroupLiveData();
+    
+    private InputMethodManager inputManager;
     
     // Content View
     private TextView textViewMakeGroup;
@@ -62,15 +66,15 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
         textViewMakeGroup = contentView.findViewById(R.id.groupAdd_textViewMakeGroup);
         editTextFindGroup = contentView.findViewById(R.id.groupAdd_editTextFindGroup);
         
-        RecyclerView             recyclerView             = frameView.findViewById(R.id.groupAdd_recyclerView);
-        GroupRecyclerViewAdapter groupRecyclerViewAdapter = new GroupRecyclerViewAdapter(getContext( ), groups);
-        LinearLayoutManager      linearLayoutManager      = new LinearLayoutManager(getContext( ));
-        RecyclerViewDecoration   recyclerViewDecoration   = new RecyclerViewDecoration(30);
+        RecyclerView           recyclerView           = frameView.findViewById(R.id.groupAdd_recyclerView);
+        GroupItemAdapter       groupItemAdapter       = new GroupItemAdapter(getContext( ), groups);
+        LinearLayoutManager    linearLayoutManager    = new LinearLayoutManager(getContext( ));
+        RecyclerViewDecoration recyclerViewDecoration = new RecyclerViewDecoration(30);
         
         contentView.setOnClickListener(this);
         recyclerView.setOnClickListener(this);
         textViewMakeGroup.setOnClickListener(this);
-        groupRecyclerViewAdapter.setOnGroupClickListener((itemView, group) -> {
+        groupItemAdapter.setOnGroupClickListener((itemView, group) -> {
             MainFrameActivity.addTopFragment(GroupJoinFragment.getInstance(group));
             inputManager.hideSoftInputFromWindow(editTextFindGroup.getWindowToken( ), 0);
         });
@@ -91,29 +95,29 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-                findGroup(s, groupRecyclerViewAdapter);
+                findGroup(s, groupItemAdapter);
             }
             
             @Override
             public void afterTextChanged(Editable s) { }
         });
         
-        recyclerView.setAdapter(groupRecyclerViewAdapter);
+        recyclerView.setAdapter(groupItemAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(recyclerViewDecoration);
         return frameView;
     }
     
-    private void findGroup(CharSequence sequence, GroupRecyclerViewAdapter groupRecyclerViewAdapter)
+    private void findGroup(CharSequence sequence, GroupItemAdapter groupItemAdapter)
     {
         GroupService groupService = GroupService.getInstance( );
         
-        groups.clear( );
-        groupRecyclerViewAdapter.notifyDataSetChanged( );
+        //groups.clear( );
+        groupItemAdapter.notifyDataSetChanged( );
         groupService.findGroupsByName(sequence.toString( ))
                     .doOnNext(group -> {
-                        groups.add(group);
-                        groupRecyclerViewAdapter.notifyDataSetChanged( );
+                        //groups.add(group);
+                        groupItemAdapter.notifyDataSetChanged( );
                     })
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))

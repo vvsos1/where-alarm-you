@@ -12,23 +12,28 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
+import kr.ac.ssu.wherealarmyou.view.DataManager;
 
 import java.util.List;
+import java.util.Objects;
 
-public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecyclerViewAdapter.GroupContentViewHolder>
+public class GroupItemAdapter extends RecyclerView.Adapter<GroupItemAdapter.GroupContentViewHolder>
 {
-    private Context     context;
-    private List<Group> groups;
+    private final DataManager dataManager = DataManager.getInstance( );
+    
+    private Context               context;
+    private LiveData<List<Group>> groups;
     
     private OnGroupClickListener listener = null;
     
-    public GroupRecyclerViewAdapter(Context context, List<Group> groups)
+    public GroupItemAdapter(Context context, LiveData<List<Group>> groups)
     {
         this.context = context;
-        this.groups  = groups;
+        this.groups  = dataManager.getGroupLiveData();
     }
     
     @NonNull
@@ -42,8 +47,8 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
     @Override
     public void onBindViewHolder(GroupContentViewHolder holder, int position)
     {
-        Group group = groups.get(position);
-    
+        Group group = Objects.requireNonNull(groups.getValue( )).get(position);
+        
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.fade_in_fast);
         holder.layout.setAnimation(animation);
         
@@ -57,7 +62,7 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
     @Override
     public int getItemCount( )
     {
-        return groups.size( );
+        return Objects.requireNonNull(groups.getValue( )).size( );
     }
     
     public void setOnGroupClickListener(OnGroupClickListener listener)
@@ -94,7 +99,7 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
                 || view.getId( ) == R.id.item_icon_and_title_textViewTitle) {
                 int position = getAdapterPosition( );
                 if ((position != RecyclerView.NO_POSITION) && (listener != null)) {
-                    listener.onItemClick(view, groups.get(position));
+                    listener.onItemClick(view, Objects.requireNonNull(groups.getValue( )).get(position));
                 }
             }
         }

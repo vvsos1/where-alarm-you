@@ -76,4 +76,8 @@ public class User
         groups.put(groupUid, Boolean.TRUE);
 
     }
+    
+    public void deleteGroup(String groupUid) {
+        groups.remove(groupUid);
+    }
 }

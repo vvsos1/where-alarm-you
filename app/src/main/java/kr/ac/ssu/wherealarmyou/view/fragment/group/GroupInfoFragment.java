@@ -3,6 +3,7 @@ package kr.ac.ssu.wherealarmyou.view.fragment.group;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+~~import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
+import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
-import kr.ac.ssu.wherealarmyou.view.adapter.MemberRecyclerAdapter;
+import kr.ac.ssu.wherealarmyou.view.adapter.MemberItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.custom_view.RecyclerViewDecoration;
 import reactor.core.scheduler.Schedulers;
@@ -31,6 +33,8 @@ import java.util.Objects;
 
 public class GroupInfoFragment extends Fragment implements View.OnClickListener
 {
+    private final DataManager dataManager = DataManager.getInstance( );
+    
     private final Group group;
     
     // Content View Item
@@ -90,8 +94,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
         
         RecyclerView           recyclerViewAdmin      = contentView.findViewById(R.id.groupInfo_recyclerViewAdmin);
         RecyclerView           recyclerViewNormal     = contentView.findViewById(R.id.groupInfo_recyclerViewNormal);
-        MemberRecyclerAdapter  adminRecyclerAdapter   = new MemberRecyclerAdapter(getContext( ), admin);
-        MemberRecyclerAdapter  normalRecyclerAdapter  = new MemberRecyclerAdapter(getContext( ), normal);
+        MemberItemAdapter      adminRecyclerAdapter   = new MemberItemAdapter(getContext( ), admin);
+        MemberItemAdapter      normalRecyclerAdapter  = new MemberItemAdapter(getContext( ), normal);
         LinearLayoutManager    linearLayoutManagerA   = new LinearLayoutManager(getContext( ));
         LinearLayoutManager    linearLayoutManagerN   = new LinearLayoutManager(getContext( ));
         RecyclerViewDecoration recyclerViewDecoration = new RecyclerViewDecoration(3);
@@ -123,10 +127,9 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
                 LinearLayout linearLayoutWaiter = contentView.findViewById(R.id.groupInfo_linearLayoutWaiter);
                 linearLayoutWaiter.setVisibility(View.VISIBLE);
                 
-                RecyclerView recyclerViewWaiter = contentView.findViewById(R.id.groupInfo_recyclerViewWaiter);
-                
-                MemberRecyclerAdapter waiterRecyclerAdapter = new MemberRecyclerAdapter(getContext( ), waiter);
-                LinearLayoutManager   linearLayoutManagerW  = new LinearLayoutManager(getContext( ));
+                RecyclerView        recyclerViewWaiter    = contentView.findViewById(R.id.groupInfo_recyclerViewWaiter);
+                MemberItemAdapter   waiterRecyclerAdapter = new MemberItemAdapter(getContext( ), waiter);
+                LinearLayoutManager linearLayoutManagerW  = new LinearLayoutManager(getContext( ));
                 
                 waiterRecyclerAdapter.setOnItemClickListener((view, userUid) -> {
                     GroupService groupService = GroupService.getInstance( );
@@ -167,7 +170,10 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
         GroupService groupService = GroupService.getInstance( );
         
         groupService.requestLeaveGroup(groupUid)
-                    .doOnSuccess(unused -> Toast.makeText(getContext( ), "탈퇴가 완료되었습니다", Toast.LENGTH_SHORT).show( ))
+                    .doOnSuccess(unused -> {
+                        dataManager.updateGroupLiveData( );
+                        Toast.makeText(getContext( ), "그룹 탈퇴가 완료되었습니다", Toast.LENGTH_SHORT).show( );
+                    })
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))
                     .subscribe( );
@@ -180,7 +186,10 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
         GroupService groupService = GroupService.getInstance( );
         
         groupService.deleteGroup(groupUid)
-                    .doOnSuccess(unused -> Toast.makeText(getContext( ), "그룹 삭제가 완료되었습니다", Toast.LENGTH_SHORT).show( ))
+                    .doOnSuccess(unused -> {
+                        dataManager.updateGroupLiveData( );
+                        Toast.makeText(getContext( ), "그룹 삭제가 완료되었습니다", Toast.LENGTH_SHORT).show( );
+                    })
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))
                     .subscribe( );
@@ -201,13 +210,13 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
                                  .show( );
         }
         
-        if (view.getId() == R.id.groupInfo_textViewGroupDelete) {
+        if (view.getId( ) == R.id.groupInfo_textViewGroupDelete) {
             AlertDialog.Builder alertDialogDeleteUser = new AlertDialog.Builder(Objects.requireNonNull(getContext( )));
             alertDialogDeleteUser.setMessage("그룹 삭제를 원하시나요?")
                                  .setCancelable(false)
                                  .setPositiveButton("예", (dialogInterface, i) -> deleteGroup(group.getUid( )))
                                  .setNegativeButton("아니요", (dialogInterface, i) ->
-                                         Toast.makeText(getContext( ), "탈퇴가 취소되었습니다", Toast.LENGTH_LONG).show( ))
+                                         Toast.makeText(getContext( ), "삭제가 취소되었습니다", Toast.LENGTH_LONG).show( ))
                                  .show( );
         }
     }

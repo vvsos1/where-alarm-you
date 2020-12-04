@@ -23,7 +23,7 @@ import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
 import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
-import kr.ac.ssu.wherealarmyou.view.adapter.AlarmAddContentViewAdapter;
+import kr.ac.ssu.wherealarmyou.view.adapter.AlarmCategoryItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
@@ -80,22 +80,22 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         items.add(new AlarmAddFrameItem(R.drawable.ic_add_box, "세부 설정", ""));
         
         // Content View Setting
-        RecyclerView               recyclerView               = frameView.findViewById(R.id.alarmAdd_recyclerView);
-        AlarmAddContentViewAdapter alarmAddContentViewAdapter = new AlarmAddContentViewAdapter(getContext( ), items);
-        LinearLayoutManager        linearLayoutManager        = new LinearLayoutManager(getContext( ));
+        RecyclerView             recyclerView             = frameView.findViewById(R.id.alarmAdd_recyclerView);
+        AlarmCategoryItemAdapter alarmCategoryItemAdapter = new AlarmCategoryItemAdapter(getContext( ), items);
+        LinearLayoutManager      linearLayoutManager      = new LinearLayoutManager(getContext( ));
         DividerItemDecoration decoration = new DividerItemDecoration(Objects.requireNonNull(getContext( )),
                 linearLayoutManager.getOrientation( ));
         
         // Content View Event Listener
         AtomicInteger currentVisibleCategoryPosition = new AtomicInteger( );
-        alarmAddContentViewAdapter.setOnItemClickListener((view, position) -> {
+        alarmCategoryItemAdapter.setOnItemClickListener((view, position) -> {
             startCategoryFragment(position);
             setViewModel(position);
             changeVisibleCategoryView(currentVisibleCategoryPosition.get( ), position);
             currentVisibleCategoryPosition.set(position);
         });
         
-        recyclerView.setAdapter(alarmAddContentViewAdapter);
+        recyclerView.setAdapter(alarmCategoryItemAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(decoration);
         layoutManager = recyclerView.getLayoutManager( );
