@@ -7,6 +7,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import java.time.Duration;
 import java.util.Objects;
 
+import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
 import kr.ac.ssu.wherealarmyou.user.dto.DeleteRequest;
@@ -141,12 +142,27 @@ public class UserService
                         .addOnFailureListener(userMonoSink::error))
                 .map(FirebaseUser::getUid)
                 .map(request::toUser)
-                .flatMap(userRepository::save);    // TODO | update는 리턴타입이 Mono<Void>여서 save로 임시 작성
+                .flatMap(user -> userRepository.update(user).thenReturn(user));
     }
 
     public Mono<Void> addGroup(String adminUid, String groupUid) {
         return userRepository.findUserByUid(adminUid)
                 .doOnNext(user -> user.addGroup(groupUid))
                 .flatMap(userRepository::update);
+    }
+
+    public Mono<Void> addAlarm(Alarm alarm) {
+        String currentUserUid = getCurrentUserUid();
+
+        return userRepository.addAlarm(currentUserUid, alarm);
+    }
+
+
+    public String getCurrentUserUid() {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null)
+            return currentUser.getUid();
+        else
+            throw new IllegalStateException("현재 로그인중인 사용자가 없습니다");
     }
 }
