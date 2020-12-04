@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -82,6 +83,10 @@ public class AlarmService {
                                 .toInstant().toEpochMilli();
                         int requestCode = (alarm.getUid() + date.toString()).hashCode();
                         Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
+                        if (alarm.getRepetition() == null) {
+                            Log.d("Alarm", "null");
+                        }
+                        Log.d("Alarm", alarm.getRepetition().getRepeatCount().toString());
                         toAlarm.putExtra("Bundle", bundle)
                                 .putExtra("RequestCode", requestCode)
                                 .putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());
@@ -221,11 +226,8 @@ public class AlarmService {
     public Mono<Alarm> save(AlarmSaveRequest request) {
         String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-//        Alarm alarm = request.toAlarm();
-        Alarm alarm = DatesAlarm.builder()
-                .dates(request.getDates())
-                .time(request.getTime())
-                .build();
+        Alarm alarm = request.toAlarm();
+        Log.d("AlarmService", "save; " + alarm.toString());
 
         return alarmRepository.save(alarm)
                 .map(Alarm::getUid)

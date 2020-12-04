@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -35,6 +36,7 @@ public class AlarmNotifyReceiver extends BroadcastReceiver {
         //알람 가져오기
         Bundle bundle = intent.getExtras().getBundle("Bundle");
         Alarm alarm = (Alarm) bundle.getSerializable("Alarm");
+        Log.d("receiver", "please");
 
         //알람매니저에게 알람 넘겨주기
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
@@ -42,7 +44,7 @@ public class AlarmNotifyReceiver extends BroadcastReceiver {
         int repeatCount = intent.getExtras().getInt("RepeatCount");
         Integer interval = alarm.getRepetition().getInterval();
         //알람 행동 취하기
-        if (repeatCount > 0) {
+        if (repeatCount > 1) {
             intent.putExtra("RepeatCount", repeatCount - 1);
             PendingIntent repeatAlarmPendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.setExactAndAllowWhileIdle(
@@ -79,7 +81,6 @@ public class AlarmNotifyReceiver extends BroadcastReceiver {
                 }
             }
 
-            return;
         }
 
 

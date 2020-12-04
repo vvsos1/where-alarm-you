@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -18,16 +19,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.alarm.Date;
-import kr.ac.ssu.wherealarmyou.alarm.Time;
-import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
-import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
-import kr.ac.ssu.wherealarmyou.view.adapter.AlarmAddContentViewAdapter;
-import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
-import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
-import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import reactor.core.scheduler.Schedulers;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -35,6 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.alarm.Date;
+import kr.ac.ssu.wherealarmyou.alarm.Repetition;
+import kr.ac.ssu.wherealarmyou.alarm.Time;
+import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
+import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
+import kr.ac.ssu.wherealarmyou.view.adapter.AlarmAddContentViewAdapter;
+import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
+import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
+import reactor.core.scheduler.Schedulers;
 
 public class AlarmAddFragment extends Fragment implements View.OnClickListener
 {
@@ -99,7 +102,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(decoration);
         layoutManager = recyclerView.getLayoutManager( );
-        
+
         return frameView;
     }
     
@@ -220,7 +223,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         Date date = new Date(now.getDayOfMonth( ), now.getMonth( ).getValue( ), now.getYear( ));
         
         AlarmSaveRequest req = AlarmSaveRequest.builder(time)
-                                               .dates(List.of(date))
+                .dates(List.of(date)).repetition(new Repetition(1))
                                                .build( );
         
         Log.d("AlarmAddFragment", req.toString( ));
