@@ -165,4 +165,9 @@ public class UserService
         else
             throw new IllegalStateException("현재 로그인중인 사용자가 없습니다");
     }
+
+    public Mono<User> findUser(String userUid) {
+        return userRepository.findUserByUid(userUid);
+    }
+
 }

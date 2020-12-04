@@ -3,21 +3,34 @@ package kr.ac.ssu.wherealarmyou.alarm.component;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
+import java.util.Map;
 
-import kr.ac.ssu.wherealarmyou.user.UserRepository;
+import kr.ac.ssu.wherealarmyou.alarm.Alarm;
+import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
+import kr.ac.ssu.wherealarmyou.user.User;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
 
 public class AlarmBootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction() != null)
+        if (intent.getAction() != null) {
             if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-                UserRepository userRepository = UserRepository.getInstance();
-                String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
+                AlarmService alarmService = AlarmService.getInstance(context);
+                UserService userService = UserService.getInstance();
+                Log.d("AlarmBootReceiver", "current uid : " + userService.getCurrentUserUid());
+                userService.findUser(userService.getCurrentUserUid())
+                        .map(User::getAlarms)
+                        .map(Map::values).subscribe(alarms -> {
+                            for (Alarm alarm : alarms) {
+                                Log.d("AlarmBootReceiver", "current alarm : " + alarm.getUid());
+                                alarmService.register(alarm);
+                            }
+                        }
+                );
             }
+        }
     }
 }

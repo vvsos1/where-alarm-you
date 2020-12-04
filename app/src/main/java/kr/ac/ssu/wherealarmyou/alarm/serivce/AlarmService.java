@@ -29,7 +29,6 @@ import kr.ac.ssu.wherealarmyou.alarm.component.AlarmNotifyReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmModifyRequest;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
-import kr.ac.ssu.wherealarmyou.view.alarm.AlarmRegisterReceiver;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
