@@ -41,8 +41,7 @@ public class User
     Map<String, Boolean> groupLocations;
 
     // 사용자에게 귀속된 알람
-    @Getter
-    @Exclude
+    @Getter(onMethod_ = @Exclude)
     Map<String, Alarm> alarms = new ArrayMap<>();
     
     // 사용자가 가입된 그룹
