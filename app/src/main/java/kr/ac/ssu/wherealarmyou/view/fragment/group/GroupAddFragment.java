@@ -13,7 +13,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
@@ -32,9 +31,7 @@ import java.util.Objects;
 
 public class GroupAddFragment extends Fragment implements View.OnClickListener
 {
-    private final DataManager dataManager = DataManager.getInstance();
-    
-    LiveData<List<Group>> groups = dataManager.getGroupLiveData();
+    List<Group> groups = new ArrayList<>( );
     
     private InputMethodManager inputManager;
     
@@ -112,11 +109,11 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
     {
         GroupService groupService = GroupService.getInstance( );
         
-        //groups.clear( );
+        groups.clear( );
         groupItemAdapter.notifyDataSetChanged( );
         groupService.findGroupsByName(sequence.toString( ))
                     .doOnNext(group -> {
-                        //groups.add(group);
+                        groups.add(group);
                         groupItemAdapter.notifyDataSetChanged( );
                     })
                     .publishOn(Schedulers.elastic( ))

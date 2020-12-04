@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
@@ -19,6 +18,7 @@ import kr.ac.ssu.wherealarmyou.view.custom_view.RecyclerViewDecoration;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class GroupFragment extends Fragment
 {
@@ -34,7 +34,7 @@ public class GroupFragment extends Fragment
     {
         Bundle bundle = Objects.requireNonNull(getArguments( ));
         
-        LiveData<List<Group>> groups = dataManager.getGroupLiveData( );
+        AtomicReference<List<Group>> groups = new AtomicReference<>(dataManager.getGroupLiveData( ).getValue( ));
         
         // View
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
@@ -49,7 +49,7 @@ public class GroupFragment extends Fragment
         
         // Content View Setting
         RecyclerView           recyclerView           = frameView.findViewById(R.id.group_recyclerView);
-        GroupItemAdapter       groupItemAdapter       = new GroupItemAdapter(getContext( ), groups);
+        GroupItemAdapter       groupItemAdapter       = new GroupItemAdapter(getContext( ), groups.get( ));
         LinearLayoutManager    linearLayoutManager    = new LinearLayoutManager(getContext( ));
         RecyclerViewDecoration recyclerViewDecoration = new RecyclerViewDecoration(30);
         
@@ -59,6 +59,13 @@ public class GroupFragment extends Fragment
         recyclerView.setAdapter(groupItemAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(recyclerViewDecoration);
+        
+        dataManager.getGroupLiveData( ).observe(getViewLifecycleOwner( ), groups_ -> {
+            GroupItemAdapter newGroupItemAdapter = new GroupItemAdapter(getContext( ), groups_);
+            newGroupItemAdapter.setOnGroupClickListener((itemView, group) ->
+                    MainFrameActivity.addTopFragment(GroupInfoFragment.getInstance(group)));
+            recyclerView.setAdapter(newGroupItemAdapter);
+        });
         
         return frameView;
     }

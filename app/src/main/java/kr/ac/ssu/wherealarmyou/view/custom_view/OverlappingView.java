@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
@@ -133,6 +136,25 @@ public class OverlappingView extends LinearLayout implements View.OnClickListene
         animation.start( );
     }
     
+   /**
+    * <p>
+    *     OverlappingView 항목을 한번에 설정합니다.<br>
+    * </p>
+    *
+    * <p>
+    *     existAddButton을 true로 설정할 경우<br>
+    *     추가 버튼에 click 이벤트를 {@link OverlappingView}의 onAddClick으로 전달해주세요<br>
+    *     ex) buttonAdd.setOnClickListener(view -> overlappingView.onAddClick( ));
+    * </p>
+    *
+    * @param bundle                  getArguments( ) 전달
+    * @param frameView               R.layout.frame_overlap 전달
+    * @param contentView             Content Layout 전달
+    * @param title                   OverlappingView의 제목
+    * @param existAddButton         추가 버튼(+)의 유무
+    * @param setBackHideButtonEvent 뒤로가기 및 종료 버튼의 기본 이벤트 등록 유무
+    *
+    */
     public void setAtOnce(Bundle bundle, View frameView, View contentView, String title,
                           Boolean existAddButton, Boolean setBackHideButtonEvent)
     {
