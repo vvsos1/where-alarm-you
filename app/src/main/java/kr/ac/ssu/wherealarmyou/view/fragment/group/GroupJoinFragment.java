@@ -23,8 +23,6 @@ public class GroupJoinFragment extends Fragment implements View.OnClickListener
 {
     private final Group group;
     
-    private Button buttonJoin;
-    
     public GroupJoinFragment(Group group)
     {
         this.group = group;
@@ -52,7 +50,7 @@ public class GroupJoinFragment extends Fragment implements View.OnClickListener
         TextView textViewName  = contentView.findViewById(R.id.groupJoin_textViewName);
         TextView textViewAdmin = contentView.findViewById(R.id.groupJoin_textViewAdmin);
         TextView textViewInfo  = contentView.findViewById(R.id.groupJoin_textViewInfo);
-        buttonJoin = contentView.findViewById(R.id.groupJoin_buttonJoin);
+        Button   buttonJoin    = contentView.findViewById(R.id.groupJoin_buttonJoin);
         
         String groupAdmin = "(미구현)";
         
@@ -84,7 +82,7 @@ public class GroupJoinFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view)
     {
-        if (view == buttonJoin) {
+        if (view.getId( ) == R.id.groupJoin_buttonJoin) {
             joinGroup(group.getUid( ));
         }
     }

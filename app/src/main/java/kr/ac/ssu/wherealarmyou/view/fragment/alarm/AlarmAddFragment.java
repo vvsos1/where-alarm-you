@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,14 +18,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.Repetition;
@@ -38,6 +29,13 @@ import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
 import reactor.core.scheduler.Schedulers;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AlarmAddFragment extends Fragment implements View.OnClickListener
 {
@@ -63,7 +61,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         time = new Time( );
-    
+        
         Bundle bundle = Objects.requireNonNull(getArguments( ));
         
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
@@ -102,7 +100,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(decoration);
         layoutManager = recyclerView.getLayoutManager( );
-
+        
         return frameView;
     }
     
@@ -113,21 +111,21 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         
         Fragment fragment = null;
         if (category == TIME) { fragment = AlarmAddTimeFragment.getInstance( ); }
-//        if (category == WEEK)     { fragment = AlarmAddWeekFragment.getInstance( ); }
+//        if (category == WEEK)     { fragment = AlarmAddDaysFragment.getInstance( ); }
 //        if (category == LOCATION) { fragment = AlarmAddLocationFragment.getInstance( ); }
 //        if (category == GROUP)    { fragment = AlarmAddGroupFragment.getInstance( ); }
 //        if (category == MEMO)     { fragment = AlarmAddMemoFragment.getInstance( ); }
 //        if (category == DETAIL)   { fragment = AlarmAddDetailFragment.getInstance( ); }
         
         if (fragment != null) {
-            fragmentTransaction//.setCustomAnimations(R.anim.fade_in, R.anim.test_anim, R.anim.fade_in, R.anim.test_anim)
+            fragmentTransaction.setCustomAnimations(R.anim.fade_in, 0, R.anim.fade_in, 0)
                                .replace(R.id.item_alarmAddCategory_frameLayoutContent, fragment)
                                .addToBackStack(null)
                                .commit( );
         }
     }
     
-    // TODO ViewModel에서 setData와 setInfo 분리하기 (getViewModel 이용)
+    // TODO ViewModel에서 setData와 setInfo 분리하기 (getViewModel와 인터페이스 이용)
     private void setViewModel(int category)
     {
         if (category == TIME) {
@@ -223,7 +221,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         Date date = new Date(now.getDayOfMonth( ), now.getMonth( ).getValue( ), now.getYear( ));
         
         AlarmSaveRequest req = AlarmSaveRequest.builder(time)
-                .dates(List.of(date)).repetition(new Repetition(1))
+                                               .dates(List.of(date)).repetition(new Repetition(1))
                                                .build( );
         
         Log.d("AlarmAddFragment", req.toString( ));
