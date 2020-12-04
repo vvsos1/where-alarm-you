@@ -15,19 +15,15 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class DatesAlarm extends Alarm implements Serializable {
-
+    public static final String TYPE = "dates";
 
     List<Date> dates;
 
     @Builder
     public DatesAlarm(String uid, String title, String description, Time time, LocationCondition locationCondition, String group, Boolean sound, Boolean vibe, Repetition repetition, List<Date> dates) {
-        super(title, description, time, locationCondition, group, sound, vibe, repetition);
+        super(TYPE, title, description, time, locationCondition, group, sound, vibe, repetition);
         this.dates = dates;
         setUid(uid);
     }
 
-    @Override
-    String getType() {
-        return "dates";
-    }
 }
