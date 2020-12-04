@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -80,11 +81,17 @@ public class AlarmService {
                     if (zonedDateTime.isAfter(currentTime)) {
                         rtcTime = zonedDateTime
                                 .toInstant().toEpochMilli();
+                        int requestCode = (alarm.getUid() + date.toString()).hashCode();
                         Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
-                        toAlarm.putExtra("Bundle", bundle);
+                        if (alarm.getRepetition() == null) {
+                            Log.d("Alarm", "null");
+                        }
+                        Log.d("Alarm", alarm.getRepetition().getRepeatCount().toString());
+                        toAlarm.putExtra("Bundle", bundle)
+                                .putExtra("RequestCode", requestCode)
+                                .putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                                (alarm.getUid() + date.toString()).hashCode(),
-                                toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                                requestCode, toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
 
                         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, rtcTime, toAlarmPendingIntent);
                     }
@@ -113,11 +120,13 @@ public class AlarmService {
                             rtcZonedDateTime.plusDays(1);
                         }
                         rtcTime = rtcZonedDateTime.toInstant().toEpochMilli();
+                        int requestCode = (alarm.getUid()).hashCode();
                         Intent toAlarm = new Intent(context, AlarmBootReceiver.class);
-                        toAlarm.putExtra("Bundle", bundle);
+                        toAlarm.putExtra("Bundle", bundle)
+                                .putExtra("RequestCode", requestCode)
+                                .putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());
                         PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                                (alarm.getUid()).hashCode(),
-                                toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                                requestCode, toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
                         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, rtcTime, toAlarmPendingIntent);
                     } else {
 
@@ -131,11 +140,13 @@ public class AlarmService {
                                         .atZone(ZoneId.of("Asia/Seoul"))
                                         .toInstant()
                                         .toEpochMilli();
+                                int requestCode = (alarm.getUid() + dayOfWeek).hashCode();
                                 Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
-                                toAlarm.putExtra("Bundle", bundle);
+                                toAlarm.putExtra("Bundle", bundle)
+                                        .putExtra("RequestCode", requestCode)
+                                        .putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());
                                 PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                                        (alarm.getUid() + dayOfWeek).hashCode(),
-                                        toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        requestCode, toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
                                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                                         rtcTime, toAlarmPendingIntent);
                             }
@@ -147,11 +158,13 @@ public class AlarmService {
                                         .atZone(ZoneId.of("Asia/Seoul"))
                                         .toInstant()
                                         .toEpochMilli();
+                                int requestCode = (alarm.getUid() + dayOfWeek).hashCode();
                                 Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
-                                toAlarm.putExtra("Bundle", bundle);
+                                toAlarm.putExtra("Bundle", bundle)
+                                        .putExtra("RequestCode", requestCode)
+                                        .putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());
                                 PendingIntent toAlarmPendingIntent = PendingIntent.getBroadcast(context,
-                                        (alarm.getUid() + dayOfWeek).hashCode(),
-                                        toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        requestCode, toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
                                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                                         rtcTime, toAlarmPendingIntent);
                             }
@@ -213,11 +226,8 @@ public class AlarmService {
     public Mono<Alarm> save(AlarmSaveRequest request) {
         String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-//        Alarm alarm = request.toAlarm();
-        Alarm alarm = DatesAlarm.builder()
-                .dates(request.getDates())
-                .time(request.getTime())
-                .build();
+        Alarm alarm = request.toAlarm();
+        Log.d("AlarmService", "save; " + alarm.toString());
 
         return alarmRepository.save(alarm)
                 .map(Alarm::getUid)

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
+import kr.ac.ssu.wherealarmyou.alarm.Repetition;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
 import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
@@ -112,21 +113,21 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         
         Fragment fragment = null;
         if (category == TIME) { fragment = AlarmAddTimeFragment.getInstance( ); }
-//        if (category == WEEK)     { fragment = AlarmAddWeekFragment.getInstance( ); }
+//        if (category == WEEK)     { fragment = AlarmAddDaysFragment.getInstance( ); }
 //        if (category == LOCATION) { fragment = AlarmAddLocationFragment.getInstance( ); }
 //        if (category == GROUP)    { fragment = AlarmAddGroupFragment.getInstance( ); }
 //        if (category == MEMO)     { fragment = AlarmAddMemoFragment.getInstance( ); }
 //        if (category == DETAIL)   { fragment = AlarmAddDetailFragment.getInstance( ); }
         
         if (fragment != null) {
-            fragmentTransaction//.setCustomAnimations(R.anim.fade_in, R.anim.test_anim, R.anim.fade_in, R.anim.test_anim)
+            fragmentTransaction.setCustomAnimations(R.anim.fade_in, 0, R.anim.fade_in, 0)
                                .replace(R.id.item_alarmAddCategory_frameLayoutContent, fragment)
                                .addToBackStack(null)
                                .commit( );
         }
     }
     
-    // TODO ViewModel에서 setData와 setInfo 분리하기 (getViewModel 이용)
+    // TODO ViewModel에서 setData와 setInfo 분리하기 (getViewModel와 인터페이스 이용)
     private void setViewModel(int category)
     {
         if (category == TIME) {
@@ -222,7 +223,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         Date date = new Date(now.getDayOfMonth( ), now.getMonth( ).getValue( ), now.getYear( ));
         
         AlarmSaveRequest req = AlarmSaveRequest.builder(time)
-                                               .dates(List.of(date))
+                                               .dates(List.of(date)).repetition(new Repetition(1))
                                                .build( );
         
         Log.d("AlarmAddFragment", req.toString( ));
