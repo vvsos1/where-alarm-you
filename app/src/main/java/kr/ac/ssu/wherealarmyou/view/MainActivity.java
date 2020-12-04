@@ -1,9 +1,12 @@
 package kr.ac.ssu.wherealarmyou.view;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
 import kr.ac.ssu.wherealarmyou.location.LocationRepository;
@@ -29,5 +32,7 @@ public class MainActivity extends AppCompatActivity
         userRepository     = UserRepository.getInstance( );
         alarmRepository    = AlarmRepository.getInstance( );
         locationRepository = LocationRepository.getInstance( );
+
+
     }
 }

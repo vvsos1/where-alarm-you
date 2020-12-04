@@ -1,35 +1,30 @@
 package kr.ac.ssu.wherealarmyou.alarm.component;
 
 import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
 
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.DaysAlarm;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
-import kr.ac.ssu.wherealarmyou.view.alarm.AlarmActivity;
 
 public class AlarmNotifyReceiver extends BroadcastReceiver {
 
     static final String notification_channel_id = "kr.ac.ssu.wherealarmyou";
     static final String notification_channel_name = "Where-Alarm-You";
+    Vibrator vibrator;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -83,45 +78,10 @@ public class AlarmNotifyReceiver extends BroadcastReceiver {
 
         }
 
-
-        //노티피캐이션 띄우는 부분 시작
-        int notificationCode = (alarm.getUid() + "notification").hashCode();
-        PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, notificationCode,
-                new Intent(context, AlarmActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, notification_channel_id);
-        notificationBuilder
-                .setSmallIcon(R.drawable.ic_action_smallicon)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher_foreground))
-                .setContentTitle("알람 제목 : " + alarm.getTitle())
-                .setContentText("알람 내용 : " + alarm.getDescription())
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setContentIntent(notificationPendingIntent)
-                .setFullScreenIntent(notificationPendingIntent, true)
-                .addAction(R.drawable.ic_action_re_alarm, "다시 울림",
-                        PendingIntent.getBroadcast(context, "re_alarm".hashCode(),
-                                new Intent(context, AlarmRegisterReceiver.class)
-                                        .putExtra("Bundle", bundle)
-                                        .putExtra("Action", "re_alarm")
-                                        .putExtra("RequestCode", requestCode)
-                                , PendingIntent.FLAG_UPDATE_CURRENT)
-                )
-                .addAction(R.drawable.ic_action_cancel_alarm, "그만 울림",
-                        PendingIntent.getBroadcast(context, "cancel".hashCode(),
-                                new Intent(context, AlarmRegisterReceiver.class)
-                                        .putExtra("Bundle", bundle)
-                                        .putExtra("Action", "cancel")
-                                        .putExtra("RequestCode", requestCode)
-                                , PendingIntent.FLAG_UPDATE_CURRENT)
-                );
-
-        NotificationChannel notificationChannel = new NotificationChannel(
-                notification_channel_id, notification_channel_name, NotificationManager.IMPORTANCE_HIGH);
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        notificationManager.createNotificationChannel(notificationChannel);
-        notificationManager.notify(notificationCode, notificationBuilder.build());
+        Intent toService = new Intent(context, AlarmNotifyService.class)
+                .putExtra("Bundle", bundle)
+                .putExtra("RequestCode", requestCode);
+        context.startForegroundService(toService);
 
 
     }

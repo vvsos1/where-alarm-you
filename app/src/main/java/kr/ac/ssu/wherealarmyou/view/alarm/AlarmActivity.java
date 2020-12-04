@@ -2,7 +2,6 @@ package kr.ac.ssu.wherealarmyou.view.alarm;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +18,16 @@ public class AlarmActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
-        handler = new Handler(Looper.getMainLooper());
 
+//        handler = new Handler(Looper.getMainLooper());
+//
+//        handler.postDelayed(() -> {
+//            // TODO
+//        },1000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
