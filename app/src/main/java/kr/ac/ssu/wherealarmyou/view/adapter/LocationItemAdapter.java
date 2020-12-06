@@ -15,49 +15,51 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
+import kr.ac.ssu.wherealarmyou.location.Location;
 
 import java.util.List;
 
-public class GroupItemAdapter extends RecyclerView.Adapter<GroupItemAdapter.GroupContentViewHolder>
+public class LocationItemAdapter extends RecyclerView.Adapter<LocationItemAdapter.LocationContentViewHolder>
 {
-    private Context     context;
-    private List<Group> groups;
+    private Context context;
+    
+    private List<Location> locations;
     
     private OnItemClickListener listener = null;
     
-    public GroupItemAdapter(Context context, List<Group> groups)
+    public LocationItemAdapter(Context context, List<Location> locations)
     {
-        this.context = context;
-        this.groups  = groups;
+        this.context   = context;
+        this.locations = locations;
     }
     
     @NonNull
     @Override
-    public GroupContentViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public LocationContentViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View view = LayoutInflater.from(parent.getContext( )).inflate(R.layout.item_icon_and_title, parent, false);
-        return new GroupContentViewHolder(view);
+        return new LocationContentViewHolder(view);
     }
     
     @Override
-    public void onBindViewHolder(GroupContentViewHolder holder, int position)
+    public void onBindViewHolder(LocationContentViewHolder holder, int position)
     {
-        Group group = groups.get(position);
+        Location location = locations.get(position);
         
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.fade_in_fast);
         holder.layout.setAnimation(animation);
         
         GradientDrawable drawable = (GradientDrawable)holder.icon.getBackground( );
-        drawable.setColor(Color.parseColor(group.getIcon( ).getColorHex( )));
+        drawable.setColor(Color.parseColor(location.getIcon( ).getColorHex( )));
         
-        holder.icon.setText(group.getIcon( ).getText( ));
-        holder.name.setText(group.getName( ));
+        holder.icon.setText(location.getIcon( ).getText( ));
+//        holder.name.setText(location.getName( ));
     }
     
     @Override
     public int getItemCount( )
     {
-        return groups.size( );
+        return locations.size( );
     }
     
     public void setOnItemClickListener(OnItemClickListener listener)
@@ -67,16 +69,16 @@ public class GroupItemAdapter extends RecyclerView.Adapter<GroupItemAdapter.Grou
     
     public interface OnItemClickListener
     {
-        void onItemClick(View view, Group group);
+        void onItemClick(View view, Location location);
     }
     
-    public class GroupContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    public class LocationContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         RelativeLayout layout;
         Button         icon;
         TextView       name;
         
-        public GroupContentViewHolder(View itemView)
+        public LocationContentViewHolder(View itemView)
         {
             super(itemView);
             layout = itemView.findViewById(R.id.item_icon_and_title_relativeLayoutParent);
@@ -94,7 +96,7 @@ public class GroupItemAdapter extends RecyclerView.Adapter<GroupItemAdapter.Grou
                 || view.getId( ) == R.id.item_icon_and_title_textViewTitle) {
                 int position = getAdapterPosition( );
                 if ((position != RecyclerView.NO_POSITION) && (listener != null)) {
-                    listener.onItemClick(view, groups.get(position));
+                    listener.onItemClick(view, locations.get(position));
                 }
             }
         }

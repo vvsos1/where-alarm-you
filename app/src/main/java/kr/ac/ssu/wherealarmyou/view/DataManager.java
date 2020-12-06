@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
+import kr.ac.ssu.wherealarmyou.location.Location;
+import kr.ac.ssu.wherealarmyou.location.service.LocationService;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ public class DataManager
 {
     public static DataManager instance;
     
+    private final MutableLiveData<List<Location>> locationMutableLiveData = new MutableLiveData<>(new ArrayList<>( ));
+    
     private final MutableLiveData<List<Group>> groupMutableLiveData = new MutableLiveData<>(new ArrayList<>( ));
     
     public static DataManager getInstance( )
@@ -21,6 +25,7 @@ public class DataManager
         if (instance == null) {
             instance = new DataManager( );
             instance.updateGroupLiveData( );
+            instance.updateLocationLiveData( );
         }
         return instance;
     }
@@ -51,5 +56,25 @@ public class DataManager
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))
                     .subscribe( );
+    }
+    
+    public void updateLocationLiveData( )
+    {
+        locationMutableLiveData.setValue(new ArrayList<>( ));
+        LocationService locationService = LocationService.getInstance(MainFrameActivity.frameBottom.getContext( ));
+        
+       /*
+        locationService.getLocation( )
+                       .doOnNext(instance::addGroupLiveData)
+                       .publishOn(Schedulers.elastic( ))
+                       .subscribeOn(Schedulers.elastic( ))
+                       .subscribe( );
+                    
+        */
+    }
+    
+    public LiveData<List<Location>> getLocationLiveData( )
+    {
+        return locationMutableLiveData;
     }
 }

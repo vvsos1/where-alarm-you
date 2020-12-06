@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
-import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.adapter.GroupItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
@@ -71,7 +70,7 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
         contentView.setOnClickListener(this);
         recyclerView.setOnClickListener(this);
         textViewMakeGroup.setOnClickListener(this);
-        groupItemAdapter.setOnGroupClickListener((itemView, group) -> {
+        groupItemAdapter.setOnItemClickListener((itemView, group) -> {
             MainFrameActivity.addTopFragment(GroupJoinFragment.getInstance(group));
             inputManager.hideSoftInputFromWindow(editTextFindGroup.getWindowToken( ), 0);
         });

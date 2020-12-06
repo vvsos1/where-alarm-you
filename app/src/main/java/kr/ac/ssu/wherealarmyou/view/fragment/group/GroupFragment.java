@@ -53,7 +53,7 @@ public class GroupFragment extends Fragment
         LinearLayoutManager    linearLayoutManager    = new LinearLayoutManager(getContext( ));
         RecyclerViewDecoration recyclerViewDecoration = new RecyclerViewDecoration(30);
         
-        groupItemAdapter.setOnGroupClickListener((itemView, group) ->
+        groupItemAdapter.setOnItemClickListener((itemView, group) ->
                 MainFrameActivity.addTopFragment(GroupInfoFragment.getInstance(group)));
         
         recyclerView.setAdapter(groupItemAdapter);
@@ -62,7 +62,7 @@ public class GroupFragment extends Fragment
         
         dataManager.getGroupLiveData( ).observe(getViewLifecycleOwner( ), groups_ -> {
             GroupItemAdapter newGroupItemAdapter = new GroupItemAdapter(getContext( ), groups_);
-            newGroupItemAdapter.setOnGroupClickListener((itemView, group) ->
+            newGroupItemAdapter.setOnItemClickListener((itemView, group) ->
                     MainFrameActivity.addTopFragment(GroupInfoFragment.getInstance(group)));
             recyclerView.setAdapter(newGroupItemAdapter);
         });
