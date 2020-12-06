@@ -1,5 +1,6 @@
 package kr.ac.ssu.wherealarmyou.view.alarm;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -32,12 +33,14 @@ public class AlarmActivity extends AppCompatActivity {
     FrameLayout.LayoutParams button_cancel_layoutParams;
     int xSize;
     int ySize;
+    public static Activity AlarmActivity;
     Random random;
 
     int second;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AlarmActivity = this;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         super.onCreate(savedInstanceState);

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.os.Vibrator;
 import android.util.Log;
 
 import java.time.LocalDate;
@@ -25,9 +24,6 @@ import reactor.core.publisher.Flux;
 
 public class AlarmNotifyReceiver extends BroadcastReceiver {
 
-    static final String notification_channel_id = "kr.ac.ssu.wherealarmyou";
-    static final String notification_channel_name = "Where-Alarm-You";
-    Vibrator vibrator;
 
     @Override
     public void onReceive(Context context, Intent intent) {

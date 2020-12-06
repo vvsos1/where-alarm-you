@@ -30,7 +30,7 @@
             android:background="@drawable/edge"
             android:padding="10dp"
             android:text="5 분뒤 다시울림"
-            android:textColor="#AAAA00"
+            android:textColor="#00AAAA"
             android:textSize="30sp"></TextView>
 
 
