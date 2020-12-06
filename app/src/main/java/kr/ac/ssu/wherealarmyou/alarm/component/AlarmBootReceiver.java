@@ -16,6 +16,7 @@ public class AlarmBootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d("AlarmBootReceiver", "onReceive");
         if (intent.getAction() != null) {
             if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
                 AlarmService alarmService = AlarmService.getInstance(context);

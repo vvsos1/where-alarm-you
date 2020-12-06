@@ -1,7 +1,6 @@
 package kr.ac.ssu.wherealarmyou.alarm.component;
 
 import android.app.AlarmManager;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,8 +31,9 @@ public class AlarmRegisterReceiver extends BroadcastReceiver {
         Log.d("AlarmRegisterReceiver", "onReceive");
         String action = intent.getExtras().getString("Action");
         if (action != null) {
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(intent.getExtras().getInt("NotificationCode"));
+            //Todo : notification 중지, 진동도 중지 만약 주석이 필요한 코드라면 서비스로 이동
+//            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//            notificationManager.cancel(intent.getExtras().getInt("NotificationCode"));
             context.stopService(new Intent(context, AlarmNotifyService.class));
 
             Bundle bundle = intent.getExtras().getBundle("Bundle");
@@ -46,17 +46,21 @@ public class AlarmRegisterReceiver extends BroadcastReceiver {
             toAlarm.putExtra("Bundle", bundle);
             toAlarm.putExtra("RequestCode", requestCode);
 
+
+            //다시 울림 버튼을 눌렀을 때
             if (action.equals("re_alarm")) {
                 Log.d("AlarmRegisterReceiver", "\"re_alarm\".equals(intent.getAction())");
                 toAlarm.putExtra("RepeatCount", 1);
                 PendingIntent repeatAlarmPendingIntent = PendingIntent.getBroadcast(context, requestCode, toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        //Todo : 나중에 20초가 아니라 5분으로 바꿀 예정
                         SystemClock.elapsedRealtime() + (Duration.ofSeconds(20).toMillis()),
                         repeatAlarmPendingIntent);
 
             }
 
+            //취소 버튼을 눌렀을 때
             if (action.equals("cancel")) {
 
                 PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(
@@ -83,6 +87,7 @@ public class AlarmRegisterReceiver extends BroadcastReceiver {
                     if (currentTime.isBefore(endZonedDateTime)) {
                         long rtcTime;
 
+                        //Todo: days알람 테스트를 위해 plusSeconds를 사용 나중에 20 -> 1, 40 -> 7 로 바꿈
                         if (((DaysAlarm) alarm).getDaysOfWeek().keySet().contains("EVERY_DAY")) {
                             rtcTime = currentDay.plusSeconds(20).toInstant().toEpochMilli();
                         } else {

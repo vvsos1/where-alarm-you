@@ -46,9 +46,13 @@ public class AlarmNotifyService extends Service {
         int requestCode = intent.getExtras().getInt("RequestCode");
         Context context = this;
 
+        Intent toAlarmActivity = new Intent(context, AlarmActivity.class)
+                .putExtra("Bundle", bundle)
+                .putExtra("RequestCode", requestCode);
+
         int notificationCode = (alarm.getUid() + "notification").hashCode();
         PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, notificationCode,
-                new Intent(context, AlarmActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                toAlarmActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, notification_channel_id);
         notificationBuilder
