@@ -31,9 +31,7 @@ public class AlarmRegisterReceiver extends BroadcastReceiver {
         Log.d("AlarmRegisterReceiver", "onReceive");
         String action = intent.getExtras().getString("Action");
         if (action != null) {
-            //Todo : notification 중지, 진동도 중지 만약 주석이 필요한 코드라면 서비스로 이동
-//            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//            notificationManager.cancel(intent.getExtras().getInt("NotificationCode"));
+            //notification 중지, 진동도 중지 만약 주석이 필요한 코드라면 서비스로 이동
             context.stopService(new Intent(context, AlarmNotifyService.class));
 
             Bundle bundle = intent.getExtras().getBundle("Bundle");
@@ -45,6 +43,7 @@ public class AlarmRegisterReceiver extends BroadcastReceiver {
             Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
             toAlarm.putExtra("Bundle", bundle);
             toAlarm.putExtra("RequestCode", requestCode);
+            toAlarm.putExtra("NoFirstAlarm", true);
 
 
             //다시 울림 버튼을 눌렀을 때

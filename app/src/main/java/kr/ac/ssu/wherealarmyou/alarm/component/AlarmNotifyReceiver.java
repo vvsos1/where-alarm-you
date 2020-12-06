@@ -14,11 +14,14 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.DaysAlarm;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
+import kr.ac.ssu.wherealarmyou.location.service.LocationService;
+import reactor.core.publisher.Flux;
 
 public class AlarmNotifyReceiver extends BroadcastReceiver {
 
@@ -78,11 +81,56 @@ public class AlarmNotifyReceiver extends BroadcastReceiver {
 
         }
 
-        Intent toService = new Intent(context, AlarmNotifyService.class)
-                .putExtra("Bundle", bundle)
-                .putExtra("RequestCode", requestCode);
-        context.startForegroundService(toService);
+
+        if (!alarm.hasLocation() || intent.getExtras().containsKey("NoFirstAlarm")) {
+            Intent toService = new Intent(context, AlarmNotifyService.class)
+                    .putExtra("Bundle", bundle)
+                    .putExtra("RequestCode", requestCode);
+            context.startForegroundService(toService);
 
 
+        } else {
+
+            LocationService locationService = LocationService.getInstance(context);
+            locationService.getCurrentAddress().doOnNext(currentAddress -> {
+
+
+                Set<String> locationUidSet;
+                if (alarm.getLocationCondition().isInclude()) {
+
+                    locationUidSet = alarm.getLocationCondition().getInclude().keySet();
+                    Flux.fromIterable(locationUidSet)
+                            .flatMap(locationService::findLocation)
+                            .map(location -> location.isCover(currentAddress))
+                            .reduce((accumulator, booleanValue) -> accumulator || booleanValue)
+                            .subscribe(doNotify -> {
+                                if (doNotify) {
+                                    Intent toService = new Intent(context, AlarmNotifyService.class)
+                                            .putExtra("Bundle", bundle)
+                                            .putExtra("RequestCode", requestCode);
+                                    context.startForegroundService(toService);
+
+                                }
+                            });
+                } else {
+                    locationUidSet = alarm.getLocationCondition().getExclude().keySet();
+                    Flux.fromIterable(locationUidSet)
+                            .flatMap(locationService::findLocation)
+                            .map(location -> location.isCover(currentAddress))
+                            .reduce((accumulator, booleanValue) -> accumulator || booleanValue)
+                            .subscribe(doNotNotify -> {
+                                if (!doNotNotify) {
+                                    Intent toService = new Intent(context, AlarmNotifyService.class)
+                                            .putExtra("Bundle", bundle)
+                                            .putExtra("RequestCode", requestCode);
+                                    context.startForegroundService(toService);
+                                }
+                            });
+                }
+
+            }).subscribe();
+
+
+        }
     }
 }

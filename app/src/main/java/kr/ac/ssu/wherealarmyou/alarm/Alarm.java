@@ -82,6 +82,12 @@ public abstract class Alarm implements Serializable {
 
     ;
 
+    public boolean hasLocation() {
+        if (locationCondition != null)
+            return true;
+        return false;
+    }
+
     // AlarmRepository 전용
     void setUid(String newUid) {
         this.uid = newUid;

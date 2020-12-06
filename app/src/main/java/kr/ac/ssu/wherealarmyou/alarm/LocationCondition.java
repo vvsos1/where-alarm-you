@@ -21,4 +21,12 @@ public class LocationCondition implements Serializable {
 
     // Key : Location Uid
     Map<String, Boolean> exclude;
+
+    public boolean isInclude() {
+        if (include != null)
+            return true;
+
+        return false;
+    }
+
 }
