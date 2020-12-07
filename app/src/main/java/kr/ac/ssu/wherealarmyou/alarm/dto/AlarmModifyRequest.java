@@ -21,7 +21,6 @@ import reactor.util.annotation.Nullable;
 public class AlarmModifyRequest {
     Alarm origin;
 
-
     // 알람의 제목
     String title;
 
@@ -31,29 +30,29 @@ public class AlarmModifyRequest {
     // 알람이 울릴 시간
     Time time;
 
-    @Nullable
     // 알람이 활성화될 장소의 조건
-            LocationCondition locationCondition;
+    @Nullable
+    LocationCondition locationCondition;
 
 
-    @Builder.Default
     // 소리
-            Boolean sound = Boolean.TRUE;
-
     @Builder.Default
+    Boolean sound = Boolean.TRUE;
+
     // 진동
-            Boolean vibe = Boolean.TRUE;
+    @Builder.Default
+    Boolean vibe = Boolean.TRUE;
 
     // 반복
     Repetition repetition;
 
-    @Nullable
     // 알람이 활성화될 기간
-            Period activePeriod;
-
     @Nullable
+    Period activePeriod;
+
     // 알람이 울릴 요일; Key: 요일
-            Map<String, Boolean> daysOfWeek;
+    @Nullable
+    Map<String, Boolean> daysOfWeek;
 
     @Nullable
     List<Date> dates;
