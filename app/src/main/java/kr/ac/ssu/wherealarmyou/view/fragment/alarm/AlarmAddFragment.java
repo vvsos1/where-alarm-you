@@ -62,7 +62,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        time = new Time( );
+        time = new Time();
     
         Bundle bundle = Objects.requireNonNull(getArguments( ));
         
