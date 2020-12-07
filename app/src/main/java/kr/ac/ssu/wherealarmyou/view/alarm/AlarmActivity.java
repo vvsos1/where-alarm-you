@@ -25,13 +25,14 @@ import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.component.AlarmRegisterReceiver;
 
 public class AlarmActivity extends AppCompatActivity {
-
-
+    
     Intent toRegisterReceiver;
     Handler handler;
+    
     TextView currentTime;
-    TextView button_reAlarm;
+    Button button_reAlarm;
     Button button_cancel;
+    
     FrameLayout.LayoutParams button_cancel_layoutParams;
     int xSize;
     int ySize;
@@ -57,11 +58,11 @@ public class AlarmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm);
         second = 0;
 
-        currentTime = findViewById(R.id.text_current_time);
-        button_reAlarm = findViewById(R.id.button_re_alarm);
-        button_cancel = findViewById(R.id.button_cancel);
+        currentTime = findViewById(R.id.alarmActivity_textViewCurrentTime);
+        button_reAlarm = findViewById(R.id.alarmActivity_buttonReAlarm);
+        button_cancel = findViewById(R.id.alarmActivity_buttonCancel);
 
-        button_cancel_layoutParams = (FrameLayout.LayoutParams) button_cancel.getLayoutParams();
+        //button_cancel_layoutParams = (FrameLayout.LayoutParams) button_cancel.getLayoutParams();
 
 
         Bundle bundle = getIntent().getExtras().getBundle("Bundle");
@@ -84,9 +85,10 @@ public class AlarmActivity extends AppCompatActivity {
 
 
         LocalTime now2 = LocalTime.now();
-        currentTime.setText(now2.getHour() + " : " + now2.getMinute() + " : " + now2.getSecond());
+        currentTime.setText(now2.getHour() + "시 " + now2.getMinute() + "분 " + now2.getSecond() + "초");
         second = 1;
 
+        /*
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -99,13 +101,14 @@ public class AlarmActivity extends AppCompatActivity {
 
         Log.d("AlarmA", "Xsize, Ysize : " + new Integer(xSize).toString() + new Integer(ySize).toString());
 
+         */
         handler = new Handler(Looper.getMainLooper());
 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 LocalTime now = LocalTime.now();
-                currentTime.setText(now.getHour() + " : " + now.getMinute() + " : " + now.getSecond());
+                currentTime.setText(now.getHour() + "시 " + now.getMinute() + "분 " + now.getSecond() + "초");
 //                if(second > 5 ){
 //                    if(second % 2 == 0){
 //                        button_cancel.setVisibility(View.INVISIBLE);

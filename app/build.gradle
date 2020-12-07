@@ -90,4 +90,7 @@ dependencies {
 
     // Guava
     implementation("com.google.guava:guava:28.2-android")
+
+    // Lottie
+    implementation 'com.airbnb.android:lottie:3.5.0'
 }

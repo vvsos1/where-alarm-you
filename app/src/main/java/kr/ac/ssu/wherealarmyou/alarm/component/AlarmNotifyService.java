@@ -106,14 +106,14 @@ public class AlarmNotifyService extends Service {
         notificationManager.createNotificationChannel(notificationChannel);
 
 
-        startForeground(notificationCode, notificationBuilder.build());
+        startForeground(127, notificationBuilder.build());
 
-
+/*
         AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build();
         mediaPlayer = MediaPlayer.create(this, R.raw.alarm_song_military, audioAttributes, "Alarm".hashCode());
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
-
+*/
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
