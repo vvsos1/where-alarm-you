@@ -23,8 +23,8 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_find);
         
         // Find View By ID
-        editTextEmail      = findViewById(R.id.editTextEmail);
-        buttonFindPassword = findViewById(R.id.buttonFindPassword);
+        editTextEmail      = findViewById(R.id.findActivity_editTextEmail);
+        buttonFindPassword = findViewById(R.id.findActivity_buttonFindPassword);
         
         // Set On Event Listener
         buttonFindPassword.setOnClickListener(this);

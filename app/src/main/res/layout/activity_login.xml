@@ -17,7 +17,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textViewLogin"
+        android:id="@+id/signUpActivity_textViewLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -28,7 +28,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textViewWarning1"
+        android:id="@+id/loginActivity_textViewWarning1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -38,7 +38,7 @@
         tools:ignore="SmallSp" />
 
     <TextView
-        android:id="@+id/textViewWarning2"
+        android:id="@+id/loginActivity_textViewWarning2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -49,7 +49,7 @@
         android:visibility="gone"/>
 
     <EditText
-        android:id="@+id/editTextEmail"
+        android:id="@+id/loginActivity_editTextEmail"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -65,7 +65,7 @@
         tools:ignore="SmallSp" />
 
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/loginActivity_editTextPassword"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -81,7 +81,7 @@
         tools:ignore="SmallSp" />
 
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/loginActivity_buttonLogin"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -106,7 +106,7 @@
             android:layout_weight="0.2" />
 
         <TextView
-            android:id="@+id/textViewSignUp"
+            android:id="@+id/loginActivity_textViewSignUp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -125,7 +125,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/textViewFindPassword"
+            android:id="@+id/loginActivity_textViewFindPassword"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

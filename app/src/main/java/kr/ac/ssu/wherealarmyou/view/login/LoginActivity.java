@@ -36,14 +36,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Bundle extras = getIntent( ).getExtras( );
         
         // Find View By ID
-        TextView textViewLogin = findViewById(R.id.textViewLogin);
-        editTextEmail        = findViewById(R.id.editTextEmail);
-        editTextPassword     = findViewById(R.id.editTextPassword);
-        buttonLogin          = findViewById(R.id.buttonLogin);
-        textViewSignUp       = findViewById(R.id.textViewSignUp);
-        textViewFindPassword = findViewById(R.id.textViewFindPassword);
-        textViewWarning1     = findViewById(R.id.textViewWarning1);
-        textViewWarning2     = findViewById(R.id.textViewWarning2);
+        TextView textViewLogin = findViewById(R.id.signUpActivity_textViewLogin);
+        editTextEmail        = findViewById(R.id.loginActivity_editTextEmail);
+        editTextPassword     = findViewById(R.id.loginActivity_editTextPassword);
+        buttonLogin          = findViewById(R.id.loginActivity_buttonLogin);
+        textViewSignUp       = findViewById(R.id.loginActivity_textViewSignUp);
+        textViewFindPassword = findViewById(R.id.loginActivity_textViewFindPassword);
+        textViewWarning1     = findViewById(R.id.loginActivity_textViewWarning1);
+        textViewWarning2     = findViewById(R.id.loginActivity_textViewWarning2);
         
         //
         if (extras != null) {
