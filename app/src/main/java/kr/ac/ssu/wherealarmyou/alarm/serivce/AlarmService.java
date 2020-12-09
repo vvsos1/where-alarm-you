@@ -28,34 +28,36 @@ import kr.ac.ssu.wherealarmyou.alarm.component.AlarmBootReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.component.AlarmNotifyReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmModifyRequest;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
-import kr.ac.ssu.wherealarmyou.user.UserRepository;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class AlarmService {
 
+    private static AlarmService instance;
+    private UserService userService;
+
     private AlarmManager alarmManager;
     private Context context;
 
 
-    private static AlarmService instance;
-
-    private AlarmRepository alarmRepository;
-    private UserRepository userRepository;
-
-    private AlarmService(AlarmRepository alarmRepository, UserRepository userRepository, Context context) {
+    private AlarmService(AlarmRepository alarmRepository, UserService userService, Context context) {
+        this.userService = userService;
         this.alarmRepository = alarmRepository;
-        this.userRepository = userRepository;
+
         this.context = context;
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
+    private AlarmRepository alarmRepository;
+
     public static AlarmService getInstance(Context context) {
         if (instance == null)
-            instance = new AlarmService(AlarmRepository.getInstance(), UserRepository.getInstance(), context);
+            instance = new AlarmService(AlarmRepository.getInstance(), UserService.getInstance(), context);
         instance.setContext(context);
         return instance;
     }
+
 
     public void setContext(Context context) {
         this.context = context;
@@ -72,6 +74,7 @@ public class AlarmService {
 
             if (alarm instanceof DatesAlarm) {
                 List<Date> dates = ((DatesAlarm) alarm).getDates();
+
                 for (Date date : dates) {
                     Long rtcTime;
                     ZonedDateTime zonedDateTime = Year.of(date.getYear())
@@ -171,6 +174,7 @@ public class AlarmService {
                         }
                     }
                 }
+
             }
 
 
@@ -227,11 +231,9 @@ public class AlarmService {
         String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Alarm alarm = request.toAlarm();
-        Log.d("AlarmService", "save; " + alarm.toString());
 
         return alarmRepository.save(alarm)
-                .map(Alarm::getUid)
-                .flatMap(alarmUid -> userRepository.addAlarm(currentUid, alarmUid))
+                .flatMap(userService::addAlarm)
                 .thenReturn(alarm);
     }
 

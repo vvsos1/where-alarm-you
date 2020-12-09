@@ -13,22 +13,31 @@ import com.google.android.gms.location.LocationServices;
 import java.util.concurrent.CancellationException;
 
 import kr.ac.ssu.wherealarmyou.location.Address;
+import kr.ac.ssu.wherealarmyou.location.Location;
+import kr.ac.ssu.wherealarmyou.location.LocationRepository;
 import reactor.core.publisher.Mono;
 
 public class LocationService {
     private static LocationService instance;
     private FusedLocationProviderClient fusedLocationClient;
     private Context context;
+    private LocationRepository locationRepository;
 
-    public LocationService(Context context) {
-        this.context = context;
-        this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+    private LocationService(Context context, LocationRepository locationRepository) {
+        setContext(context);
+        this.locationRepository = locationRepository;
     }
 
     public static LocationService getInstance(Context context) {
         if (instance == null)
-            instance = new LocationService(context);
+            instance = new LocationService(context, LocationRepository.getInstance());
+        instance.setContext(context);
         return instance;
+    }
+
+    private void setContext(Context context) {
+        this.context = context;
+        this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
     }
 
     // 위치 권한을 체크 후 결과를 반환
@@ -58,5 +67,9 @@ public class LocationService {
         } else {
             return Mono.error(new RuntimeException("위치 권한이 없습니다"));
         }
+    }
+
+    public Mono<Location> findLocation(String locationUid) {
+        return locationRepository.findByUid(locationUid);
     }
 }

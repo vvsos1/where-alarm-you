@@ -7,9 +7,13 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 
@@ -27,6 +31,7 @@ public class AlarmNotifyService extends Service {
     static final String notification_channel_id = "kr.ac.ssu.wherealarmyou";
     static final String notification_channel_name = "Where-Alarm-You";
     Vibrator vibrator;
+    MediaPlayer mediaPlayer;
 
     public AlarmNotifyService() {
     }
@@ -41,14 +46,28 @@ public class AlarmNotifyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //노티피캐이션 띄우는 부분 시작
 
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                stopSelf();
+            }
+        }, 1000 * 60);
+
+
         Bundle bundle = intent.getExtras().getBundle("Bundle");
         Alarm alarm = (Alarm) bundle.getSerializable("Alarm");
         int requestCode = intent.getExtras().getInt("RequestCode");
         Context context = this;
 
+        Intent toAlarmActivity = new Intent(context, AlarmActivity.class)
+                .putExtra("Bundle", bundle)
+                .putExtra("RequestCode", requestCode);
+
         int notificationCode = (alarm.getUid() + "notification").hashCode();
         PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, notificationCode,
-                new Intent(context, AlarmActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                toAlarmActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, notification_channel_id);
         notificationBuilder
@@ -87,7 +106,14 @@ public class AlarmNotifyService extends Service {
         notificationManager.createNotificationChannel(notificationChannel);
 
 
-        startForeground(notificationCode, notificationBuilder.build());
+        startForeground(127, notificationBuilder.build());
+
+/*
+        AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build();
+        mediaPlayer = MediaPlayer.create(this, R.raw.alarm_song_military, audioAttributes, "Alarm".hashCode());
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
+*/
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -100,6 +126,9 @@ public class AlarmNotifyService extends Service {
     @Override
     public void onDestroy() {
         vibrator.cancel();
+        mediaPlayer.release();
+        if (AlarmActivity.AlarmActivity != null)
+            AlarmActivity.AlarmActivity.finish();
         super.onDestroy();
     }
 }

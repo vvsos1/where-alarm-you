@@ -1,6 +1,7 @@
 package kr.ac.ssu.wherealarmyou.alarm;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 
@@ -17,8 +18,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public abstract class Alarm implements Serializable {
 
-
+    @Exclude
     String uid;
+
+    String type;
 
     // 알람의 제목
     String title;
@@ -44,7 +47,8 @@ public abstract class Alarm implements Serializable {
     // 반복
     Repetition repetition;
 
-    public Alarm(String title, String description, Time time, LocationCondition locationCondition, String group, Boolean sound, Boolean vibe, Repetition repetition) {
+    public Alarm(String type, String title, String description, Time time, LocationCondition locationCondition, String group, Boolean sound, Boolean vibe, Repetition repetition) {
+        this.type = type;
         this.title = title;
         this.description = description;
         this.time = time;
@@ -55,13 +59,13 @@ public abstract class Alarm implements Serializable {
         this.repetition = repetition;
     }
 
-    abstract String getType();
+
 
     public static Alarm fromSnapShot(DataSnapshot snapshot) {
         String type = snapshot.child("type").getValue(String.class);
-        if ("days".equals(type)) {
+        if (DaysAlarm.TYPE.equals(type)) {
             return snapshot.getValue(DaysAlarm.class);
-        } else if ("dates".equals(type)) {
+        } else if (DatesAlarm.TYPE.equals(type)) {
             return snapshot.getValue(DatesAlarm.class);
         } else {
             throw new IllegalArgumentException("알람의 type은 항상 days | dates 중 하나여야 합니다. current type : " + type);
@@ -77,6 +81,12 @@ public abstract class Alarm implements Serializable {
     }
 
     ;
+
+    public boolean hasLocation() {
+        if (locationCondition != null)
+            return true;
+        return false;
+    }
 
     // AlarmRepository 전용
     void setUid(String newUid) {

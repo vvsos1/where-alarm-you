@@ -78,13 +78,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         Bundle extras = getIntent( ).getExtras( );
         
         // Find View By ID
-        editTextEmail    = findViewById(R.id.editTextEmail);
-        editTextPassword = findViewById(R.id.editTextPassword);
-        buttonSignUp     = findViewById(R.id.buttonSignUp);
-        textViewSignUp1  = findViewById(R.id.textViewSignUp1);
-        textViewSignUp2  = findViewById(R.id.textViewSignUp2);
-        textViewLogin    = findViewById(R.id.textViewLogin);
-        textViewWarning  = findViewById(R.id.textViewWarning);
+        editTextEmail    = findViewById(R.id.signUpActivity_editTextEmail);
+        editTextPassword = findViewById(R.id.signUpActivity_editTextPassword);
+        buttonSignUp     = findViewById(R.id.signUpActivity_buttonSignUp);
+        textViewSignUp1  = findViewById(R.id.signUpActivity_textViewSignUp1);
+        textViewSignUp2  = findViewById(R.id.signUpActivity_textViewSignUp2);
+        textViewLogin    = findViewById(R.id.signUpActivity_textViewLogin);
+        textViewWarning  = findViewById(R.id.signUpActivity_textViewWarning);
         
         // Set On Event Listener
         buttonSignUp.setOnClickListener(this);

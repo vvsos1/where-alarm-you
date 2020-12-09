@@ -35,11 +35,12 @@ public class SetUserInfoActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_set_user_info);
         
         // Find View By ID
-        TextView textViewMessage = findViewById(R.id.textViewMessage2);
+        TextView textViewMessage = findViewById(R.id.userInfoActivity_textViewMessage2);
+        editTextName      = findViewById(R.id.userInfoActivity_editTextName);
+        buttonSetUserInfo = findViewById(R.id.userInfoActivity_buttonSetUserInfo);
+        textViewLogout    = findViewById(R.id.userInfoActivity_textViewLogout);
+        
         textViewMessage.setText(Objects.requireNonNull(FirebaseAuth.getInstance( ).getCurrentUser( )).getEmail( ));
-        editTextName      = findViewById(R.id.editTextName);
-        buttonSetUserInfo = findViewById(R.id.buttonSetUserInfo);
-        textViewLogout    = findViewById(R.id.textViewLogout);
         
         // Set On Event Listener
         buttonSetUserInfo.setOnClickListener(this);
