@@ -7,8 +7,149 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:background="@color/colorAccentLight" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="@drawable/ic_alarm" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="Where Alarm You"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="200dp"
+                android:text="내 정보"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/main_relativeLayoutLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/main_textViewUnused1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="장소"
+                android:textColor="#000"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/main_textViewLocationInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/main_textViewUnused1"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@id/main_textViewUnused1"
+                android:text="현위치 : 집"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/main_textViewAddLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/main_textViewUnused1"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="7dp"
+                android:text="+ 장소 추가" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/main_recyclerViewLocation"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_below="@id/main_textViewUnused1"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/round_corners_icon_list"
+                android:gravity="center_vertical"
+                android:overScrollMode="never"
+                android:padding="5dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/main_relativeLayoutGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/main_textViewUnused2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="그룹"
+                android:textColor="#000"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/main_textViewGroupInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/main_textViewUnused2"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@id/main_textViewUnused2"
+                android:text="과정방"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/main_textViewAddGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/main_textViewUnused2"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="7dp"
+                android:text="+ 그룹 추가" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/main_recyclerViewGroup"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_below="@id/main_textViewUnused2"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/round_corners_icon_list"
+                android:gravity="center_vertical"
+                android:overScrollMode="never"
+                android:padding="5dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp" />
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/main_recyclerViewAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center_horizontal"
+            android:overScrollMode="never"
+            android:padding="15dp" />
 
         <Button
             android:id="@+id/buttonLocation"
@@ -35,43 +176,6 @@
             android:background="#3F70"
             android:text="회원 정보"
             android:textColor="#C000" />
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
     </LinearLayout>
 
     <View
@@ -79,7 +183,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#3000"
-        android:visibility="gone"></View>
+        android:visibility="gone" />
 
     <jahirfiquitiva.libs.fabsmenu.FABsMenuLayout
         android:layout_width="match_parent"

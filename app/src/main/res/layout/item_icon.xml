@@ -7,10 +7,12 @@
     android:paddingEnd="10dp">
 
     <Button
-        android:id="@+id/item_icon_icon"
+        android:id="@+id/item_icon_buttonIcon"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/icon_round_corners"
-        android:stateListAnimator="@null" />
+        android:stateListAnimator="@null"
+        android:textColor="#000"
+        android:textSize="11sp" />
 </LinearLayout>
 

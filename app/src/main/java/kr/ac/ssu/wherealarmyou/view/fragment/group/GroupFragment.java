@@ -34,7 +34,7 @@ public class GroupFragment extends Fragment
     {
         Bundle bundle = Objects.requireNonNull(getArguments( ));
         
-        AtomicReference<List<Group>> groups = new AtomicReference<>(dataManager.getGroupLiveData( ).getValue( ));
+        AtomicReference<List<Group>> groups = new AtomicReference<>(dataManager.getGroupData( ).getValue( ));
         
         // View
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
@@ -60,7 +60,7 @@ public class GroupFragment extends Fragment
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(recyclerViewDecoration);
         
-        dataManager.getGroupLiveData( ).observe(getViewLifecycleOwner( ), groups_ -> {
+        dataManager.getGroupData( ).observe(getViewLifecycleOwner( ), groups_ -> {
             GroupItemAdapter newGroupItemAdapter = new GroupItemAdapter(getContext( ), groups_);
             newGroupItemAdapter.setOnItemClickListener((itemView, group) ->
                     MainFrameActivity.addTopFragment(GroupInfoFragment.getInstance(group)));

@@ -11,10 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.Icon;
+import kr.ac.ssu.wherealarmyou.group.Group;
 
 import java.util.List;
 
-public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.GroupContentViewHolder>
+public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.IconContentViewHolder>
 {
     private Context    context;
     private List<Icon> icons;
@@ -29,16 +30,18 @@ public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.GroupC
     
     @NonNull
     @Override
-    public GroupContentViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public IconContentViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View view = LayoutInflater.from(parent.getContext( )).inflate(R.layout.item_icon_no_text, parent, false);
-        return new GroupContentViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext( )).inflate(R.layout.item_icon, parent, false);
+        return new IconContentViewHolder(view);
     }
     
     @Override
-    public void onBindViewHolder(@NonNull GroupContentViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull IconContentViewHolder holder, int position)
     {
         Icon icon = icons.get(position);
+        
+        holder.buttonIcon.setText(icon.getText( ));
         
         GradientDrawable drawable = (GradientDrawable)holder.buttonIcon.getBackground( );
         drawable.setColor(Color.parseColor(icon.getColorHex( )));
@@ -65,14 +68,14 @@ public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.GroupC
         void onItemClick(View view, Icon icon);
     }
     
-    public static class GroupContentViewHolder extends RecyclerView.ViewHolder
+    public static class IconContentViewHolder extends RecyclerView.ViewHolder
     {
         Button buttonIcon;
         
-        public GroupContentViewHolder(View itemView)
+        public IconContentViewHolder(View itemView)
         {
             super(itemView);
-            buttonIcon = itemView.findViewById(R.id.item_icon_icon);
+            buttonIcon = itemView.findViewById(R.id.item_icon_buttonIcon);
         }
     }
 }

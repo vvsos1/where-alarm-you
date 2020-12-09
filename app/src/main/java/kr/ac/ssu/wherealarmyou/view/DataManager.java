@@ -37,7 +37,7 @@ public class DataManager
         groupMutableLiveData.setValue(groups);
     }
     
-    public LiveData<List<Group>> getGroupLiveData( )
+    public LiveData<List<Group>> getGroupData( )
     {
         return groupMutableLiveData;
     }
@@ -61,19 +61,18 @@ public class DataManager
     public void updateLocationLiveData( )
     {
         locationMutableLiveData.setValue(new ArrayList<>( ));
-        LocationService locationService = LocationService.getInstance(MainFrameActivity.frameBottom.getContext( ));
+        // LocationService locationService = LocationService.getInstance(null);
         
-       /*
+        /*
         locationService.getLocation( )
                        .doOnNext(instance::addGroupLiveData)
                        .publishOn(Schedulers.elastic( ))
                        .subscribeOn(Schedulers.elastic( ))
                        .subscribe( );
-                    
         */
     }
     
-    public LiveData<List<Location>> getLocationLiveData( )
+    public LiveData<List<Location>> getLocationData( )
     {
         return locationMutableLiveData;
     }

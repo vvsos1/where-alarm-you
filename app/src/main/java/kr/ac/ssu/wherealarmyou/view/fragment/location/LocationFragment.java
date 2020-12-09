@@ -34,8 +34,7 @@ public class LocationFragment extends Fragment implements View.OnClickListener
     {
         Bundle bundle = Objects.requireNonNull(getArguments( ));
         
-        AtomicReference<List<Location>> locations = new AtomicReference<>(
-                dataManager.getLocationLiveData( ).getValue( ));
+        AtomicReference<List<Location>> locations = new AtomicReference<>(dataManager.getLocationData( ).getValue( ));
         
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_location, null);
@@ -59,8 +58,8 @@ public class LocationFragment extends Fragment implements View.OnClickListener
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(recyclerViewDecoration);
         
-        dataManager.getLocationLiveData().observe(getViewLifecycleOwner(), locations_ -> {
-            LocationItemAdapter newLocationItemAdapter = new LocationItemAdapter(getContext(), locations_);
+        dataManager.getLocationData( ).observe(getViewLifecycleOwner( ), locations_ -> {
+            LocationItemAdapter newLocationItemAdapter = new LocationItemAdapter(getContext( ), locations_);
             newLocationItemAdapter.setOnItemClickListener((view, location) ->
                     MainFrameActivity.addTopFragment(new LocationInfoFragment(location)));
             recyclerView.setAdapter(newLocationItemAdapter);

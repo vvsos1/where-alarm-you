@@ -6,16 +6,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import jahirfiquitiva.libs.fabsmenu.FABsMenu;
 import jahirfiquitiva.libs.fabsmenu.FABsMenuListener;
 import jahirfiquitiva.libs.fabsmenu.TitleFAB;
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.user.UserRepository;
+import kr.ac.ssu.wherealarmyou.common.Icon;
+import kr.ac.ssu.wherealarmyou.group.Group;
+import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.adapter.IconItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.fragment.alarm.AlarmAddFragment;
 import kr.ac.ssu.wherealarmyou.view.fragment.group.GroupAddFragment;
 import kr.ac.ssu.wherealarmyou.view.fragment.group.GroupFragment;
@@ -23,8 +25,14 @@ import kr.ac.ssu.wherealarmyou.view.fragment.location.LocationAddFragment;
 import kr.ac.ssu.wherealarmyou.view.fragment.location.LocationFragment;
 import kr.ac.ssu.wherealarmyou.view.login.ProfileActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
 public class BottomFragment extends Fragment implements View.OnClickListener
 {
+    private DataManager dataManager = DataManager.getInstance( );
+    
     private MainFrameActivity mainFrameActivity;
     
     // FAB ( Floating Action Button )
@@ -32,15 +40,9 @@ public class BottomFragment extends Fragment implements View.OnClickListener
     private View     fabsBlind;
     
     // test
-    private Button   buttonLocation;
-    private Button   buttonGroup;
-    private Button   buttonTemporary;
-    private TextView text_1;
-    private TextView text_2;
-    private TextView text_3;
-    private TextView text_4;
-    private TextView text_5;
-    private TextView text_6;
+    private Button buttonLocation;
+    private Button buttonGroup;
+    private Button buttonTemporary;
     
     public static BottomFragment getInstance( )
     {
@@ -50,6 +52,13 @@ public class BottomFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        AtomicReference<List<Group>> groups = new AtomicReference<>(dataManager.getGroupData( ).getValue( ));
+        
+        List<Icon> groupIcons = new ArrayList<>( );
+        for (Group group : groups.get( )) {
+            groupIcons.add(group.getIcon( ));
+        }
+        
         View contentView = inflater.inflate(R.layout.content_main, container, false);
         mainFrameActivity = (MainFrameActivity)getActivity( );
         
@@ -59,6 +68,17 @@ public class BottomFragment extends Fragment implements View.OnClickListener
         TitleFAB buttonAddAlarm    = contentView.findViewById(R.id.bottom_fabsButtonAddAlarm);
         TitleFAB buttonAddLocation = contentView.findViewById(R.id.bottom_fabsButtonAddLocation);
         TitleFAB buttonAddGroup    = contentView.findViewById(R.id.bottom_fabsButtonAddGroup);
+        
+        RecyclerView        recyclerViewLocation = contentView.findViewById(R.id.main_recyclerViewLocation);
+        IconItemAdapter     locationAdapter      = new IconItemAdapter(getContext( ), groupIcons);
+        LinearLayoutManager linearLayoutManagerL = new LinearLayoutManager(getContext( ));
+        
+        locationAdapter.setOnItemClickListener((view, icon) -> {
+            // TODO 알람 필터링 구현
+        });
+        
+        recyclerViewLocation.setAdapter(locationAdapter);
+        recyclerViewLocation.setLayoutManager(linearLayoutManagerL);
         
         buttonAddAlarm.setOnClickListener(this);
         buttonAddLocation.setOnClickListener(this);
@@ -84,18 +104,10 @@ public class BottomFragment extends Fragment implements View.OnClickListener
         buttonLocation  = contentView.findViewById(R.id.buttonLocation);
         buttonGroup     = contentView.findViewById(R.id.buttonGroup);
         buttonTemporary = contentView.findViewById(R.id.buttonProfile);
-        text_1          = contentView.findViewById(R.id.textView1);
-        text_2          = contentView.findViewById(R.id.textView2);
-        text_3          = contentView.findViewById(R.id.textView3);
-        text_4          = contentView.findViewById(R.id.textView4);
-        text_5          = contentView.findViewById(R.id.textView5);
-        text_6          = contentView.findViewById(R.id.textView6);
         
         buttonLocation.setOnClickListener(this);
         buttonGroup.setOnClickListener(this);
         buttonTemporary.setOnClickListener(this);
-        
-        getUserInfo( );
         
         return contentView;
     }
@@ -126,30 +138,6 @@ public class BottomFragment extends Fragment implements View.OnClickListener
                 MainFrameActivity.showTopFragment(GroupAddFragment.getInstance( ));
                 fabsMenu.collapse( );
                 break;
-        }
-    }
-    
-    // test
-    private void getUserInfo( )
-    {
-        FirebaseUser   firebaseUser   = FirebaseAuth.getInstance( ).getCurrentUser( );
-        UserRepository userRepository = UserRepository.getInstance( );
-        
-        if (firebaseUser != null) {
-            text_1.setText("FirebaseUser Email : " + firebaseUser.getEmail( ));
-            text_2.setText("FirebaseUser UID : " + firebaseUser.getUid( ));
-            text_3.setText("FirebaseUser Name : " + firebaseUser.getDisplayName( ));
-            userRepository.findUserByUid(firebaseUser.getUid( ))
-                          .doOnSuccess(user -> {
-                              text_4.setText("DB User Email : " + user.getEmail( ));
-                              text_5.setText("DB User UID :" + user.getUid( ));
-                              text_6.setText("DB User Name : " + user.getName( ));
-                          })
-                          .doOnError(throwable -> text_4.setText("User를 찾지 못했습니다."))
-                          .subscribe( );
-        }
-        else {
-            text_1.setText("FirebaseUser를 찾지 못했습니다.");
         }
     }
 }
