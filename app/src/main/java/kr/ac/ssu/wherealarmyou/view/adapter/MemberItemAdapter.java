@@ -20,7 +20,7 @@ import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
 
-public class MemberRecyclerAdapter extends RecyclerView.Adapter<MemberRecyclerAdapter.MemberViewHolder>
+public class MemberItemAdapter extends RecyclerView.Adapter<MemberItemAdapter.MemberViewHolder>
 {
     public MutableLiveData<Boolean> showMemberManageButton = new MutableLiveData<>( );
     
@@ -30,7 +30,7 @@ public class MemberRecyclerAdapter extends RecyclerView.Adapter<MemberRecyclerAd
     
     private OnItemClickListener listener = null;
     
-    public MemberRecyclerAdapter(Context context, List<String> members)
+    public MemberItemAdapter(Context context, List<String> members)
     {
         this.context = context;
         this.members = members;

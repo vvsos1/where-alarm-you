@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.view.fragment.BottomFragment;
+import kr.ac.ssu.wherealarmyou.view.fragment.MainFragment;
 
 public class MainFrameActivity extends AppCompatActivity
 {
@@ -93,7 +93,7 @@ public class MainFrameActivity extends AppCompatActivity
         
         // Bottom FrameLayout에 Main Fragment 실행
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.add(R.id.frameBottom, BottomFragment.getInstance( )).commit( );
+        fragmentTransaction.add(R.id.frameBottom, MainFragment.getInstance( )).commit( );
         
         // Blind Visibility Controller
         fragmentManager.addOnBackStackChangedListener(( ) -> {

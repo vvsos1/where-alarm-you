@@ -93,7 +93,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/item_alarm_textViewSum"
+                android:id="@+id/item_alarm_textViewSun"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="3dp"
@@ -160,8 +160,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="140dp"
-            android:layout_toEndOf="@+id/item_alarm_textViewUnused2"
+            android:layout_marginEnd="50dp"
+            android:layout_toStartOf="@id/item_alarm_switch"
             android:orientation="vertical">
 
             <LinearLayout

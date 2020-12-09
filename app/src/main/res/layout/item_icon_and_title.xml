@@ -13,7 +13,7 @@
         android:background="@drawable/icon_round_corners"
         android:stateListAnimator="@null"
         android:text="GRP"
-        android:textColor="#FFF"
+        android:textColor="#000"
         android:textSize="11sp" />
 
     <TextView

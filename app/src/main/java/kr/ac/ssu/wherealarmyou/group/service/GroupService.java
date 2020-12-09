@@ -97,7 +97,6 @@ public class GroupService {
         return groupRepository.findGroupByUid(groupUid)
                 .doOnNext(group -> group.requestLeave(currentUserUid))
                 .flatMap(groupRepository::update)
-                .flatMap(group -> userService.deleteGroup(currentUserUid, groupUid))
                 .then();
     }
 
@@ -110,8 +109,7 @@ public class GroupService {
                         throw new IllegalArgumentException("권한이 없습니다");
                     return group;
                 })
-                .flatMap(groupRepository::delete)
-                .flatMap(unused -> userService.deleteGroup(currentUserUid, groupUid));
+                .flatMap(groupRepository::delete);
     }
 
     public Mono<Void> acceptWaitingUser(String groupUid, String userUid) {

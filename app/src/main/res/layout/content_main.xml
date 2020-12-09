@@ -12,13 +12,14 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="23dp"
+            android:layout_height="37dp"
             android:background="@color/colorAccentLight" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
             android:gravity="bottom"
             android:orientation="horizontal"
             android:paddingStart="15dp"
@@ -38,6 +39,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/main_textViewUserProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="200dp"
@@ -72,13 +74,13 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/main_textViewAddLocation"
+                android:id="@+id/main_textViewToLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/main_textViewUnused1"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="7dp"
-                android:text="+ 장소 추가" />
+                android:text="장소 페이지로" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/main_recyclerViewLocation"
@@ -89,7 +91,6 @@
                 android:background="@drawable/round_corners_icon_list"
                 android:gravity="center_vertical"
                 android:overScrollMode="never"
-                android:padding="5dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp" />
         </RelativeLayout>
@@ -120,13 +121,13 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/main_textViewAddGroup"
+                android:id="@+id/main_textViewToGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/main_textViewUnused2"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="7dp"
-                android:text="+ 그룹 추가" />
+                android:text="그룹 페이지로" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/main_recyclerViewGroup"
@@ -137,7 +138,6 @@
                 android:background="@drawable/round_corners_icon_list"
                 android:gravity="center_vertical"
                 android:overScrollMode="never"
-                android:padding="5dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp" />
         </RelativeLayout>
@@ -150,36 +150,10 @@
             android:gravity="center_horizontal"
             android:overScrollMode="never"
             android:padding="15dp" />
-
-        <Button
-            android:id="@+id/buttonLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#382F"
-            android:text="장소"
-            android:textColor="#C000" />
-
-        <Button
-            android:id="@+id/buttonGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:background="#3F28"
-            android:text="그룹"
-            android:textColor="#C000" />
-
-        <Button
-            android:id="@+id/buttonProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:background="#3F70"
-            android:text="회원 정보"
-            android:textColor="#C000" />
     </LinearLayout>
 
     <View
-        android:id="@+id/bottom_viewFabsBlind"
+        android:id="@+id/main_viewFabsBlind"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#3000"
@@ -192,7 +166,7 @@
         app:fabs_menu_overlayColor="@android:color/transparent">
 
         <jahirfiquitiva.libs.fabsmenu.FABsMenu
-            android:id="@+id/bottom_fabsMenu"
+            android:id="@+id/main_fabsMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -206,7 +180,7 @@
             app:fab_moreButtonSize="normal">
 
             <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                android:id="@+id/bottom_fabsButtonAddAlarm"
+                android:id="@+id/main_fabsButtonAddAlarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:backgroundTint="#FFEDAC"
@@ -217,7 +191,7 @@
                 app:srcCompat="@drawable/ic_alarm_add" />
 
             <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                android:id="@+id/bottom_fabsButtonAddLocation"
+                android:id="@+id/main_fabsButtonAddLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:backgroundTint="#BDBDF9"
@@ -228,7 +202,7 @@
                 app:srcCompat="@drawable/ic_location_add" />
 
             <jahirfiquitiva.libs.fabsmenu.TitleFAB
-                android:id="@+id/bottom_fabsButtonAddGroup"
+                android:id="@+id/main_fabsButtonAddGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:backgroundTint="#FFE5FB"
@@ -239,4 +213,9 @@
                 app:srcCompat="@drawable/ic_group_add" />
         </jahirfiquitiva.libs.fabsmenu.FABsMenu>
     </jahirfiquitiva.libs.fabsmenu.FABsMenuLayout>
-</FrameLayout>
+</FrameLayout><!--
+            색상 참고용
+            android:background="#382F"
+            android:background="#3F28"
+            android:background="#3F70"
+         -->
