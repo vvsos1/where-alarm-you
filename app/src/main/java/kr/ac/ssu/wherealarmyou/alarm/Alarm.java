@@ -36,7 +36,7 @@ public abstract class Alarm implements Serializable {
     LocationCondition locationCondition;
 
     // 알람이 등록될 그룹
-    String group;
+    String groupUid;
 
     // 소리
     Boolean sound;
@@ -47,16 +47,19 @@ public abstract class Alarm implements Serializable {
     // 반복
     Repetition repetition;
 
-    public Alarm(String type, String title, String description, Time time, LocationCondition locationCondition, String group, Boolean sound, Boolean vibe, Repetition repetition) {
+    Boolean isSwitchOn;
+
+    public Alarm(String type, String title, String description, Time time, LocationCondition locationCondition, String groupUid, Boolean sound, Boolean vibe, Repetition repetition) {
         this.type = type;
         this.title = title;
         this.description = description;
         this.time = time;
         this.locationCondition = locationCondition;
-        this.group = group;
+        this.groupUid = groupUid;
         this.sound = sound;
         this.vibe = vibe;
         this.repetition = repetition;
+        this.isSwitchOn = true;
     }
 
 
@@ -80,7 +83,7 @@ public abstract class Alarm implements Serializable {
         this.description = description;
     }
 
-    ;
+
 
     public boolean hasLocation() {
         if (locationCondition != null)
@@ -93,4 +96,7 @@ public abstract class Alarm implements Serializable {
         this.uid = newUid;
     }
 
+    public void updateSwitch(boolean isSwitchOn) {
+        this.isSwitchOn = isSwitchOn;
+    }
 }
