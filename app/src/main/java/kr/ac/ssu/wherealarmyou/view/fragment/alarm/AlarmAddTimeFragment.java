@@ -16,9 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
 
-public class AlarmAddTimeFragment extends Fragment implements View.OnClickListener {
+public class AlarmAddTimeFragment extends Fragment implements View.OnClickListener, OnBackPressedListener {
     private AlarmAddTimeViewModel alarmAddTimeViewModel;
 
     private int stage;
@@ -110,24 +112,31 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
             linearLayoutSetTime.setVisibility(View.VISIBLE);
         } else if (stage == 1) {
 
-            int textToInt = Integer.parseInt(timeTextView.getText().toString());
 
-
-            timeTextView.setText("");
 
             if (view == buttonArrowLeft) {
                 stage--;
                 linearLayoutSetAMPM.setVisibility(View.VISIBLE);
                 linearLayoutSetTime.setVisibility(View.GONE);
+                timeTextView.setText("");
             } else if (view == buttonArrowRight) {
+
+                if ((timeTextView.getText().equals("")))
+                    return;
+
+                int textToInt = Integer.parseInt(timeTextView.getText().toString());
+
                 if (textToInt < 0 || textToInt >= 12) {
                     Toast.makeText(getContext(), "입력을 시간 값으로 바꿀 수 없습니다", Toast.LENGTH_SHORT).show();
+                    timeTextView.setText("");
                 } else {
                     stage++;
                     hourOrMinute.setText("분");
                     hours = textToInt;
 
                     alarmAddTimeViewModel.selectHours(hours);
+
+                    timeTextView.setText("");
 
                     if (minutes >= 0 && minutes < 60) {
                         timeTextView.setText(Integer.toString(minutes));
@@ -136,18 +145,24 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
                 }
             }
         } else if (stage == 2) {
-            int textToInt = Integer.parseInt(timeTextView.getText().toString());
-            timeTextView.setText("");
 
             if (view == buttonArrowLeft) {
                 stage--;
                 hourOrMinute.setText("시");
+
+
+                timeTextView.setText("");
 
                 if (hours >= 0 && hours < 24) {
                     timeTextView.setText(Integer.toString(hours));
                 }
 
             } else if (view == buttonArrowRight) {
+                if ((timeTextView.getText().equals("")))
+                    return;
+
+                int textToInt = Integer.parseInt(timeTextView.getText().toString());
+
                 if (textToInt < 0 || textToInt >= 60) {
                     Toast.makeText(getContext(), "입력을 시간 값으로 바꿀 수 없습니다", Toast.LENGTH_SHORT).show();
                 } else {
@@ -159,10 +174,20 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
             }
         }
     }
-    
+
     @Override
-    public void onStop( )
-    {
+    public void onResume() {
+        super.onResume();
+        MainFrameActivity.setOnBackPressedListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        MainFrameActivity.hideTopFragment();
+    }
+
+    @Override
+    public void onStop() {
         super.onStop();
         alarmAddTimeViewModel.resetLiveData();
     }
