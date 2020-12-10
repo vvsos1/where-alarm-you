@@ -24,6 +24,7 @@ import kr.ac.ssu.wherealarmyou.alarm.Repetition;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
 import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
+import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.adapter.AlarmCategoryItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
@@ -101,7 +102,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         recyclerView.addItemDecoration(decoration);
         layoutManager = recyclerView.getLayoutManager( );
         
-        Log.d("AlarmAddFragment","완료되었습니다");
+        Log.d("AlarmAddFragment", "완료되었습니다");
         
         return frameView;
     }
@@ -229,6 +230,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         Log.d("AlarmAddFragment", req.toString( ));
         
         alarmService.save(req)
+                    .doOnSuccess(alarm -> DataManager.getInstance( ).updateAlarmLiveData( ))
                     .doOnError(throwable -> Log.e("AlarmAddFragment", throwable.getMessage( )))
                     .flatMap(alarmService::register)
                     .publishOn(Schedulers.elastic( ))

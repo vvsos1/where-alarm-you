@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,11 +33,10 @@ import kr.ac.ssu.wherealarmyou.view.login.ProfileActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MainFragment extends Fragment implements View.OnClickListener
 {
-    private DataManager dataManager = DataManager.getInstance( );
+    private final DataManager dataManager = DataManager.getInstance( );
     
     private MainFrameActivity mainFrameActivity;
     
@@ -49,20 +50,24 @@ public class MainFragment extends Fragment implements View.OnClickListener
     }
     
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        AtomicReference<List<Alarm>>    alarms    = new AtomicReference<>(dataManager.getAlarmData( ).getValue( ));
-        AtomicReference<List<Group>>    groups    = new AtomicReference<>(dataManager.getGroupData( ).getValue( ));
-        AtomicReference<List<Location>> locations = new AtomicReference<>(dataManager.getLocationData( ).getValue( ));
+        List<Alarm>    alarms    = dataManager.getAlarmData( ).getValue( );
+        List<Group>    groups    = dataManager.getGroupData( ).getValue( );
+        List<Location> locations = dataManager.getLocationData( ).getValue( );
         
         List<Icon> groupIcons = new ArrayList<>( );
-        for (Group group : groups.get( )) {
-            groupIcons.add(group.getIcon( ));
+        if (groups != null) {
+            for (Group group : groups) {
+                groupIcons.add(group.getIcon( ));
+            }
         }
         
         List<Icon> locationIcons = new ArrayList<>( );
-        for (Location location : locations.get( )) {
-            locationIcons.add(location.getIcon( ));
+        if (locations != null) {
+            for (Location location : locations) {
+                locationIcons.add(location.getIcon( ));
+            }
         }
         
         View contentView = inflater.inflate(R.layout.content_main, container, false);
@@ -135,21 +140,40 @@ public class MainFragment extends Fragment implements View.OnClickListener
         
         // Content View Setting - Alarm Recycler View Setting
         RecyclerView           recyclerViewAlarm      = contentView.findViewById(R.id.main_recyclerViewAlarm);
-        AlarmItemAdapter       alarmItemAdapter       = new AlarmItemAdapter(getContext( ), alarms.get( ));
+        AlarmItemAdapter       alarmItemAdapter       = new AlarmItemAdapter(getContext( ), alarms);
         LinearLayoutManager    linearLayoutManagerA   = new LinearLayoutManager(getContext( ));
         RecyclerViewDecoration recyclerViewDecoration = new RecyclerViewDecoration(20);
         
         alarmItemAdapter.setOnItemClickListener((view, alarm) -> {
             // TODO : 알람 클릭 이벤트 구현
         });
-        
+       /*
+        recyclerViewAlarm.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            RelativeLayout relativeLayoutLocation = contentView.findViewById(R.id.main_relativeLayoutLocation);
+            RelativeLayout relativeLayoutGroup    = contentView.findViewById(R.id.main_relativeLayoutGroup);
+            
+            if (oldScrollY - scrollY > 200) {
+                relativeLayoutLocation.setVisibility(View.VISIBLE);
+                relativeLayoutGroup.setVisibility(View.VISIBLE);
+            }
+            else if (scrollY - oldScrollY > 200) {
+                relativeLayoutLocation.setVisibility(View.GONE);
+                relativeLayoutGroup.setVisibility(View.GONE);
+            }
+            else if (!recyclerViewAlarm.canScrollVertically(-1)) {
+                relativeLayoutLocation.setVisibility(View.VISIBLE);
+                relativeLayoutGroup.setVisibility(View.VISIBLE);
+            }
+            
+        });
+        */
         recyclerViewAlarm.setAdapter(alarmItemAdapter);
         recyclerViewAlarm.setLayoutManager(linearLayoutManagerA);
         recyclerViewAlarm.addItemDecoration(recyclerViewDecoration);
         
         dataManager.getAlarmData( ).observe(getViewLifecycleOwner( ), alarms_ -> {
-            alarms.set(alarms_);
-            alarmItemAdapter.notifyItemChanged(alarmItemAdapter.getItemCount( ));
+            AlarmItemAdapter newAlarmItemAdapter = new AlarmItemAdapter(getContext( ), alarms_);
+            recyclerViewAlarm.setAdapter(newAlarmItemAdapter);
         });
         
         
