@@ -108,16 +108,18 @@ public class AlarmNotifyService extends Service {
 
         startForeground(127, notificationBuilder.build());
 
-/*
-        AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build();
-        mediaPlayer = MediaPlayer.create(this, R.raw.alarm_song_military, audioAttributes, "Alarm".hashCode());
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
-*/
+        if (alarm.getSound()) {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build();
+            mediaPlayer = MediaPlayer.create(this, R.raw.alarm_song_military, audioAttributes, "Alarm".hashCode());
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }
 
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createWaveform(new long[]{1000, 1000}, 0));
+        if (alarm.getVibe()) {
+            vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createWaveform(new long[]{1000, 1000}, 0));
+            }
         }
 
         return super.onStartCommand(intent, flags, startId);

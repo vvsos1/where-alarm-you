@@ -23,12 +23,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
+import kr.ac.ssu.wherealarmyou.alarm.LocationCondition;
+import kr.ac.ssu.wherealarmyou.alarm.Period;
 import kr.ac.ssu.wherealarmyou.alarm.Repetition;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
@@ -37,44 +42,92 @@ import kr.ac.ssu.wherealarmyou.view.adapter.AlarmAddContentViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
+import lombok.Builder;
 import reactor.core.scheduler.Schedulers;
+import reactor.util.annotation.Nullable;
 
-public class AlarmAddFragment extends Fragment implements View.OnClickListener
-{
-    private static final int TIME     = 0;
-    private static final int WEEK     = 1;
+public class AlarmAddFragment extends Fragment implements View.OnClickListener {
+    private static final int TIME = 0;
+    private static final int WEEK = 1;
     private static final int LOCATION = 2;
-    private static final int GROUP    = 3;
-    private static final int MEMO     = 4;
-    private static final int DETAIL   = 5;
-    
+    private static final int GROUP = 3;
+    private static final int MEMO = 4;
+    private static final int DETAIL = 5;
+
+    AtomicInteger currentVisibleCategoryPosition;
+    //알람의 시간
     private Time time;
-    
+    // 알람의 제목
+    private String title;
+    // 알람의 설명 or 내용
+    private String description;
+    // 알람이 활성화될 장소의 조건
+    @Nullable
+    private LocationCondition locationCondition;
+    // 알람이 등록될 그룹
+    @Nullable
+    private String group;
+    // 소리
+    @Builder.Default
+    private Boolean sound = Boolean.TRUE;
+    // 진동
+    @Builder.Default
+    private Boolean vibe = Boolean.TRUE;
+    // 반복
+    private Repetition repetition;
+    // 알람이 활성화될 기간
+    @Nullable
+    private Period activePeriod;
+    // 알람이 울릴 요일; Key: 요일
+    @Nullable
+    private Map<String, Boolean> daysOfWeek;
+    @Nullable
+    private List<Date> dates;
+
     private RecyclerView.LayoutManager layoutManager;
-    
-    public AlarmAddFragment( ) { }
-    
-    public static AlarmAddFragment getInstance( )
-    {
-        return new AlarmAddFragment( );
+    @Nullable
+    private Alarm alarm;
+
+    public AlarmAddFragment(Alarm alarm) {
+        this.alarm = alarm;
     }
-    
+
+    public static AlarmAddFragment getInstance(Alarm alarm) {
+        return new AlarmAddFragment(alarm);
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        time = new Time();
-    
-        Bundle bundle = Objects.requireNonNull(getArguments( ));
-        
-        View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (alarm == null) {
+            time = new Time();
+            title = "";
+            description = "";
+            repetition = new Repetition(1);
+        } else {
+            time = alarm.getTime();
+            title = alarm.getTitle();
+            description = alarm.getDescription();
+            repetition = alarm.getRepetition();
+            locationCondition = alarm.getLocationCondition();
+            sound = alarm.getSound();
+            vibe = alarm.getVibe();
+
+        }
+
+        Bundle bundle = Objects.requireNonNull(getArguments());
+
+        View frameView = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_alarm_add, null);
-        
+
         // Frame View Setting
         OverlappingView overlappingView = frameView.findViewById(R.id.overlap_view);
-        overlappingView.setAtOnce(bundle, frameView, contentView, "알람 추가", false, true);
-        
+        if (alarm == null)
+            overlappingView.setAtOnce(bundle, frameView, contentView, "알람 추가", false, true);
+        else
+            overlappingView.setAtOnce(bundle, frameView, contentView, "알람 수정", false, true);
+
         // Make Category List
-        List<AlarmAddFrameItem> items = new ArrayList<>( );
+        List<AlarmAddFrameItem> items = new ArrayList<>();
         items.add(new AlarmAddFrameItem(R.drawable.ic_time, "시간", ""));
         items.add(new AlarmAddFrameItem(R.drawable.ic_calendar, "요일 및 날짜", ""));
         items.add(new AlarmAddFrameItem(R.drawable.ic_location, "장소", ""));
@@ -90,11 +143,11 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
                 linearLayoutManager.getOrientation( ));
         
         // Content View Event Listener
-        AtomicInteger currentVisibleCategoryPosition = new AtomicInteger( );
+        currentVisibleCategoryPosition = new AtomicInteger();
         alarmAddContentViewAdapter.setOnItemClickListener((view, position) -> {
             startCategoryFragment(position);
             setViewModel(position);
-            changeVisibleCategoryView(currentVisibleCategoryPosition.get( ), position);
+            changeVisibleCategoryView(currentVisibleCategoryPosition.get(), position);
             currentVisibleCategoryPosition.set(position);
         });
         
@@ -132,16 +185,24 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     {
         if (category == TIME) {
             AlarmAddTimeViewModel alarmAddTimeViewModel =
-                    new ViewModelProvider(requireActivity( )).get(AlarmAddTimeViewModel.class);
-            alarmAddTimeViewModel.getTimeData( ).observe(getViewLifecycleOwner( ), time -> {
+                    new ViewModelProvider(requireActivity()).get(AlarmAddTimeViewModel.class);
+            alarmAddTimeViewModel.getLiveData().observe(getViewLifecycleOwner(), time -> {
                 if (time != null) {
                     this.time = time;
                 }
             });
-            alarmAddTimeViewModel.getInfoString( )
-                                 .observe(getViewLifecycleOwner( ), string -> setInfo(string, category));
+            alarmAddTimeViewModel.getInfoString()
+                    .observe(getViewLifecycleOwner(), string -> setInfo(string, category));
+            alarmAddTimeViewModel.onComplete().observe(getViewLifecycleOwner(), aBoolean -> {
+                int newPosition = currentVisibleCategoryPosition.get() + 1;
+                startCategoryFragment(newPosition);
+                setViewModel(newPosition);
+                changeVisibleCategoryView(currentVisibleCategoryPosition.get(), newPosition);
+                currentVisibleCategoryPosition.set(newPosition);
+            });
         }
     }
+
     
     private ViewModel getViewModel(int category)
     {
@@ -221,11 +282,12 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         
         Date date = new Date(now.getDayOfMonth( ), now.getMonth( ).getValue( ), now.getYear( ));
-        
+
         AlarmSaveRequest req = AlarmSaveRequest.builder(time)
-                .dates(List.of(date)).repetition(new Repetition(1))
+                .dates(Arrays.asList(date)).repetition(repetition)
                                                .build( );
-        
+
+
         Log.d("AlarmAddFragment", req.toString( ));
         
         alarmService.save(req)

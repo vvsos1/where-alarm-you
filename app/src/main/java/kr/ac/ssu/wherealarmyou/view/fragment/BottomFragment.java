@@ -7,9 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.fragment.app.Fragment;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import jahirfiquitiva.libs.fabsmenu.FABsMenu;
 import jahirfiquitiva.libs.fabsmenu.FABsMenuListener;
 import jahirfiquitiva.libs.fabsmenu.TitleFAB;
@@ -115,8 +118,8 @@ public class BottomFragment extends Fragment implements View.OnClickListener
                 mainFrameActivity.finish( );
                 break;
             case (R.id.bottom_fabsButtonAddAlarm):
-                MainFrameActivity.showTopFragment(AlarmAddFragment.getInstance( ));
-                fabsMenu.collapse( );
+                MainFrameActivity.showTopFragment(AlarmAddFragment.getInstance(null));
+                fabsMenu.collapse();
                 break;
             case (R.id.bottom_fabsButtonAddLocation):
                 MainFrameActivity.showTopFragment(LocationAddFragment.getInstance( ));
