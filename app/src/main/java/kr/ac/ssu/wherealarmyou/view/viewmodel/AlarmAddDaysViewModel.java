@@ -1,4 +1,4 @@
-package kr.ac.ssu.wherealarmyou.view.model;
+package kr.ac.ssu.wherealarmyou.view.viewmodel;
 
 import java.util.Map;
 

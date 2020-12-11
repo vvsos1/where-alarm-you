@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,7 +40,8 @@ import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
 import kr.ac.ssu.wherealarmyou.view.adapter.AlarmAddContentViewAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddTimeViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddViewModel;
 import lombok.Builder;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.annotation.Nullable;
@@ -54,6 +54,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
     private static final int MEMO = 4;
     private static final int DETAIL = 5;
 
+    AlarmAddViewModel<?> viewModel;
     AtomicInteger currentVisibleCategoryPosition;
     //알람의 시간
     private Time time;
@@ -184,16 +185,15 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
     private void setViewModel(int category)
     {
         if (category == TIME) {
-            AlarmAddTimeViewModel alarmAddTimeViewModel =
-                    new ViewModelProvider(requireActivity()).get(AlarmAddTimeViewModel.class);
-            alarmAddTimeViewModel.getLiveData().observe(getViewLifecycleOwner(), time -> {
+            AlarmAddViewModel<Time> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddTimeViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), time -> {
                 if (time != null) {
                     this.time = time;
                 }
             });
-            alarmAddTimeViewModel.getInfoString()
-                    .observe(getViewLifecycleOwner(), string -> setInfo(string, category));
-            alarmAddTimeViewModel.onComplete().observe(getViewLifecycleOwner(), aBoolean -> {
+            viewModel.getInfoString()
+                     .observe(getViewLifecycleOwner(), string -> setInfo(string, category));
+            viewModel.onComplete().observe(getViewLifecycleOwner(), aBoolean -> {
                 int newPosition = currentVisibleCategoryPosition.get() + 1;
                 startCategoryFragment(newPosition);
                 setViewModel(newPosition);
@@ -204,9 +204,13 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
     }
 
     
-    private ViewModel getViewModel(int category)
+    private AlarmAddViewModel<?> getViewModel(int category)
     {
-        if (category == TIME) { return new ViewModelProvider(requireActivity( )).get(AlarmAddTimeViewModel.class); }
+        
+        if (category == TIME)
+        {
+            return new ViewModelProvider(requireActivity( )).get(AlarmAddTimeViewModel.class);
+        }
         return null;
     }
     

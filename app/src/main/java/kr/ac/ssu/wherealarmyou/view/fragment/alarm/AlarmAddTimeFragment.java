@@ -18,7 +18,7 @@ import java.util.List;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
-import kr.ac.ssu.wherealarmyou.view.model.AlarmAddTimeViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddTimeViewModel;
 
 public class AlarmAddTimeFragment extends Fragment implements View.OnClickListener, OnBackPressedListener {
     private AlarmAddTimeViewModel alarmAddTimeViewModel;
@@ -40,8 +40,6 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
 
     private Button buttonArrowLeft;
     private Button buttonArrowRight;
-
-    // test
 
     public static AlarmAddTimeFragment getInstance() {
         return new AlarmAddTimeFragment();
