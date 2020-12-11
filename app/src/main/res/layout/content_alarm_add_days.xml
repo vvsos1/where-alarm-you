@@ -95,17 +95,16 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_marginBottom="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:orientation="horizontal">
 
         <FrameLayout
-            android:id="@+id/alarmAddDay_days_click_SUN"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true">
+            android:layout_weight="1">
 
             <Button
                 android:id="@+id/alarmAddDay_days_button_SUN"
@@ -116,14 +115,18 @@
                 android:gravity="center"
                 android:text="일"
                 android:textSize="20dp" />
+
+            <View
+                android:id="@+id/alarmAddDay_days_click_SUN"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#0000" />
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/alarmAddDay_days_click_MON"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true">
+            android:layout_weight="1">
 
             <Button
                 android:id="@+id/alarmAddDay_days_button_MON"
@@ -134,14 +137,18 @@
                 android:gravity="center"
                 android:text="월"
                 android:textSize="20dp" />
+
+            <View
+                android:id="@+id/alarmAddDay_days_click_MON"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#0000" />
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/alarmAddDay_days_click_TUE"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true">
+            android:layout_weight="1">
 
             <Button
                 android:id="@+id/alarmAddDay_days_button_TUE"
@@ -152,14 +159,18 @@
                 android:gravity="center"
                 android:text="화"
                 android:textSize="20dp" />
+
+            <View
+                android:id="@+id/alarmAddDay_days_click_TUE"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#0000" />
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/alarmAddDay_days_click_WED"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true">
+            android:layout_weight="1">
 
             <Button
                 android:id="@+id/alarmAddDay_days_button_WED"
@@ -170,14 +181,18 @@
                 android:gravity="center"
                 android:text="수"
                 android:textSize="20dp" />
+
+            <View
+                android:id="@+id/alarmAddDay_days_click_WED"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#0000" />
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/alarmAddDay_days_click_THU"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true">
+            android:layout_weight="1">
 
             <Button
                 android:id="@+id/alarmAddDay_days_button_THU"
@@ -188,14 +203,18 @@
                 android:gravity="center"
                 android:text="목"
                 android:textSize="20dp" />
+
+            <View
+                android:id="@+id/alarmAddDay_days_click_THU"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#0000" />
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/alarmAddDay_days_click_FRI"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true">
+            android:layout_weight="1">
 
             <Button
                 android:id="@+id/alarmAddDay_days_button_FRI"
@@ -206,14 +225,18 @@
                 android:gravity="center"
                 android:text="금"
                 android:textSize="20dp" />
+
+            <View
+                android:id="@+id/alarmAddDay_days_click_FRI"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#0000" />
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/alarmAddDay_days_click_SAT"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true">
+            android:layout_weight="1">
 
             <Button
                 android:id="@+id/alarmAddDay_days_button_SAT"
@@ -224,6 +247,12 @@
                 android:gravity="center"
                 android:text="토"
                 android:textSize="20dp" />
+
+            <View
+                android:id="@+id/alarmAddDay_days_click_SAT"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#0000" />
         </FrameLayout>
 
 

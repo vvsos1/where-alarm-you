@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +27,7 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
     final int[] daysPrime = {2, 3, 5, 7, 11, 13, 17};
     View contentView;
     int daysOfWeek;
-    List<FrameLayout> buttonLikes;
+    List<View> buttonLikes;
     List<Button> buttons;
     Button setDays;
     Button setDates;
@@ -53,6 +52,7 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
 
         //todo : 알람 애드 프래그먼트에서 정보를 받아 설정할 예정
         daysSum = 1;
+        isSelected = new boolean[]{false, false, false, false, false, false, false};
 
         setDays = contentView.findViewById(R.id.alarmAddDay_button_set_days);
         setDays.setOnClickListener(v -> {
@@ -63,7 +63,7 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
             activePeriod = null;
         });
 
-        buttonLikes = new ArrayList<FrameLayout>(7);
+        buttonLikes = new ArrayList<View>(7);
         buttonLikes.add(contentView.findViewById(R.id.alarmAddDay_days_click_SUN));
         buttonLikes.add(contentView.findViewById(R.id.alarmAddDay_days_click_MON));
         buttonLikes.add(contentView.findViewById(R.id.alarmAddDay_days_click_TUE));
@@ -72,8 +72,18 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
         buttonLikes.add(contentView.findViewById(R.id.alarmAddDay_days_click_FRI));
         buttonLikes.add(contentView.findViewById(R.id.alarmAddDay_days_click_SAT));
 
-        for (FrameLayout view : buttonLikes) {
-            view.setOnClickListener(this::onClick);
+        for (View view : buttonLikes) {
+            view.setOnClickListener(v -> {
+                int buttonIndex = buttonLikes.indexOf(v);
+
+                if (isSelected[buttonIndex]) {
+                    buttons.get(buttonIndex).setBackground(transparentBackground);
+                    isSelected[buttonIndex] = false;
+                } else {
+                    buttons.get(buttonIndex).setBackground(selectedMark);
+                    isSelected[buttonIndex] = true;
+                }
+            });
         }
 
         buttons = new ArrayList<Button>(7);
