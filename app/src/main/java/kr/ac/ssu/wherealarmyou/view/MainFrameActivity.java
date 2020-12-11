@@ -2,6 +2,7 @@ package kr.ac.ssu.wherealarmyou.view;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -14,19 +15,27 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.view.fragment.MainFragment;
+import kr.ac.ssu.wherealarmyou.view.fragment.BottomFragment;
 
 public class MainFrameActivity extends AppCompatActivity
 {
     public static FragmentManager fragmentManager;
+    
     @SuppressLint("StaticFieldLeak")
     public static FrameLayout frameTop;
+    
     @SuppressLint("StaticFieldLeak")
     public static FrameLayout frameBottom;
+    
     @SuppressLint("StaticFieldLeak")
     public static LinearLayout blind;
     public DataManager dataManager = DataManager.getInstance( );
     
+
+
+    public static OnBackPressedListener onBackPressedListener;
+
+
     /* 시작 */
     // Top FrameLayout을 띄우고 Fragment를 나타내기
     public static void showTopFragment(Fragment fragment)
@@ -89,11 +98,11 @@ public class MainFrameActivity extends AppCompatActivity
         
         // Set On Event Listener
         frameTop.setOnClickListener(null);
-        blind.setOnClickListener(v -> hideTopFragment( ));
+        blind.setOnClickListener(v -> hideTopFragment());
         
         // Bottom FrameLayout에 Main Fragment 실행
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.add(R.id.frameBottom, MainFragment.getInstance( )).commit( );
+        fragmentTransaction.add(R.id.frameBottom, BottomFragment.getInstance( )).commit( );
         
         // Blind Visibility Controller
         fragmentManager.addOnBackStackChangedListener(( ) -> {
@@ -105,7 +114,7 @@ public class MainFrameActivity extends AppCompatActivity
                 blind.setVisibility(View.GONE);
             }
             else {
-                if (blind.getVisibility( ) != View.VISIBLE) {
+                if (blind.getVisibility() != View.VISIBLE) {
                     Animation animation = new AlphaAnimation(0, 1);
                     animation.setInterpolator(new DecelerateInterpolator( ));
                     animation.setDuration(500);
@@ -114,5 +123,14 @@ public class MainFrameActivity extends AppCompatActivity
                 blind.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (onBackPressedListener != null) {
+            onBackPressedListener.onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

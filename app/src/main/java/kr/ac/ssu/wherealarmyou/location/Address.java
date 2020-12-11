@@ -41,8 +41,8 @@ public class Address {
 
     @Exclude
     public double getDistance(Address other) {
-        double a1 = other.getLatitude();
-        double d1 = other.getLongitude();
+        double a1 = other.latitude;
+        double d1 = other.longitude;
 
         double a2 = latitude;
         double d2 = longitude;

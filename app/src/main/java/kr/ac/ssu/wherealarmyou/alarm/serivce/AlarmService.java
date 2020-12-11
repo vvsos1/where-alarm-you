@@ -263,8 +263,14 @@ public class AlarmService {
     }
 
 
-    public Flux<Alarm> getGroupAlarmFlux(String groupUid) {
+    public Flux<Alarm> getGroupAlarmPublisher(String groupUid) {
         return null;
 
+    }
+
+    public Mono<Alarm> changeSwitch(Alarm alarm, Boolean isSwitchOn) {
+        return alarmRepository.updateSwitchOn(alarm.getUid(), isSwitchOn)
+                .doOnNext(aVoid -> alarm.updateSwitch(isSwitchOn))
+                .thenReturn(alarm);
     }
 }

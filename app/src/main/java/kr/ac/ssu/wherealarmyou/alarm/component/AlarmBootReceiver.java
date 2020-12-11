@@ -26,8 +26,10 @@ public class AlarmBootReceiver extends BroadcastReceiver {
                         .map(User::getAlarms)
                         .map(Map::values).subscribe(alarms -> {
                             for (Alarm alarm : alarms) {
-                                Log.d("AlarmBootReceiver", "current alarm : " + alarm.getUid());
-                                alarmService.register(alarm);
+                                if (alarm.getIsSwitchOn()) {
+                                    Log.d("AlarmBootReceiver", "current alarm : " + alarm.getUid());
+                                    alarmService.register(alarm);
+                                }
                             }
                         }
                 );
