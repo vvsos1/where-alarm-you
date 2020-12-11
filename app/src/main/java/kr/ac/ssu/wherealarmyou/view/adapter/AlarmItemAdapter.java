@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 
 import java.util.List;
+
+import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 
 public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.AlarmViewHolder>
 {
@@ -43,7 +45,7 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
         holder.textViewHours.setText(alarm.getTime( ).getHours( ).toString( ));
         holder.textViewMinutes.setText(alarm.getTime( ).getMinutes( ).toString( ));
         holder.textViewLocation.setText("미구현");
-        holder.textViewGroup.setText(alarm.getGroup( ));
+        holder.textViewGroup.setText(alarm.getGroupUid());
         
     }
     

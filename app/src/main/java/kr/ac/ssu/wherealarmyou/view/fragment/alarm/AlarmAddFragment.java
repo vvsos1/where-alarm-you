@@ -10,11 +10,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -168,8 +168,12 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
         
         Fragment fragment = null;
-        if (category == TIME) { fragment = AlarmAddTimeFragment.getInstance( ); }
-//        if (category == WEEK)     { fragment = AlarmAddDaysFragment.getInstance( ); }
+        if (category == TIME) {
+            fragment = AlarmAddTimeFragment.getInstance();
+        }
+        if (category == WEEK) {
+            fragment = AlarmAddDaysFragment.getInstance();
+        }
 //        if (category == LOCATION) { fragment = AlarmAddLocationFragment.getInstance( ); }
 //        if (category == GROUP)    { fragment = AlarmAddGroupFragment.getInstance( ); }
 //        if (category == MEMO)     { fragment = AlarmAddMemoFragment.getInstance( ); }
