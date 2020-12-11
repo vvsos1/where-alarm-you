@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -99,7 +100,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (alarm == null) {
             time = new Time();
             title = "";
@@ -146,7 +147,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
         
         // Content View Event Listener
         currentVisibleCategoryPosition = new AtomicInteger();
-        alarmAddContentViewAdapter.setOnItemClickListener((view, position) -> {
+        alarmCategoryItemAdapter.setOnItemClickListener((view, position) -> {
             startCategoryFragment(position);
             setViewModel(position);
             changeVisibleCategoryView(currentVisibleCategoryPosition.get(), position);

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
-import kr.ac.ssu.wherealarmyou.view.adapter.GroupRecyclerViewAdapter;
+import kr.ac.ssu.wherealarmyou.view.adapter.GroupItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.RecyclerViewDecoration;
 import reactor.core.scheduler.Schedulers;
 
@@ -26,7 +26,7 @@ public class AlarmAddGroupFragment extends Fragment
 {
     private List<Group> groups = new ArrayList<>( );
     
-    private GroupRecyclerViewAdapter groupRecyclerViewAdapter;
+    private GroupItemAdapter groupItemAdapter;
     
     @Nullable
     @Override
@@ -40,15 +40,15 @@ public class AlarmAddGroupFragment extends Fragment
         
         // Content View Setting - Group Recycler View (그룹 리스트)
         RecyclerView recyclerView = contentView.findViewById(R.id.alarmAddLocation_recyclerView);
-        groupRecyclerViewAdapter = new GroupRecyclerViewAdapter(getContext( ), groups);
+        groupItemAdapter = new GroupItemAdapter(getContext( ), groups);
         LinearLayoutManager    linearLayoutManager    = new LinearLayoutManager(getContext( ));
         RecyclerViewDecoration recyclerViewDecoration = new RecyclerViewDecoration(30);
         
-        groupRecyclerViewAdapter.setOnGroupClickListener((view, group) -> {
+        groupItemAdapter.setOnItemClickListener((view, group) -> {
             // TODO : 그룹 클릭시 이벤트 처리 (ViewModel 이용)
         });
         
-        recyclerView.setAdapter(groupRecyclerViewAdapter);
+        recyclerView.setAdapter(groupItemAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(recyclerViewDecoration);
         
@@ -63,7 +63,7 @@ public class AlarmAddGroupFragment extends Fragment
         groupService.getJoinedGroup( )
                     .doOnNext(group -> {
                         groups.add(group);
-                        groupRecyclerViewAdapter.notifyItemInserted(groupRecyclerViewAdapter.getItemCount( ));
+                        groupItemAdapter.notifyItemInserted(groupItemAdapter.getItemCount( ));
                     })
                     .doOnError(throwable -> Log.e("GroupFragment", throwable.getLocalizedMessage( )))
                     .publishOn(Schedulers.elastic( ))

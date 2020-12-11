@@ -8,8 +8,10 @@ import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
 import kr.ac.ssu.wherealarmyou.location.Location;
+import kr.ac.ssu.wherealarmyou.location.LocationRepository;
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
@@ -58,35 +60,6 @@ public class DataManager
                       .subscribe( );
     }
     
-    public void addAlarmLiveData(Alarm alarm)
-    {
-        List<Alarm> alarms = Objects.requireNonNull(alarmMutableLiveData.getValue( ));
-        alarms.add(alarm);
-        alarmMutableLiveData.setValue(alarms);
-    }
-    
-    public LiveData<List<Alarm>> getAlarmData( )
-    {
-        return alarmMutableLiveData;
-    }
-    
-    public void addGroupLiveData(Group group)
-    {
-        List<Group> groups = Objects.requireNonNull(groupMutableLiveData.getValue( ));
-        groups.add(group);
-        groupMutableLiveData.setValue(groups);
-    }
-    
-    public LiveData<List<Group>> getGroupData( )
-    {
-        return groupMutableLiveData;
-    }
-    
-    public void setGroupLiveData(List<Group> groups)
-    {
-        groupMutableLiveData.setValue(groups);
-    }
-    
     public void updateGroupLiveData( )
     {
         groupMutableLiveData.setValue(new ArrayList<>( ));
@@ -101,19 +74,63 @@ public class DataManager
     public void updateLocationLiveData( )
     {
         locationMutableLiveData.setValue(new ArrayList<>( ));
+        
+        // TODO : context 없이 LocationService 인스턴스 받기
         // LocationService locationService = LocationService.getInstance(null);
         
-        /*
-        locationService.getLocation( )
-                       .doOnNext(instance::addGroupLiveData)
-                       .publishOn(Schedulers.elastic( ))
-                       .subscribeOn(Schedulers.elastic( ))
-                       .subscribe( );
-        */
+        // TODO : 삭제 (테스트용 코드)
+        String             currentUserUid     = UserService.getInstance( ).getCurrentUserUid( );
+        UserRepository     userRepository     = UserRepository.getInstance( );
+        LocationRepository locationRepository = LocationRepository.getInstance( );
+        
+        userRepository.findUserByUid(currentUserUid)
+                      .map(User::getUserLocations)
+                      .flatMapIterable(Map::keySet)
+                      .flatMap(locationRepository::findByUid)
+                      .doOnNext(location -> instance.addLocationLiveData(location))
+                      .publishOn(Schedulers.elastic( ))
+                      .subscribeOn(Schedulers.elastic( ))
+                      .subscribe( );
+    }
+    
+    public void addAlarmLiveData(Alarm alarm)
+    {
+        List<Alarm> alarms = Objects.requireNonNull(alarmMutableLiveData.getValue( ));
+        alarms.add(alarm);
+        alarmMutableLiveData.setValue(alarms);
+    }
+    
+    public void addGroupLiveData(Group group)
+    {
+        List<Group> groups = Objects.requireNonNull(groupMutableLiveData.getValue( ));
+        groups.add(group);
+        groupMutableLiveData.setValue(groups);
+    }
+    
+    public void addLocationLiveData(Location location)
+    {
+        List<Location> locations = Objects.requireNonNull(getLocationData( ).getValue( ));
+        locations.add(location);
+        locationMutableLiveData.setValue(locations);
+    }
+    
+    public LiveData<List<Alarm>> getAlarmData( )
+    {
+        return alarmMutableLiveData;
+    }
+    
+    public LiveData<List<Group>> getGroupData( )
+    {
+        return groupMutableLiveData;
     }
     
     public LiveData<List<Location>> getLocationData( )
     {
         return locationMutableLiveData;
+    }
+    
+    public void setGroupLiveData(List<Group> groups)
+    {
+        groupMutableLiveData.setValue(groups);
     }
 }

@@ -1,8 +1,8 @@
 package kr.ac.ssu.wherealarmyou.view;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -14,8 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.view.fragment.BottomFragment;
+import kr.ac.ssu.wherealarmyou.view.fragment.MainFragment;
+import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
+import kr.ac.ssu.wherealarmyou.view.login.SetUserInfoActivity;
+
+import java.util.Objects;
 
 public class MainFrameActivity extends AppCompatActivity
 {
@@ -29,13 +34,11 @@ public class MainFrameActivity extends AppCompatActivity
     
     @SuppressLint("StaticFieldLeak")
     public static LinearLayout blind;
+    
+    public static OnBackPressedListener onBackPressedListener;
+    
     public DataManager dataManager = DataManager.getInstance( );
     
-
-
-    public static OnBackPressedListener onBackPressedListener;
-
-
     /* 시작 */
     // Top FrameLayout을 띄우고 Fragment를 나타내기
     public static void showTopFragment(Fragment fragment)
@@ -82,12 +85,21 @@ public class MainFrameActivity extends AppCompatActivity
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
     
+    public static void setOnBackPressedListener(OnBackPressedListener listener)
+    {
+        onBackPressedListener = listener;
+    }
+    
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frame);
         getWindow( ).setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        
+        if (Objects.requireNonNull(FirebaseAuth.getInstance( ).getUid( )).isEmpty( )) {
+            startActivity(new Intent(getApplicationContext( ), SetUserInfoActivity.class));
+        }
         
         fragmentManager = getSupportFragmentManager( );
         
@@ -98,11 +110,11 @@ public class MainFrameActivity extends AppCompatActivity
         
         // Set On Event Listener
         frameTop.setOnClickListener(null);
-        blind.setOnClickListener(v -> hideTopFragment());
+        blind.setOnClickListener(v -> hideTopFragment( ));
         
         // Bottom FrameLayout에 Main Fragment 실행
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        fragmentTransaction.add(R.id.frameBottom, BottomFragment.getInstance( )).commit( );
+        fragmentTransaction.add(R.id.frameBottom, new MainFragment( )).commit( );
         
         // Blind Visibility Controller
         fragmentManager.addOnBackStackChangedListener(( ) -> {
@@ -114,7 +126,7 @@ public class MainFrameActivity extends AppCompatActivity
                 blind.setVisibility(View.GONE);
             }
             else {
-                if (blind.getVisibility() != View.VISIBLE) {
+                if (blind.getVisibility( ) != View.VISIBLE) {
                     Animation animation = new AlphaAnimation(0, 1);
                     animation.setInterpolator(new DecelerateInterpolator( ));
                     animation.setDuration(500);
@@ -124,13 +136,15 @@ public class MainFrameActivity extends AppCompatActivity
             }
         });
     }
-
+    
     @Override
-    public void onBackPressed() {
+    public void onBackPressed( )
+    {
         if (onBackPressedListener != null) {
-            onBackPressedListener.onBackPressed();
-        } else {
-            super.onBackPressed();
+            onBackPressedListener.onBackPressed( );
+        }
+        else {
+            super.onBackPressed( );
         }
     }
 }
