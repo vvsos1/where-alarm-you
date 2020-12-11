@@ -164,13 +164,15 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/groupInfo_textViewAddAlarm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/groupInfo_textViewUnused2"
                     android:layout_marginEnd="15dp"
                     android:layout_toStartOf="@id/groupInfo_buttonHideGroupAlarm"
                     android:text="+ 알람 추가"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="invisible"/>
 
                 <Button
                     android:id="@+id/groupInfo_buttonHideGroupAlarm"

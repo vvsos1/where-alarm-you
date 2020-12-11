@@ -178,10 +178,18 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
         super.onResume();
         MainFrameActivity.setOnBackPressedListener(this);
     }
-
+    
+    @Override
+    public void onPause( )
+    {
+        super.onPause( );
+        MainFrameActivity.setOnBackPressedListener(null);
+    }
+    
     @Override
     public void onBackPressed() {
-        MainFrameActivity.hideTopFragment();
+        MainFrameActivity.backTopFragment();
+        MainFrameActivity.backTopFragment();
     }
 
     @Override

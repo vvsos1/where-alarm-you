@@ -43,8 +43,7 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
         holder.textViewHours.setText(alarm.getTime( ).getHours( ).toString( ));
         holder.textViewMinutes.setText(alarm.getTime( ).getMinutes( ).toString( ));
         holder.textViewLocation.setText("미구현");
-        holder.textViewGroup.setText(alarm.getGroup( ));
-        
+        holder.textViewGroup.setText(alarm.getGroupUid( ));
     }
     
     @Override

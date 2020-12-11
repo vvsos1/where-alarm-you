@@ -193,8 +193,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
                     this.time = time;
                 }
             });
-            viewModel.getInfoString()
-                     .observe(getViewLifecycleOwner(), string -> setInfo(string, category));
+            viewModel.getInfoString().observe(getViewLifecycleOwner(), string -> setInfo(string, category));
             viewModel.onComplete().observe(getViewLifecycleOwner(), aBoolean -> {
                 int newPosition = currentVisibleCategoryPosition.get() + 1;
                 startCategoryFragment(newPosition);
