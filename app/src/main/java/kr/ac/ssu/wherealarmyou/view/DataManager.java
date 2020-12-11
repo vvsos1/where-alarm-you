@@ -23,6 +23,8 @@ public class DataManager
 {
     public static DataManager instance;
     
+    private final MutableLiveData<Boolean> observable = new MutableLiveData<>( );
+    
     private final MutableLiveData<List<Alarm>>    alarmMutableLiveData    = new MutableLiveData<>(new ArrayList<>( ));
     private final MutableLiveData<List<Location>> locationMutableLiveData = new MutableLiveData<>(new ArrayList<>( ));
     private final MutableLiveData<List<Group>>    groupMutableLiveData    = new MutableLiveData<>(new ArrayList<>( ));
@@ -34,6 +36,7 @@ public class DataManager
             instance.updateAlarmLiveData( );
             instance.updateGroupLiveData( );
             instance.updateLocationLiveData( );
+            instance.observable.setValue(Boolean.TRUE);
         }
         return instance;
     }
@@ -55,6 +58,7 @@ public class DataManager
                       .flatMapIterable(Map::keySet)
                       .flatMap(alarmRepository::getAlarmByUid)
                       .doOnNext(alarm -> instance.addAlarmLiveData(alarm))
+                      .doOnComplete(this::resumeObserve)
                       .publishOn(Schedulers.elastic( ))
                       .subscribeOn(Schedulers.elastic( ))
                       .subscribe( );
@@ -66,6 +70,7 @@ public class DataManager
         GroupService groupService = GroupService.getInstance( );
         groupService.getJoinedGroup( )
                     .doOnNext(instance::addGroupLiveData)
+                    .doOnComplete(this::pauseObserve)
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))
                     .subscribe( );
@@ -88,6 +93,7 @@ public class DataManager
                       .flatMapIterable(Map::keySet)
                       .flatMap(locationRepository::findByUid)
                       .doOnNext(location -> instance.addLocationLiveData(location))
+                      .doOnComplete(this::resumeObserve)
                       .publishOn(Schedulers.elastic( ))
                       .subscribeOn(Schedulers.elastic( ))
                       .subscribe( );
@@ -127,6 +133,21 @@ public class DataManager
     public LiveData<List<Location>> getLocationData( )
     {
         return locationMutableLiveData;
+    }
+    
+    public LiveData<Boolean> isObservable( )
+    {
+        return observable;
+    }
+    
+    public void resumeObserve( )
+    {
+        observable.setValue(Boolean.TRUE);
+    }
+    
+    public void pauseObserve( )
+    {
+        observable.setValue(Boolean.FALSE);
     }
     
     public void setGroupLiveData(List<Group> groups)

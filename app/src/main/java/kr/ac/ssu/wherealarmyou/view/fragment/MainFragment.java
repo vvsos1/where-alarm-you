@@ -15,6 +15,7 @@ import jahirfiquitiva.libs.fabsmenu.FABsMenuListener;
 import jahirfiquitiva.libs.fabsmenu.TitleFAB;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
+import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.location.Location;
@@ -29,6 +30,7 @@ import kr.ac.ssu.wherealarmyou.view.fragment.group.GroupFragment;
 import kr.ac.ssu.wherealarmyou.view.fragment.location.LocationAddFragment;
 import kr.ac.ssu.wherealarmyou.view.fragment.location.LocationFragment;
 import kr.ac.ssu.wherealarmyou.view.login.ProfileActivity;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,15 +129,21 @@ public class MainFragment extends Fragment implements View.OnClickListener
         recyclerViewGroup.setAdapter(groupAdapter);
         recyclerViewGroup.setLayoutManager(linearLayoutManagerG);
         
-        dataManager.getGroupData( ).observe(getViewLifecycleOwner( ), groups_ -> {
-            groupIcons.clear( );
-            for (Group group : groups_) {
-                groupIcons.add(group.getIcon( ));
+        dataManager.isObservable( ).observe(getViewLifecycleOwner( ), observable -> {
+            if (observable) {
+                dataManager.getGroupData( ).observe(getViewLifecycleOwner( ), groups_ -> {
+                    groupIcons.clear( );
+                    for (Group group : groups_) {
+                        groupIcons.add(group.getIcon( ));
+                    }
+                    IconItemAdapter newGroupAdapter = new IconItemAdapter(getContext( ), groupIcons);
+                    recyclerViewGroup.setAdapter(newGroupAdapter);
+                });
             }
-            IconItemAdapter newGroupAdapter = new IconItemAdapter(getContext( ), groupIcons);
-            recyclerViewGroup.setAdapter(newGroupAdapter);
+            else {
+                dataManager.getGroupData( ).removeObservers(getViewLifecycleOwner( ));
+            }
         });
-        
         
         // Content View Setting - Alarm Recycler View Setting
         RecyclerView           recyclerViewAlarm      = contentView.findViewById(R.id.main_recyclerViewAlarm);
@@ -146,6 +154,9 @@ public class MainFragment extends Fragment implements View.OnClickListener
         alarmItemAdapter.setOnItemClickListener((view, alarm) -> {
             // TODO : 알람 클릭 이벤트 구현
         });
+        
+        alarmItemAdapter.setOnSwitchCheckedChangeListener(this::changeAlarmState);
+        
        /*
         recyclerViewAlarm.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             RelativeLayout relativeLayoutLocation = contentView.findViewById(R.id.main_relativeLayoutLocation);
@@ -170,9 +181,20 @@ public class MainFragment extends Fragment implements View.OnClickListener
         recyclerViewAlarm.setLayoutManager(linearLayoutManagerA);
         recyclerViewAlarm.addItemDecoration(recyclerViewDecoration);
         
-        dataManager.getAlarmData( ).observe(getViewLifecycleOwner( ), alarms_ -> {
-            AlarmItemAdapter newAlarmItemAdapter = new AlarmItemAdapter(getContext( ), alarms_);
-            recyclerViewAlarm.setAdapter(newAlarmItemAdapter);
+        dataManager.isObservable( ).observe(getViewLifecycleOwner( ), observable -> {
+            if (observable) {
+                dataManager.getAlarmData( ).observe(getViewLifecycleOwner( ), alarms_ -> {
+                    AlarmItemAdapter newAlarmItemAdapter = new AlarmItemAdapter(getContext( ), alarms_);
+                    newAlarmItemAdapter.setOnItemClickListener((view, alarm) -> {
+                        // TODO : 알람 클릭 이벤트 구현
+                    });
+                    newAlarmItemAdapter.setOnSwitchCheckedChangeListener(this::changeAlarmState);
+                    recyclerViewAlarm.setAdapter(newAlarmItemAdapter);
+                });
+            }
+            else {
+                dataManager.getAlarmData( ).removeObservers(getViewLifecycleOwner( ));
+            }
         });
         
         
@@ -186,6 +208,19 @@ public class MainFragment extends Fragment implements View.OnClickListener
         textViewUserProfile.setOnClickListener(this);
         
         return contentView;
+    }
+    
+    private void changeAlarmState(Alarm alarm, boolean isChecked)
+    {
+        dataManager.pauseObserve( );
+        
+        AlarmService alarmService = AlarmService.getInstance(getContext( ));
+        
+        alarmService.changeSwitch(alarm, isChecked)
+                    .doOnSuccess(unused -> dataManager.updateAlarmLiveData( ))
+                    .publishOn(Schedulers.elastic( ))
+                    .subscribeOn(Schedulers.elastic( ))
+                    .subscribe( );
     }
     
     @Override

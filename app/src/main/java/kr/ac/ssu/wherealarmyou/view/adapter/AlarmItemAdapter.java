@@ -19,7 +19,9 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
     
     private List<Alarm> alarms;
     
-    private OnItemClickListener listener = null;
+    private OnItemClickListener onItemClickListener = null;
+    
+    private OnSwitchCheckedChangeListener onSwitchCheckedChangeListener = null;
     
     public AlarmItemAdapter(Context context, List<Alarm> alarms)
     {
@@ -44,6 +46,9 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
         holder.textViewMinutes.setText(alarm.getTime( ).getMinutes( ).toString( ));
         holder.textViewLocation.setText("미구현");
         holder.textViewGroup.setText(alarm.getGroupUid( ));
+        holder.aSwitch.setChecked(alarm.getIsSwitchOn( ));
+        holder.aSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                onSwitchCheckedChangeListener.onSwitchCheckedChangeListener(alarm, isChecked));
     }
     
     @Override
@@ -54,12 +59,22 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
     
     public void setOnItemClickListener(OnItemClickListener listener)
     {
-        this.listener = listener;
+        this.onItemClickListener = listener;
+    }
+    
+    public void setOnSwitchCheckedChangeListener(OnSwitchCheckedChangeListener listener)
+    {
+        this.onSwitchCheckedChangeListener = listener;
     }
     
     public interface OnItemClickListener
     {
         void onItemClick(View view, Alarm alarm);
+    }
+    
+    public interface OnSwitchCheckedChangeListener
+    {
+        void onSwitchCheckedChangeListener(Alarm alarm, boolean isChecked);
     }
     
     public static class AlarmViewHolder extends RecyclerView.ViewHolder
@@ -74,7 +89,7 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
         TextView textViewMon;
         TextView textViewTue;
         TextView textViewWed;
-        TextView textViewTur;
+        TextView textViewThu;
         TextView textViewFri;
         TextView textViewSat;
         
@@ -94,7 +109,7 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
             textViewMon      = itemView.findViewById(R.id.item_alarm_textViewMon);
             textViewTue      = itemView.findViewById(R.id.item_alarm_textViewTue);
             textViewWed      = itemView.findViewById(R.id.item_alarm_textViewWed);
-            textViewTur      = itemView.findViewById(R.id.item_alarm_textViewTur);
+            textViewThu      = itemView.findViewById(R.id.item_alarm_textViewThu);
             textViewFri      = itemView.findViewById(R.id.item_alarm_textViewFri);
             textViewSat      = itemView.findViewById(R.id.item_alarm_textViewSat);
             textViewLocation = itemView.findViewById(R.id.item_alarm_textViewLocation);
