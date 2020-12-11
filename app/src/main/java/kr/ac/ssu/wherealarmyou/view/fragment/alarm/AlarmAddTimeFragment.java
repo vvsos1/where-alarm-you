@@ -167,7 +167,7 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
                     stage++;
                     minutes = textToInt;
                     alarmAddTimeViewModel.selectMinute(minutes);
-                    linearLayoutSetTime.setVisibility(view.GONE);
+                    linearLayoutSetTime.setVisibility(View.GONE);
                 }
             }
         }
@@ -187,6 +187,6 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
     @Override
     public void onStop() {
         super.onStop();
-        alarmAddTimeViewModel.resetLiveData();
+        alarmAddTimeViewModel.reset();
     }
 }

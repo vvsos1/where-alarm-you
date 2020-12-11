@@ -17,6 +17,13 @@ import java.util.List;
 
 public class AlarmCategoryItemAdapter extends RecyclerView.Adapter<AlarmCategoryItemAdapter.AlarmAddContentViewHolder>
 {
+    private static final int TIME     = 0;
+    private static final int WEEK     = 1;
+    private static final int LOCATION = 2;
+    private static final int GROUP    = 3;
+    private static final int MEMO     = 4;
+    private static final int DETAIL   = 5;
+    
     private Context context;
     
     private List<AlarmAddFrameItem> frameItems;
@@ -46,7 +53,25 @@ public class AlarmCategoryItemAdapter extends RecyclerView.Adapter<AlarmCategory
         holder.pictogram.setBackgroundResource(alarmAddItem.getPictogram_resID( ));
         holder.categoryName.setText(alarmAddItem.getCategoryName( ));
         holder.categoryInfo.setText(alarmAddItem.getCategoryInfo( ));
-        holder.contentHead.setOnClickListener(view -> onItemClickListener.onItemClick(view, position));
+        if (position == TIME) {
+            holder.contentFrame.setId(R.id.alarmAdd_frameLayoutTime);
+        }
+        else if (position == WEEK) {
+            holder.contentFrame.setId(R.id.alarmAdd_frameLayoutWeek);
+        }
+        else if (position == LOCATION) {
+            holder.contentFrame.setId(R.id.alarmAdd_frameLayoutLocation);
+        }
+        else if (position == GROUP) {
+            holder.contentFrame.setId(R.id.alarmAdd_frameLayoutGroup);
+        }
+        else if (position == MEMO) {
+            holder.contentFrame.setId(R.id.alarmAdd_frameLayoutMemo);
+        }
+        else if (position == DETAIL) {
+            holder.contentFrame.setId(R.id.alarmAdd_frameLayoutDetail);
+        }
+        holder.contentHead.setOnClickListener(view -> onItemClickListener.onItemClick(holder.contentFrame, position));
     }
     
     @Override
@@ -81,6 +106,7 @@ public class AlarmCategoryItemAdapter extends RecyclerView.Adapter<AlarmCategory
             categoryInfo = itemView.findViewById(R.id.item_alarmAddCategory_textViewInfo);
             contentHead  = itemView.findViewById(R.id.item_alarmAddCategory_relativeLayoutHead);
             contentFrame = itemView.findViewById(R.id.item_alarmAddCategory_frameLayoutContent);
+            
         }
     }
 }

@@ -15,17 +15,17 @@
             android:layout_height="37dp"
             android:background="@color/colorAccentLight" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
             android:gravity="bottom"
-            android:orientation="horizontal"
             android:paddingStart="15dp"
             android:paddingEnd="15dp">
 
             <ImageView
+                android:id="@+id/main_imageViewUnused"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:background="@drawable/ic_alarm" />
@@ -33,7 +33,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/main_imageViewUnused"
                 android:layout_marginStart="5dp"
+                android:layout_toEndOf="@id/main_imageViewUnused"
                 android:text="Where Alarm You"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
@@ -42,11 +44,11 @@
                 android:id="@+id/main_textViewUserProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="200dp"
+                android:layout_alignParentEnd="true"
                 android:text="내 정보"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/main_relativeLayoutLocation"
