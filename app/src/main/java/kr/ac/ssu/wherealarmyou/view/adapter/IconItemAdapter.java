@@ -8,16 +8,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.Icon;
-import kr.ac.ssu.wherealarmyou.group.Group;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.IconContentViewHolder>
 {
-    private Context    context;
+    private MutableLiveData<Boolean> iconSelected = new MutableLiveData<>( );
+    
+    private AtomicInteger selectedPosition = new AtomicInteger( );
+    
+    private Context context;
+    
     private List<Icon> icons;
     
     private OnItemClickListener listener = null;
@@ -43,6 +49,16 @@ public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.IconCo
         
         holder.buttonIcon.setText(icon.getText( ));
         
+        iconSelected.observeForever(iconSelected -> {
+            if (iconSelected) {
+                if (position == selectedPosition.get( )) {
+                    holder.blind.setVisibility(View.INVISIBLE);
+                }
+                else { holder.blind.setVisibility(View.VISIBLE); }
+            }
+            else { holder.blind.setVisibility(View.INVISIBLE); }
+        });
+        
         GradientDrawable drawable = (GradientDrawable)holder.buttonIcon.getBackground( );
         drawable.setColor(Color.parseColor(icon.getColorHex( )));
         holder.buttonIcon.setOnClickListener(view -> {
@@ -50,6 +66,12 @@ public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.IconCo
                 listener.onItemClick(position, icon);
             }
         });
+    }
+    
+    public void iconSelected(Boolean iconSelected, int position)
+    {
+        selectedPosition.set(position);
+        this.iconSelected.setValue(iconSelected);
     }
     
     @Override
@@ -70,11 +92,13 @@ public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.IconCo
     
     public static class IconContentViewHolder extends RecyclerView.ViewHolder
     {
+        View   blind;
         Button buttonIcon;
         
         public IconContentViewHolder(View itemView)
         {
             super(itemView);
+            blind      = itemView.findViewById(R.id.item_icon_blind);
             buttonIcon = itemView.findViewById(R.id.item_icon_buttonIcon);
         }
     }

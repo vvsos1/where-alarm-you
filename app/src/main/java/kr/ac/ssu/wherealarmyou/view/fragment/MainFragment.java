@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -45,6 +46,11 @@ public class MainFragment extends Fragment implements View.OnClickListener
     // FAB ( Floating Action Button )
     private FABsMenu fabsMenu;
     private View     fabsBlind;
+    
+    private IconItemAdapter groupIconAdapter;
+    
+    private TextView textViewGroupInfo;
+    private Button   buttonRefreshGroup;
     
     public static MainFragment getInstance( )
     {
@@ -108,11 +114,13 @@ public class MainFragment extends Fragment implements View.OnClickListener
         TextView textViewToGroup      = contentView.findViewById(R.id.main_textViewToGroup);
         TextView textViewUserProfile  = contentView.findViewById(R.id.main_textViewUserProfile);
         TextView textViewLocationInfo = contentView.findViewById(R.id.main_textViewLocationInfo);
-        TextView textViewGroupInfo    = contentView.findViewById(R.id.main_textViewGroupInfo);
+        textViewGroupInfo  = contentView.findViewById(R.id.main_textViewGroupInfo);
+        buttonRefreshGroup = contentView.findViewById(R.id.main_buttonRefreshGroup);
         
         textViewToLocation.setOnClickListener(this);
         textViewToGroup.setOnClickListener(this);
         textViewUserProfile.setOnClickListener(this);
+        buttonRefreshGroup.setOnClickListener(this);
         
         
         // Content View Setting - Location Recycler View Setting
@@ -131,9 +139,9 @@ public class MainFragment extends Fragment implements View.OnClickListener
         
         // Content View Setting - Group Recycler View Setting
         RecyclerView        recyclerViewGroup    = contentView.findViewById(R.id.main_recyclerViewGroup);
-        IconItemAdapter     groupIconAdapter     = new IconItemAdapter(getContext( ), groupIcons);
         LinearLayoutManager linearLayoutManagerG = new LinearLayoutManager(getContext( ));
         
+        groupIconAdapter = new IconItemAdapter(getContext( ), groupIcons);
         groupIconAdapter.setOnItemClickListener((position, icon) ->
                 textViewGroupInfo.setText(Objects.requireNonNull(groups).get(position).getName( )));
         
@@ -146,12 +154,14 @@ public class MainFragment extends Fragment implements View.OnClickListener
             for (Group group : groups_) {
                 groupIcons.add(group.getIcon( ));
             }
-            IconItemAdapter newGroupIconAdapter = new IconItemAdapter(getContext( ), groupIcons);
-            newGroupIconAdapter.setOnItemClickListener((position, icon) -> {
+            groupIconAdapter = new IconItemAdapter(getContext( ), groupIcons);
+            groupIconAdapter.setOnItemClickListener((position, icon) -> {
                 textViewGroupInfo.setText(Objects.requireNonNull(groups).get(position).getName( ));
                 filterAlarmByGroup(groups.get(position));
+                groupIconAdapter.iconSelected(Boolean.TRUE, position);
+                buttonRefreshGroup.setVisibility(View.VISIBLE);
             });
-            recyclerViewGroup.setAdapter(newGroupIconAdapter);
+            recyclerViewGroup.setAdapter(groupIconAdapter);
         });
         
         
@@ -254,6 +264,11 @@ public class MainFragment extends Fragment implements View.OnClickListener
             case (R.id.main_fabsButtonAddGroup):
                 MainFrameActivity.showTopFragment(GroupAddFragment.getInstance( ));
                 fabsMenu.collapse( );
+                break;
+            case (R.id.main_buttonRefreshGroup):
+                groupIconAdapter.iconSelected(Boolean.FALSE, 0);
+                buttonRefreshGroup.setVisibility(View.INVISIBLE);
+                textViewGroupInfo.setText("");
                 break;
         }
     }

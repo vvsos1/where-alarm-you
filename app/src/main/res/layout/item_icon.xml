@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_icon_and_title_relativeLayoutParent"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingStart="10dp"
-    android:paddingEnd="10dp">
+    android:layout_height="wrap_content">
 
     <Button
         android:id="@+id/item_icon_buttonIcon"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/icon_round_corners"
         android:stateListAnimator="@null"
         android:textColor="#000"
         android:textSize="11sp" />
-</LinearLayout>
+
+    <View
+        android:id="@+id/item_icon_blind"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="#7777"
+        android:visibility="gone" />
+</FrameLayout>
 
