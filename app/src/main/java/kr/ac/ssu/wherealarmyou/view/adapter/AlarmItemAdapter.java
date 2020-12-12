@@ -6,22 +6,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
+import kr.ac.ssu.wherealarmyou.group.Group;
+import kr.ac.ssu.wherealarmyou.location.Location;
+import kr.ac.ssu.wherealarmyou.view.DataManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.AlarmViewHolder>
 {
+    private final DataManager dataManager = DataManager.getInstance( );
+    
     private Context context;
     
     private List<Alarm> alarms;
     
-    private OnItemClickListener listener = null;
+    private OnItemClickListener onItemClickListener = null;
+    
+    private OnSwitchCheckedChangeListener onSwitchCheckedChangeListener = null;
     
     public AlarmItemAdapter(Context context, List<Alarm> alarms)
     {
@@ -42,11 +51,50 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
     {
         Alarm alarm = alarms.get(position);
         
-        holder.textViewHours.setText(alarm.getTime( ).getHours( ).toString( ));
-        holder.textViewMinutes.setText(alarm.getTime( ).getMinutes( ).toString( ));
-        holder.textViewLocation.setText("미구현");
-        holder.textViewGroup.setText(alarm.getGroupUid());
+        if (alarm.hasGroup( )) {
+            for (Group group : Objects.requireNonNull(dataManager.getGroupData( ).getValue( ))) {
+                if (Objects.equals(alarm.getGroupUid( ), group.getUid( ))) {
+                    holder.textViewGroup.setText(group.getName( ));
+                }
+            }
+        }
         
+        if (alarm.hasLocation( )) {
+            boolean isInclude = true;
+            
+            List<Location> locations = new ArrayList<>( );
+            if (alarm.getLocationCondition( ).isInclude( )) {
+                Set<String> uidSet = alarm.getLocationCondition( ).getInclude( ).keySet( );
+                locations = Objects.requireNonNull(dataManager.getLocationData( ).getValue( ))
+                                   .stream( )
+                                   .filter(location -> uidSet.contains(location.getUid( )))
+                                   .collect(Collectors.toList( ));
+            }
+            else if (!alarm.getLocationCondition( ).isInclude( )) {
+                isInclude = false;
+                Set<String> uidSet = alarm.getLocationCondition( ).getExclude( ).keySet( );
+                locations = Objects.requireNonNull(dataManager.getLocationData( ).getValue( ))
+                                   .stream( )
+                                   .filter(location -> uidSet.contains(location.getUid( )))
+                                   .collect(Collectors.toList( ));
+            }
+            for (Location location : locations) {
+                String origin = (String)holder.textViewLocation.getText( );
+                holder.textViewLocation.setText(origin + " " + location.getTitle( ));
+                if (!isInclude) {
+                    String old = (String)holder.textViewLocation.getText( );
+                    holder.textViewLocation.setText(old + "밖에서");
+                }
+            }
+        }
+        
+        int hour = (alarm.getTime( ).getHours( ) % 12 != 0) ? alarm.getTime().getHours() % 12
+                                                            : 12;
+        holder.textViewHours.setText(Integer.toString(hour));
+        holder.textViewMinutes.setText(alarm.getTime( ).getMinutes( ).toString( ));
+        holder.aSwitch.setChecked(alarm.getIsSwitchOn( ));
+        holder.aSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                onSwitchCheckedChangeListener.onSwitchCheckedChangeListener(alarm, isChecked));
     }
     
     @Override
@@ -57,12 +105,22 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
     
     public void setOnItemClickListener(OnItemClickListener listener)
     {
-        this.listener = listener;
+        this.onItemClickListener = listener;
+    }
+    
+    public void setOnSwitchCheckedChangeListener(OnSwitchCheckedChangeListener listener)
+    {
+        this.onSwitchCheckedChangeListener = listener;
     }
     
     public interface OnItemClickListener
     {
         void onItemClick(View view, Alarm alarm);
+    }
+    
+    public interface OnSwitchCheckedChangeListener
+    {
+        void onSwitchCheckedChangeListener(Alarm alarm, boolean isChecked);
     }
     
     public static class AlarmViewHolder extends RecyclerView.ViewHolder
@@ -77,7 +135,7 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
         TextView textViewMon;
         TextView textViewTue;
         TextView textViewWed;
-        TextView textViewTur;
+        TextView textViewThu;
         TextView textViewFri;
         TextView textViewSat;
         
@@ -97,7 +155,7 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
             textViewMon      = itemView.findViewById(R.id.item_alarm_textViewMon);
             textViewTue      = itemView.findViewById(R.id.item_alarm_textViewTue);
             textViewWed      = itemView.findViewById(R.id.item_alarm_textViewWed);
-            textViewTur      = itemView.findViewById(R.id.item_alarm_textViewTur);
+            textViewThu      = itemView.findViewById(R.id.item_alarm_textViewThu);
             textViewFri      = itemView.findViewById(R.id.item_alarm_textViewFri);
             textViewSat      = itemView.findViewById(R.id.item_alarm_textViewSat);
             textViewLocation = itemView.findViewById(R.id.item_alarm_textViewLocation);

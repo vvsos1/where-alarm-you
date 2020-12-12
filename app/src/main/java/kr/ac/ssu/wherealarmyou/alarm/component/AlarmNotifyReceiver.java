@@ -19,6 +19,7 @@ import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.DaysAlarm;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
+import kr.ac.ssu.wherealarmyou.location.service.CurrentLocationService;
 import kr.ac.ssu.wherealarmyou.location.service.LocationService;
 import reactor.core.publisher.Flux;
 
@@ -87,8 +88,10 @@ public class AlarmNotifyReceiver extends BroadcastReceiver {
 
         } else {
 
-            LocationService locationService = LocationService.getInstance(context);
-            locationService.getCurrentAddress().doOnNext(currentAddress -> {
+            CurrentLocationService currentLocationService = CurrentLocationService.getInstance(context);
+            LocationService locationService = LocationService.getInstance();
+
+            currentLocationService.getCurrentAddress().doOnNext(currentAddress -> {
 
 
                 Set<String> locationUidSet;

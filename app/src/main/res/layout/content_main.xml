@@ -12,7 +12,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="37dp"
+            android:layout_height="40dp"
             android:background="@color/colorAccentLight" />
 
         <RelativeLayout
@@ -92,9 +92,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@drawable/round_corners_icon_list"
                 android:gravity="center_vertical"
-                android:overScrollMode="never"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
+                android:overScrollMode="never" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -129,7 +127,18 @@
                 android:layout_alignBaseline="@id/main_textViewUnused2"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="7dp"
-                android:text="그룹 페이지로" />
+                android:text="그룹 페이지로 이동" />
+
+            <Button
+                android:id="@+id/main_buttonRefreshGroup"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignBottom="@id/main_textViewGroupInfo"
+                android:layout_marginStart="7dp"
+                android:layout_toEndOf="@id/main_textViewGroupInfo"
+                android:background="@drawable/ic_refresh"
+                android:stateListAnimator="@null"
+                android:visibility="invisible"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/main_recyclerViewGroup"
@@ -139,9 +148,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@drawable/round_corners_icon_list"
                 android:gravity="center_vertical"
-                android:overScrollMode="never"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
+                android:overScrollMode="never" />
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView

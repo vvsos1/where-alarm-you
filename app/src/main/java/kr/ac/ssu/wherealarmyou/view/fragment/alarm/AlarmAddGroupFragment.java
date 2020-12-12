@@ -68,6 +68,14 @@ public class AlarmAddGroupFragment extends Fragment implements OnBackPressedList
     @Override
     public void onBackPressed( )
     {
-        MainFrameActivity.hideTopFragment( );
+        MainFrameActivity.backTopFragment( );
+        MainFrameActivity.backTopFragment( );
+    }
+    
+    @Override
+    public void onStop( )
+    {
+        super.onStop( );
+        MainFrameActivity.setOnBackPressedListener(null);
     }
 }

@@ -17,13 +17,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.common.collect.Lists;
 import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.alarm.Alarm;
+import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
 import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.adapter.AlarmItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.adapter.MemberItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.custom_view.RecyclerViewDecoration;
+import kr.ac.ssu.wherealarmyou.view.fragment.alarm.AlarmAddFragment;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
@@ -36,8 +40,9 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
     
     private final Group group;
     
-    // Content View Item
-    private TextView textViewGroupExit;
+    private final List<Alarm> groupAlarms = new ArrayList<>( );
+    
+    private AlarmItemAdapter alarmItemAdapter;
     
     public GroupInfoFragment(Group group)
     {
@@ -54,6 +59,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
     {
         Bundle bundle = Objects.requireNonNull(getArguments( ));
         
+        getGroupAlarm(group.getUid( ));
+        
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_group_info, null);
         
@@ -66,8 +73,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
         TextView textViewName         = contentView.findViewById(R.id.groupInfo_textViewName);
         TextView textViewAdmin        = contentView.findViewById(R.id.groupInfo_textViewAdmin);
         TextView textViewIntroduction = contentView.findViewById(R.id.groupInfo_textViewIntroduction);
-        textViewGroupExit = contentView.findViewById(R.id.groupInfo_textViewGroupExit);
-        
+        TextView textViewGroupExit    = contentView.findViewById(R.id.groupInfo_textViewGroupExit);
         
         GradientDrawable drawable = (GradientDrawable)buttonIcon.getBackground( );
         drawable.setColor(Color.parseColor(group.getIcon( ).getColorHex( )));
@@ -91,6 +97,13 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
             }
         }
         
+        RecyclerView        recyclerViewAlarm   = contentView.findViewById(R.id.groupInfo_recyclerViewAlarm);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext( ));
+        alarmItemAdapter = new AlarmItemAdapter(getContext( ), groupAlarms);
+        
+        recyclerViewAlarm.setAdapter(alarmItemAdapter);
+        recyclerViewAlarm.setLayoutManager(linearLayoutManager);
+        
         RecyclerView           recyclerViewAdmin      = contentView.findViewById(R.id.groupInfo_recyclerViewAdmin);
         RecyclerView           recyclerViewNormal     = contentView.findViewById(R.id.groupInfo_recyclerViewNormal);
         MemberItemAdapter      adminRecyclerAdapter   = new MemberItemAdapter(getContext( ), admin);
@@ -109,15 +122,18 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
         // Content View Setting - ADMIN SETTING
         if (Objects.equals(group.getMembers( ).get(FirebaseAuth.getInstance( ).getUid( )), "ADMIN")) {
             LinearLayout linearLayoutAdmin    = contentView.findViewById(R.id.groupInfo_linearLayoutAdmin);
+            TextView     textViewAlarmAdd     = contentView.findViewById(R.id.groupInfo_textViewAddAlarm);
             TextView     textViewGroupDelete  = contentView.findViewById(R.id.groupInfo_textViewGroupDelete);
             TextView     textViewGroupSetting = contentView.findViewById(R.id.groupInfo_textViewGroupSetting);
             TextView     textViewManageMember = contentView.findViewById(R.id.groupInfo_textViewManageMember);
+            textViewAlarmAdd.setVisibility(View.VISIBLE);
             linearLayoutAdmin.setVisibility(View.VISIBLE);
             textViewManageMember.setVisibility(View.VISIBLE);
             
+            textViewAlarmAdd.setOnClickListener(this);
             textViewGroupDelete.setOnClickListener(this);
-            textViewGroupSetting.setOnClickListener(
-                    view -> Toast.makeText(getContext( ), "그룹 설정(미구현)", Toast.LENGTH_SHORT).show( ));
+            textViewGroupSetting.setOnClickListener(view ->
+                    MainFrameActivity.showTopFragment(new GroupMakeFragment(group, GroupMakeFragment.Mode.GROUP_EDIT)));
             textViewManageMember.setOnClickListener(view -> normalRecyclerAdapter.bind(Boolean.TRUE));
             
             if (group.getWaitingUsers( ) != null) {
@@ -196,10 +212,19 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
         MainFrameActivity.showTopFragment(GroupFragment.getInstance( ));
     }
     
+    private void getGroupAlarm(String groupUid)
+    {
+        AlarmService alarmService = AlarmService.getInstance(getContext( ));
+        alarmService.getAlarmsByGroupUid(groupUid)
+                    .map(groupAlarms::add)
+                    .doOnComplete(( ) -> alarmItemAdapter.notifyDataSetChanged( ))
+                    .subscribe( );
+    }
+    
     @Override
     public void onClick(View view)
     {
-        if (view == textViewGroupExit) {
+        if (view.getId( ) == R.id.groupInfo_textViewGroupExit) {
             AlertDialog.Builder alertDialogDeleteUser = new AlertDialog.Builder(Objects.requireNonNull(getContext( )));
             alertDialogDeleteUser.setMessage("그룹 탈퇴를 원하시나요?")
                                  .setCancelable(false)
@@ -217,6 +242,10 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
                                  .setNegativeButton("아니요", (dialogInterface, i) ->
                                          Toast.makeText(getContext( ), "삭제가 취소되었습니다", Toast.LENGTH_LONG).show( ))
                                  .show( );
+        }
+        
+        if (view.getId( ) == R.id.groupInfo_textViewAddAlarm) {
+            MainFrameActivity.addTopFragment(new AlarmAddFragment(null));
         }
     }
 }

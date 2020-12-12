@@ -1,73 +1,25 @@
 package kr.ac.ssu.wherealarmyou.location.service;
 
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-
-import androidx.core.app.ActivityCompat;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-
-import java.util.concurrent.CancellationException;
-
-import kr.ac.ssu.wherealarmyou.location.Address;
 import kr.ac.ssu.wherealarmyou.location.Location;
 import kr.ac.ssu.wherealarmyou.location.LocationRepository;
 import reactor.core.publisher.Mono;
 
 public class LocationService {
     private static LocationService instance;
-    private FusedLocationProviderClient fusedLocationClient;
-    private Context context;
     private LocationRepository locationRepository;
 
-    private LocationService(Context context, LocationRepository locationRepository) {
-        setContext(context);
+
+    private LocationService(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
 
-    public static LocationService getInstance(Context context) {
+    public static LocationService getInstance() {
         if (instance == null)
-            instance = new LocationService(context, LocationRepository.getInstance());
-        instance.setContext(context);
+            instance = new LocationService(LocationRepository.getInstance());
         return instance;
     }
 
-    private void setContext(Context context) {
-        this.context = context;
-        this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
-    }
-
-    // 위치 권한을 체크 후 결과를 반환
-    private boolean checkLocationPermission() {
-        return (ActivityCompat
-                .checkSelfPermission(context,
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                && (ActivityCompat
-                .checkSelfPermission(context,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED);
-    }
-
-    // 현재 사용자의 위치를 반환
-    public Mono<Address> getCurrentAddress() {
-        if (checkLocationPermission()) {
-            return Mono.create(voidMonoSink -> {
-                fusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(
-                                location -> voidMonoSink.success(
-                                        new Address(location.getLongitude(), location.getLatitude())))
-                        .addOnFailureListener(
-                                voidMonoSink::error)
-                        .addOnCanceledListener(
-                                () -> voidMonoSink.error(
-                                        new CancellationException("현재 정보를 가져오는 행위가 취소되었습니다")));
-            });
-        } else {
-            return Mono.error(new RuntimeException("위치 권한이 없습니다"));
-        }
-    }
 
     public Mono<Location> findLocation(String locationUid) {
         return locationRepository.findByUid(locationUid);

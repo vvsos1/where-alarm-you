@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,7 @@ import jahirfiquitiva.libs.fabsmenu.FABsMenuListener;
 import jahirfiquitiva.libs.fabsmenu.TitleFAB;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
+import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.location.Location;
@@ -29,9 +31,11 @@ import kr.ac.ssu.wherealarmyou.view.fragment.group.GroupFragment;
 import kr.ac.ssu.wherealarmyou.view.fragment.location.LocationAddFragment;
 import kr.ac.ssu.wherealarmyou.view.fragment.location.LocationFragment;
 import kr.ac.ssu.wherealarmyou.view.login.ProfileActivity;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainFragment extends Fragment implements View.OnClickListener
 {
@@ -42,6 +46,11 @@ public class MainFragment extends Fragment implements View.OnClickListener
     // FAB ( Floating Action Button )
     private FABsMenu fabsMenu;
     private View     fabsBlind;
+    
+    private IconItemAdapter groupIconAdapter;
+    
+    private TextView textViewGroupInfo;
+    private Button   buttonRefreshGroup;
     
     public static MainFragment getInstance( )
     {
@@ -100,31 +109,44 @@ public class MainFragment extends Fragment implements View.OnClickListener
         });
         
         
+        // Content View Setting
+        TextView textViewToLocation   = contentView.findViewById(R.id.main_textViewToLocation);
+        TextView textViewToGroup      = contentView.findViewById(R.id.main_textViewToGroup);
+        TextView textViewUserProfile  = contentView.findViewById(R.id.main_textViewUserProfile);
+        TextView textViewLocationInfo = contentView.findViewById(R.id.main_textViewLocationInfo);
+        textViewGroupInfo  = contentView.findViewById(R.id.main_textViewGroupInfo);
+        buttonRefreshGroup = contentView.findViewById(R.id.main_buttonRefreshGroup);
+        
+        textViewToLocation.setOnClickListener(this);
+        textViewToGroup.setOnClickListener(this);
+        textViewUserProfile.setOnClickListener(this);
+        buttonRefreshGroup.setOnClickListener(this);
+        
+        
         // Content View Setting - Location Recycler View Setting
         RecyclerView        recyclerViewLocation = contentView.findViewById(R.id.main_recyclerViewLocation);
-        IconItemAdapter     locationAdapter      = new IconItemAdapter(getContext( ), locationIcons);
+        IconItemAdapter     locationIconAdapter  = new IconItemAdapter(getContext( ), locationIcons);
         LinearLayoutManager linearLayoutManagerL = new LinearLayoutManager(getContext( ));
         
-        locationAdapter.setOnItemClickListener((view, icon) -> {
+        locationIconAdapter.setOnItemClickListener((view, icon) -> {
             // TODO : 알람 필터링 구현
         });
         
         linearLayoutManagerL.setOrientation(RecyclerView.HORIZONTAL);
-        recyclerViewLocation.setAdapter(locationAdapter);
+        recyclerViewLocation.setAdapter(locationIconAdapter);
         recyclerViewLocation.setLayoutManager(linearLayoutManagerL);
         
         
         // Content View Setting - Group Recycler View Setting
         RecyclerView        recyclerViewGroup    = contentView.findViewById(R.id.main_recyclerViewGroup);
-        IconItemAdapter     groupAdapter         = new IconItemAdapter(getContext( ), groupIcons);
         LinearLayoutManager linearLayoutManagerG = new LinearLayoutManager(getContext( ));
         
-        groupAdapter.setOnItemClickListener((view, icon) -> {
-            // TODO : 알람 필터링 구현
-        });
+        groupIconAdapter = new IconItemAdapter(getContext( ), groupIcons);
+        groupIconAdapter.setOnItemClickListener((position, icon) ->
+                textViewGroupInfo.setText(Objects.requireNonNull(groups).get(position).getName( )));
         
         linearLayoutManagerG.setOrientation(RecyclerView.HORIZONTAL);
-        recyclerViewGroup.setAdapter(groupAdapter);
+        recyclerViewGroup.setAdapter(groupIconAdapter);
         recyclerViewGroup.setLayoutManager(linearLayoutManagerG);
         
         dataManager.getGroupData( ).observe(getViewLifecycleOwner( ), groups_ -> {
@@ -132,8 +154,14 @@ public class MainFragment extends Fragment implements View.OnClickListener
             for (Group group : groups_) {
                 groupIcons.add(group.getIcon( ));
             }
-            IconItemAdapter newGroupAdapter = new IconItemAdapter(getContext( ), groupIcons);
-            recyclerViewGroup.setAdapter(newGroupAdapter);
+            groupIconAdapter = new IconItemAdapter(getContext( ), groupIcons);
+            groupIconAdapter.setOnItemClickListener((position, icon) -> {
+                textViewGroupInfo.setText(Objects.requireNonNull(groups).get(position).getName( ));
+                filterAlarmByGroup(groups.get(position));
+                groupIconAdapter.iconSelected(Boolean.TRUE, position);
+                buttonRefreshGroup.setVisibility(View.VISIBLE);
+            });
+            recyclerViewGroup.setAdapter(groupIconAdapter);
         });
         
         
@@ -146,6 +174,9 @@ public class MainFragment extends Fragment implements View.OnClickListener
         alarmItemAdapter.setOnItemClickListener((view, alarm) -> {
             // TODO : 알람 클릭 이벤트 구현
         });
+        
+        alarmItemAdapter.setOnSwitchCheckedChangeListener(this::changeAlarmState);
+        
        /*
         recyclerViewAlarm.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             RelativeLayout relativeLayoutLocation = contentView.findViewById(R.id.main_relativeLayoutLocation);
@@ -170,22 +201,43 @@ public class MainFragment extends Fragment implements View.OnClickListener
         recyclerViewAlarm.setLayoutManager(linearLayoutManagerA);
         recyclerViewAlarm.addItemDecoration(recyclerViewDecoration);
         
-        dataManager.getAlarmData( ).observe(getViewLifecycleOwner( ), alarms_ -> {
-            AlarmItemAdapter newAlarmItemAdapter = new AlarmItemAdapter(getContext( ), alarms_);
-            recyclerViewAlarm.setAdapter(newAlarmItemAdapter);
+        dataManager.isObservable( ).observe(getViewLifecycleOwner( ), observable -> {
+            if (observable) {
+                dataManager.getAlarmData( ).observe(getViewLifecycleOwner( ), alarms_ -> {
+                    AlarmItemAdapter newAlarmItemAdapter = new AlarmItemAdapter(getContext( ), alarms_);
+                    newAlarmItemAdapter.setOnItemClickListener((view, alarm) -> {
+                        // TODO : 알람 클릭 이벤트 구현
+                    });
+                    newAlarmItemAdapter.setOnSwitchCheckedChangeListener(this::changeAlarmState);
+                    recyclerViewAlarm.setAdapter(newAlarmItemAdapter);
+                });
+            }
+            else {
+                dataManager.getAlarmData( ).removeObservers(getViewLifecycleOwner( ));
+            }
         });
         
-        
-        // Content View Setting - Other Items
-        TextView textViewLocationInfo = contentView.findViewById(R.id.main_textViewToLocation);
-        TextView textVIewGroupInfo    = contentView.findViewById(R.id.main_textViewToGroup);
-        TextView textViewUserProfile  = contentView.findViewById(R.id.main_textViewUserProfile);
-        
-        textViewLocationInfo.setOnClickListener(this);
-        textVIewGroupInfo.setOnClickListener(this);
-        textViewUserProfile.setOnClickListener(this);
-        
         return contentView;
+    }
+    
+    private void changeAlarmState(Alarm alarm, boolean isChecked)
+    {
+        dataManager.pauseObserve( );
+        
+        AlarmService alarmService = AlarmService.getInstance(getContext( ));
+        
+        alarmService.changeSwitch(alarm, isChecked)
+                    .flatMap(alarmService::unregister)
+                    .doOnSuccess(unused -> dataManager.updateAlarmLiveData( ))
+                    .publishOn(Schedulers.elastic( ))
+                    .subscribeOn(Schedulers.elastic( ))
+                    .subscribe( );
+    }
+    
+    private List<Alarm> filterAlarmByGroup(Group group)
+    {
+        List<Alarm> filteredAlarms = new ArrayList<>( );
+        return filteredAlarms;
     }
     
     @Override
@@ -212,6 +264,11 @@ public class MainFragment extends Fragment implements View.OnClickListener
             case (R.id.main_fabsButtonAddGroup):
                 MainFrameActivity.showTopFragment(GroupAddFragment.getInstance( ));
                 fabsMenu.collapse( );
+                break;
+            case (R.id.main_buttonRefreshGroup):
+                groupIconAdapter.iconSelected(Boolean.FALSE, 0);
+                buttonRefreshGroup.setVisibility(View.INVISIBLE);
+                textViewGroupInfo.setText("");
                 break;
         }
     }

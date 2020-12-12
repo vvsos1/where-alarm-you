@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import reactor.util.annotation.Nullable;
 
 @SuppressWarnings("serial")
 @ToString
@@ -36,6 +37,7 @@ public abstract class Alarm implements Serializable {
     LocationCondition locationCondition;
 
     // 알람이 등록될 그룹
+    @Nullable
     String groupUid;
 
     // 소리
@@ -88,6 +90,10 @@ public abstract class Alarm implements Serializable {
         if (locationCondition != null)
             return true;
         return false;
+    }
+
+    public boolean hasGroup() {
+        return groupUid != null;
     }
 
     // AlarmRepository 전용

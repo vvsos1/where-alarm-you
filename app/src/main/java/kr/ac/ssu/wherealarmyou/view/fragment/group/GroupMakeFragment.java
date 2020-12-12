@@ -23,12 +23,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.common.Icon;
+import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.dto.GroupCreateRequest;
+import kr.ac.ssu.wherealarmyou.group.dto.GroupModifyRequest;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
+import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.adapter.IconItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import kr.ac.ssu.wherealarmyou.view.DataManager;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
@@ -39,25 +41,28 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
 {
     private final DataManager dataManager = DataManager.getInstance( );
     
+    private final Mode fragmentMode;
+    
+    private final Group group;
+    
+    // Content View Items
     private LinearLayout linearLayoutParent;
     private LinearLayout linearLayoutName;
     private LinearLayout linearLayoutIcon;
+    private EditText     editTextGroupName;
+    private EditText     editTextIconText;
+    private EditText     editTextGroupInfo;
+    private Button       buttonComplete;
+    private Button       buttonIconColor;
+    private String       iconColor;
     
-    private EditText editTextGroupName;
-    private EditText editTextIconText;
-    private EditText editTextGroupInfo;
-    private Button   buttonComplete;
-    private Button   buttonIconColor;
-    
-    private String iconColor;
     
     private long lastClickTime = 0;
     
-    public GroupMakeFragment( ) { }
-    
-    public static GroupMakeFragment getInstance( )
+    public GroupMakeFragment(Group group, Mode mode)
     {
-        return new GroupMakeFragment( );
+        this.group        = group;
+        this.fragmentMode = mode;
     }
     
     @SuppressLint("ClickableViewAccessibility")
@@ -106,7 +111,7 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
         IconItemAdapter     iconItemAdapter     = new IconItemAdapter(getContext( ), icons);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext( ));
         
-        iconItemAdapter.setOnItemClickListener((itemView, icon) -> {
+        iconItemAdapter.setOnItemClickListener((position, icon) -> {
             GradientDrawable drawable = (GradientDrawable)buttonIconColor.getBackground( );
             drawable.setColor(Color.parseColor(icon.getColorHex( )));
             iconColor = icon.getColorHex( );
@@ -125,6 +130,17 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
             }
             return false;
         });
+        
+        // Group Edit Mode Setting
+        if (fragmentMode == Mode.GROUP_EDIT) {
+            GradientDrawable drawable = (GradientDrawable)buttonIconColor.getBackground( );
+            drawable.setColor(Color.parseColor(group.getIcon( ).getColorHex( )));
+            iconColor = group.getIcon( ).getColorHex( );
+            editTextGroupName.setText(group.getName( ));
+            editTextIconText.setText(group.getIcon( ).getText( ));
+            editTextGroupInfo.setText(group.getDescription( ));
+            buttonComplete.setText("그룹 정보 수정");
+        }
         
         return frameView;
     }
@@ -167,6 +183,44 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
         MainFrameActivity.showTopFragment(GroupFragment.getInstance( ));
     }
     
+    private void editGroup(GroupModifyRequest groupModifyRequest)
+    {
+        GroupService groupService = GroupService.getInstance( );
+        
+        /* 요청 실패 */
+        // 그룹 이름 미입력
+        if (TextUtils.isEmpty(groupModifyRequest.getName( ))) {
+            Toast.makeText(getContext( ), "그룹 이름을 입력해주세요", Toast.LENGTH_SHORT).show( );
+            return;
+        }
+        // 아이콘 색 미선택
+        if (TextUtils.isEmpty(groupModifyRequest.getIcon( ).getColorHex( ))) {
+            Toast.makeText(getContext( ), "아이콘 색을 선택해주세요", Toast.LENGTH_SHORT).show( );
+            return;
+        }
+        // 아이콘 문구 미입력
+        if (TextUtils.isEmpty(groupModifyRequest.getIcon( ).getText( ))) {
+            Toast.makeText(getContext( ), "아이콘 문구를 설정해주세요", Toast.LENGTH_SHORT).show( );
+            return;
+        }
+        // 아이콘 최대 길이 조건 부합
+        if (groupModifyRequest.getIcon( ).getText( ).length( ) > 6) {
+            Toast.makeText(getContext( ), "아이콘 문구는 6글자까지 가능합니다", Toast.LENGTH_SHORT).show( );
+            return;
+        }
+        
+        /* 요청 성공 */
+        // 그룹 수정 요청
+        groupService.modifyGroup(groupModifyRequest)
+                    .doOnSuccess(unused -> dataManager.updateGroupLiveData( ))
+                    .doOnError(throwable -> Log.d("GroupMakeFragment", "실패"))
+                    .publishOn(Schedulers.elastic( ))
+                    .subscribeOn(Schedulers.elastic( ))
+                    .subscribe( );
+        MainFrameActivity.hideTopFragment( );
+        MainFrameActivity.showTopFragment(GroupFragment.getInstance( ));
+    }
+    
     @Override
     public void onClick(View view)
     {
@@ -182,8 +236,16 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
             String groupInfo  = editTextGroupInfo.getText( ).toString( ).trim( );
             String groupAdmin = FirebaseAuth.getInstance( ).getUid( );
             
-            GroupCreateRequest request = new GroupCreateRequest(groupName, iconColor, iconText, groupInfo, groupAdmin);
-            makeGroup(request);
+            if (fragmentMode == Mode.GROUP_MAKE) {
+                GroupCreateRequest request = new GroupCreateRequest(groupName, iconColor, iconText,
+                        groupInfo, groupAdmin);
+                makeGroup(request);
+            }
+            else if (fragmentMode == Mode.GROUP_EDIT) {
+                GroupModifyRequest request = new GroupModifyRequest(group.getUid( ), groupName,
+                        new Icon(iconColor, iconText), groupInfo, null);
+                editGroup(request);
+            }
         }
         
         if (view == linearLayoutParent) {
@@ -202,5 +264,10 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
         super.onStop( );
         GradientDrawable backgroundGradient = (GradientDrawable)buttonIconColor.getBackground( );
         backgroundGradient.setColor(Color.WHITE);
+    }
+    
+    enum Mode
+    {
+        GROUP_MAKE, GROUP_EDIT
     }
 }

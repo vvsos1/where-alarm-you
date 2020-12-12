@@ -125,7 +125,7 @@ public class GroupAddFragment extends Fragment implements View.OnClickListener
     {
         inputManager.hideSoftInputFromWindow(editTextFindGroup.getWindowToken( ), 0);
         if (view == textViewMakeGroup) {
-            MainFrameActivity.addTopFragment(GroupMakeFragment.getInstance( ));
+            MainFrameActivity.addTopFragment(new GroupMakeFragment(null, GroupMakeFragment.Mode.GROUP_MAKE));
         }
     }
 }
