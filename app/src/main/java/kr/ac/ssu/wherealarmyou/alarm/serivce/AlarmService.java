@@ -17,7 +17,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
@@ -29,9 +28,8 @@ import kr.ac.ssu.wherealarmyou.alarm.component.AlarmBootReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.component.AlarmNotifyReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmModifyRequest;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
-import kr.ac.ssu.wherealarmyou.group.Group;
-import kr.ac.ssu.wherealarmyou.user.User;
-import kr.ac.ssu.wherealarmyou.user.UserRepository;
+import kr.ac.ssu.wherealarmyou.group.GroupRepository;
+import kr.ac.ssu.wherealarmyou.group.service.GroupService;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -39,25 +37,35 @@ import reactor.core.publisher.Mono;
 public class AlarmService {
 
     private static AlarmService instance;
+    private final GroupService groupService;
     private UserService userService;
 
     private AlarmManager alarmManager;
     private Context context;
 
+    private AlarmRepository alarmRepository;
+    private GroupRepository groupRepository;
 
-    private AlarmService(AlarmRepository alarmRepository, UserService userService, Context context) {
+
+    private AlarmService(AlarmRepository alarmRepository, GroupRepository groupRepository, UserService userService, GroupService groupService, Context context) {
         this.userService = userService;
+        this.groupService = groupService;
         this.alarmRepository = alarmRepository;
+        this.groupRepository = groupRepository;
 
         this.context = context;
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
-    private AlarmRepository alarmRepository;
 
     public static AlarmService getInstance(Context context) {
         if (instance == null)
-            instance = new AlarmService(AlarmRepository.getInstance(), UserService.getInstance(), context);
+            instance = new AlarmService(
+                    AlarmRepository.getInstance(),
+                    GroupRepository.getInstance(),
+                    UserService.getInstance(),
+                    GroupService.getInstance(),
+                    context);
         instance.setContext(context);
         return instance;
     }
@@ -237,7 +245,13 @@ public class AlarmService {
         Alarm alarm = request.toAlarm();
 
         return alarmRepository.save(alarm)
-                .flatMap(userService::addAlarm)
+                .flatMap(newAlarm -> {
+                    if (newAlarm.hasGroup()) {
+                        return groupRepository.addAlarmToGroup(newAlarm);
+                    } else {
+                        return userService.addAlarm(newAlarm);
+                    }
+                })
                 .thenReturn(alarm);
     }
 
@@ -264,12 +278,14 @@ public class AlarmService {
 
 
     public Flux<Alarm> getGroupAlarmPublisher(String groupUid) {
-        return null;
+        return groupRepository.findAlarmUidsByGroupUid(groupUid)
+                .flatMap(alarmRepository::getAlarmByUid);
 
     }
 
     public Mono<Alarm> changeSwitch(Alarm alarm, Boolean isSwitchOn) {
-        return alarmRepository.updateSwitchOn(alarm.getUid(), isSwitchOn)
+        String currentUserUid = userService.getCurrentUserUid();
+        return alarmRepository.updateSwitchOn(currentUserUid, alarm.getUid(), isSwitchOn)
                 .doOnNext(aVoid -> alarm.updateSwitch(isSwitchOn))
                 .thenReturn(alarm);
     }
