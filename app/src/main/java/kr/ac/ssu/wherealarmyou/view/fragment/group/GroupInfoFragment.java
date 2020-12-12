@@ -59,7 +59,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
     {
         Bundle bundle = Objects.requireNonNull(getArguments( ));
 
-//        getGroupAlarm(group.getUid( ));
+        getGroupAlarm(group.getUid( ));
         
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_group_info, null);
@@ -214,10 +214,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
     
     private void getGroupAlarm(String groupUid)
     {
-        GroupService groupService = GroupService.getInstance( );
-        
         AlarmService alarmService = AlarmService.getInstance(getContext( ));
-        alarmService.getGroupAlarmPublisher(groupUid)
+        alarmService.getAlarmsByGroupUid(groupUid)
                     .map(groupAlarms::add)
                     .doOnComplete(( ) -> alarmItemAdapter.notifyDataSetChanged( ))
                     .subscribe( );

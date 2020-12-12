@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
+import android.util.ArrayMap;
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,7 +31,7 @@ public class Group {
     // 소개글
     String description;
 
-    Map<String, Boolean> alarms;
+    Map<String, Boolean> alarms = new ArrayMap<>( );
 
     Map<String, String> members;
 

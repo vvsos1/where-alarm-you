@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         AlarmSaveRequest req = AlarmSaveRequest.builder(new Time(14, 30))
-                .groupUid("-MNgAd3tfZVzjCGQ1dvN")
+                .group("-MNgAd3tfZVzjCGQ1dvN")
                 .title("그룹 알람 테스트")
                 .dates(List.of(new Date(12, 12, 2020)))
                 .description("테스트 !!")

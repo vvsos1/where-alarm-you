@@ -10,11 +10,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
+import kr.ac.ssu.wherealarmyou.group.Group;
+import kr.ac.ssu.wherealarmyou.location.Location;
+import kr.ac.ssu.wherealarmyou.view.DataManager;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.AlarmViewHolder>
 {
+    private final DataManager dataManager = DataManager.getInstance( );
+    
     private Context context;
     
     private List<Alarm> alarms;
@@ -42,10 +51,37 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
     {
         Alarm alarm = alarms.get(position);
         
+        for (Group group : Objects.requireNonNull(dataManager.getGroupData( ).getValue( ))) {
+            if (Objects.equals(alarm.getGroupUid( ), group.getUid( ))) {
+                holder.textViewGroup.setText(group.getName( ));
+            }
+        }
+        
+        boolean isInclude = true;
+        List<Location> locations = new ArrayList<>( );
+        if (alarm.getLocationCondition( ).isInclude( )) {
+            Set<String> uidSet = alarm.getLocationCondition( ).getInclude( ).keySet( );
+            locations = Objects.requireNonNull(dataManager.getLocationData( ).getValue( )).stream( ).filter(location ->
+                    uidSet.contains(location.getUid( ))).collect(Collectors.toList( ));
+        }
+        else if (!alarm.getLocationCondition( ).isInclude()) {
+            isInclude = false;
+            Set<String> uidSet = alarm.getLocationCondition( ).getExclude( ).keySet( );
+            locations = Objects.requireNonNull(dataManager.getLocationData( ).getValue( )).stream( ).filter(location ->
+                    uidSet.contains(location.getUid( ))).collect(Collectors.toList( ));
+        }
+        for (Location location : locations) {
+            String origin = (String)holder.textViewLocation.getText( );
+            holder.textViewLocation.setText(origin + " " + location.getTitle( ));
+            if (!isInclude) {
+                String old = (String)holder.textViewLocation.getText( );
+                holder.textViewLocation.setText(old + "밖에서");
+            }
+        }
+        
         holder.textViewHours.setText(alarm.getTime( ).getHours( ).toString( ));
         holder.textViewMinutes.setText(alarm.getTime( ).getMinutes( ).toString( ));
         holder.textViewLocation.setText("미구현");
-        holder.textViewGroup.setText(alarm.getGroupUid( ));
         holder.aSwitch.setChecked(alarm.getIsSwitchOn( ));
         holder.aSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 onSwitchCheckedChangeListener.onSwitchCheckedChangeListener(alarm, isChecked));
