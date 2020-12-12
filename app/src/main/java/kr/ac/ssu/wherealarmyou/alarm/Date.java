@@ -6,11 +6,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 @SuppressWarnings("serial")
-@ToString
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +19,9 @@ public class Date implements Serializable {
     Integer month;
 
     Integer year;
+
+    public String toString() {
+        return (day + "-" + month + "-" + year);
+    }
 }
+
