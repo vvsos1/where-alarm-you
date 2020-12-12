@@ -19,7 +19,7 @@
             android:layout_weight="7">
 
             <LinearLayout
-                android:id="@+id/alarmAddTIme_linearLayoutAm"
+                android:id="@+id/alarmAddTime_linearLayoutAm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
