@@ -44,6 +44,7 @@ import kr.ac.ssu.wherealarmyou.location.service.CurrentLocationService;
 import kr.ac.ssu.wherealarmyou.location.service.LocationService;
 import kr.ac.ssu.wherealarmyou.location.service.NaverAddressSearchService;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
+import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.adapter.IconItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
@@ -51,6 +52,7 @@ import reactor.core.scheduler.Schedulers;
 
 public class LocationAddFragment extends Fragment {
     private static final String TAG = "LocationAddFragment";
+    private final DataManager dataManager = DataManager.getInstance();
     private ImageView currentLocationImageView;
     private SeekBar rangeSeekBar;
     private String iconColor;
@@ -163,6 +165,7 @@ public class LocationAddFragment extends Fragment {
                         .range(range.orElse(20))
                         .build();
                 locationService.createLocation(newLocation)
+                        .doOnSuccess(unused -> dataManager.addLocationLiveData(newLocation))
                         .subscribe(aVoid -> MainFrameActivity.hideTopFragment());
             }
         });

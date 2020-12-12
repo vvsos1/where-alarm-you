@@ -114,12 +114,23 @@
             app:layout_constraintTop_toBottomOf="@+id/sb_range">
 
             <TextView
+                android:id="@+id/id"
+                android:layout_width="wrap_content"
+                android:layout_height="39dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="아이콘"
+                android:textColor="#000"
+                android:textSize="20sp" />
+
+            <TextView
                 android:id="@+id/groupMake_textViewUnused1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="색  "
                 android:textColor="#000"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_below="@id/id"/>
 
             <TextView
                 android:id="@+id/groupMake_textViewUnused2"
@@ -150,24 +161,6 @@
                 android:layout_toEndOf="@id/groupMake_textViewUnused3"
                 android:background="@drawable/round_corners_ultra_mini"
                 android:stateListAnimator="@null" />
-
-            <TextView
-                android:id="@+id/groupMake_textViewNewColor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/groupMake_textViewUnused3"
-                android:layout_marginEnd="5dp"
-                android:layout_toStartOf="@id/groupMake_imageViewNewColor"
-                android:text="+ 사용자 지정색 추가"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/groupMake_imageViewNewColor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/groupMake_textViewUnused3"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/ic_color_lens" />
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -178,8 +171,6 @@
             android:background="@drawable/round_corners_icon_list"
             android:gravity="center_vertical"
             android:overScrollMode="never"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             app:layout_constraintEnd_toEndOf="@+id/map"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/map"
