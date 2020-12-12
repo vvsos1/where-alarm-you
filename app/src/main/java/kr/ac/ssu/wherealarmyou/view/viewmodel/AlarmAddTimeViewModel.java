@@ -41,12 +41,6 @@ public class AlarmAddTimeViewModel extends AlarmAddViewModel<Time> {
         setLiveData(new Time(hours, minute));
 
         setInfoString(getInfoString().getValue() + "  " + minute);
-        setOnComplete();
+        complete();
     }
-    
-    public void resetLiveData( ) {
-        setLiveData(null);
-        setInfoString(null);
-    }
-
 }
