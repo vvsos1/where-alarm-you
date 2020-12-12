@@ -42,6 +42,7 @@ import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.adapter.AlarmCategoryItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddViewModel;
 import lombok.Builder;
@@ -148,10 +149,15 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
         // Content View Event Listener
         currentVisibleCategoryPosition = new AtomicInteger();
         alarmCategoryItemAdapter.setOnItemClickListener((view, position) -> {
-            startCategoryFragment(position);
-            setViewModel(position);
-            changeVisibleCategoryView(currentVisibleCategoryPosition.get(), position);
-            currentVisibleCategoryPosition.set(position);
+            if (time == null && position != TIME) {
+                Toast.makeText(getContext(), "시간을 먼저 설정해 주세요", Toast.LENGTH_SHORT).show();
+            } else {
+                startCategoryFragment(position);
+                setViewModel(position);
+                changeVisibleCategoryView(currentVisibleCategoryPosition.get(), position);
+                currentVisibleCategoryPosition.set(position);
+            }
+
         });
         
         recyclerView.setAdapter(alarmCategoryItemAdapter);
@@ -193,18 +199,18 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
         if (category == TIME) {
             AlarmAddViewModel<Time> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddTimeViewModel.class);
             viewModel.getLiveData().observe(getViewLifecycleOwner(), time -> {
-                if (time != null) {
-                    this.time = time;
-                }
+                this.time = time;
             });
             viewModel.getInfoString()
-                     .observe(getViewLifecycleOwner(), string -> setInfo(string, category));
-            viewModel.onComplete().observe(getViewLifecycleOwner(), aBoolean -> {
-                int newPosition = currentVisibleCategoryPosition.get() + 1;
-                startCategoryFragment(newPosition);
-                setViewModel(newPosition);
-                changeVisibleCategoryView(currentVisibleCategoryPosition.get(), newPosition);
-                currentVisibleCategoryPosition.set(newPosition);
+                    .observe(getViewLifecycleOwner(), string -> setInfo(string, category));
+            viewModel.onComplete().observe(getViewLifecycleOwner(), isComplete -> {
+                if (isComplete) {
+                    int newPosition = currentVisibleCategoryPosition.get() + 1;
+                    //startCategoryFragment(newPosition);
+                    setViewModel(newPosition);
+                    changeVisibleCategoryView(currentVisibleCategoryPosition.get(), newPosition);
+                    currentVisibleCategoryPosition.set(newPosition);
+                }
             });
         }
     }
@@ -212,10 +218,11 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
     
     private AlarmAddViewModel<?> getViewModel(int category)
     {
-        
-        if (category == TIME)
-        {
-            return new ViewModelProvider(requireActivity( )).get(AlarmAddTimeViewModel.class);
+
+        if (category == TIME) {
+            return new ViewModelProvider(requireActivity()).get(AlarmAddTimeViewModel.class);
+        } else if (category == WEEK) {
+            return new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
         }
         return null;
     }

@@ -2,6 +2,7 @@ package kr.ac.ssu.wherealarmyou.view.fragment.alarm;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +76,8 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
         for (View view : buttonLikes) {
             view.setOnClickListener(v -> {
                 int buttonIndex = buttonLikes.indexOf(v);
+
+                Log.d("AlarmButtonLikes", "boolean" + isSelected[buttonIndex]);
 
                 if (isSelected[buttonIndex]) {
                     buttons.get(buttonIndex).setBackground(transparentBackground);
