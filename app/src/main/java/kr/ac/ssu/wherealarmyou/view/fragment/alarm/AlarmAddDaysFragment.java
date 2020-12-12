@@ -22,10 +22,12 @@ import java.util.Map;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.Period;
+import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
+import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
 
 
-public class AlarmAddDaysFragment extends Fragment implements View.OnClickListener {
+public class AlarmAddDaysFragment extends Fragment implements View.OnClickListener, OnBackPressedListener {
 
 
     private static AlarmAddDaysFragment instance;
@@ -234,5 +236,23 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
         alarmAddDaysViewModel.setInfoString(makeInfoString());
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainFrameActivity.setOnBackPressedListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        MainFrameActivity.backTopFragment();
+        MainFrameActivity.backTopFragment();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        MainFrameActivity.setOnBackPressedListener(null);
     }
 }
