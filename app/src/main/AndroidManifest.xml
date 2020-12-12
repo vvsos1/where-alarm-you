@@ -41,7 +41,6 @@
         </receiver>
 
         <activity android:name=".view.alarm.AlarmActivity" />
-        <activity android:name=".view.LocationAddActivity" />
         <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

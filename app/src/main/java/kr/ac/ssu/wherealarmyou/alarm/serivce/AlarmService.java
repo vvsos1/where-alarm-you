@@ -17,6 +17,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
@@ -28,6 +29,7 @@ import kr.ac.ssu.wherealarmyou.alarm.component.AlarmBootReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.component.AlarmNotifyReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmModifyRequest;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
+import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.GroupRepository;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
@@ -276,6 +278,13 @@ public class AlarmService {
         return alarmRepository.deleteByUid(alarm.getUid());
     }
 
+
+    public Flux<Alarm> gerAlarmsByGroupUid(String groupUid) {
+        return groupRepository.findGroupByUid(groupUid)
+                .map(Group::getAlarms)
+                .flatMapIterable(Map::keySet)
+                .flatMap(alarmRepository::getAlarmByUid);
+    }
 
     public Flux<Alarm> getGroupAlarmPublisher(String groupUid) {
         return groupRepository.findAlarmUidsByGroupUid(groupUid)

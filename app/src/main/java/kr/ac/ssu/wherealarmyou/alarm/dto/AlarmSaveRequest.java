@@ -78,7 +78,7 @@ public class AlarmSaveRequest {
                     .sound(sound)
                     .description(description)
                     .title(title)
-                    .group(group)
+                    .groupUid(group)
                     .locationCondition(locationCondition)
                     .dates(dates)
                     .build();
@@ -90,7 +90,7 @@ public class AlarmSaveRequest {
                     .sound(sound)
                     .description(description)
                     .title(title)
-                    .group(group)
+                    .groupUid(group)
                     .locationCondition(locationCondition)
                     .activePeriod(activePeriod)
                     .daysOfWeek(daysOfWeek)

@@ -34,11 +34,11 @@ public class User
 
     // 사용자에게 귀속된 장소
     @Getter
-    Map<String, Boolean> userLocations;
+    Map<String, Boolean> userLocations = new ArrayMap<>();
 
     // 사용자가 속한 그룹에게 귀속된 장소
     @Getter
-    Map<String, Boolean> groupLocations;
+    Map<String, Boolean> groupLocations = new ArrayMap<>();
 
     // 사용자에게 귀속된 알람
     @Getter(onMethod_ = @Exclude)
