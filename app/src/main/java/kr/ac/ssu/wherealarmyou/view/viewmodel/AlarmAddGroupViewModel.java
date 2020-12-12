@@ -1,11 +1,12 @@
 package kr.ac.ssu.wherealarmyou.view.viewmodel;
 
+import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.location.Location;
 
-public class AlarmAddGroupViewModel extends AlarmAddViewModel<Location>
+public class AlarmAddGroupViewModel extends AlarmAddViewModel<Group>
 {
-    public void selectLocation(Location location)
+    public void selectGroup(Group group)
     {
-        setLiveData(location);
+        setLiveData(group);
     }
 }

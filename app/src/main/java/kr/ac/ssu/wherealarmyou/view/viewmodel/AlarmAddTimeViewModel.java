@@ -6,7 +6,16 @@ import kr.ac.ssu.wherealarmyou.alarm.Time;
 
 public class AlarmAddTimeViewModel extends AlarmAddViewModel<Time> {
 
+
+    boolean isPM;
+
+    public boolean getBoolean() {
+        return isPM;
+    }
+
     public void selectAmPm(boolean isPM) {
+
+        this.isPM = isPM;
 
         if (isPM) {
             setLiveData(new Time(12, null));
@@ -32,12 +41,6 @@ public class AlarmAddTimeViewModel extends AlarmAddViewModel<Time> {
         setLiveData(new Time(hours, minute));
 
         setInfoString(getInfoString().getValue() + "  " + minute);
-        setOnComplete();
+        complete();
     }
-    
-    public void resetLiveData( ) {
-        setLiveData(null);
-        setInfoString(null);
-    }
-
 }

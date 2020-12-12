@@ -132,6 +132,7 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
                     hourOrMinute.setText("분");
                     hours = textToInt;
 
+
                     alarmAddTimeViewModel.selectHours(hours);
 
                     timeTextView.setText("");
@@ -153,6 +154,7 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
 
                 if (hours >= 0 && hours < 24) {
                     timeTextView.setText(Integer.toString(hours));
+                    alarmAddTimeViewModel.selectAmPm(alarmAddTimeViewModel.getBoolean());
                 }
 
             } else if (view == buttonArrowRight) {
@@ -163,11 +165,12 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
 
                 if (textToInt < 0 || textToInt >= 60) {
                     Toast.makeText(getContext(), "입력을 시간 값으로 바꿀 수 없습니다", Toast.LENGTH_SHORT).show();
+                    timeTextView.setText("");
                 } else {
                     stage++;
                     minutes = textToInt;
                     alarmAddTimeViewModel.selectMinute(minutes);
-                    linearLayoutSetTime.setVisibility(view.GONE);
+                    linearLayoutSetTime.setVisibility(View.GONE);
                 }
             }
         }
@@ -195,6 +198,6 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
     @Override
     public void onStop() {
         super.onStop();
-        alarmAddTimeViewModel.resetLiveData();
+        alarmAddTimeViewModel.reset();
     }
 }

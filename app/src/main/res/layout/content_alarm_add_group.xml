@@ -8,10 +8,10 @@
         android:id="@+id/alarmAddLocation_buttonAddLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="장소추가 버튼" />
+        android:text="그룹 추가 버튼" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/alarmAddLocation_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="wrap_content" />
 </LinearLayout>

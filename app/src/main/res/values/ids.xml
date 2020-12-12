@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="alarmAdd_frameLayoutTime" type="id" />
+    <item name="alarmAdd_frameLayoutWeek" type="id" />
+    <item name="alarmAdd_frameLayoutLocation" type="id" />
+    <item name="alarmAdd_frameLayoutGroup" type="id" />
+    <item name="alarmAdd_frameLayoutMemo" type="id" />
+    <item name="alarmAdd_frameLayoutDetail" type="id" />
+
+</resources>

@@ -28,4 +28,6 @@
     <string name="todo">TODO</string>
     <string name="appTitle">WHERE_ALARM_YOU</string>
     <string name="appSubTitle">똑같지만 전혀 다른 알람</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
