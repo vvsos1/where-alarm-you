@@ -1,92 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/alarmAddDay_linearDays"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/alarmAddDay_button_set_dates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="20dp"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/alarmAddDay_lottieAnimationViewCalendar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="calendar.json"
+            app:lottie_loop="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날짜로 선택"
+            android:textSize="17sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/alarmAddDay_button_set_dates"
-            android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
-
-            <Button
-                android:clickable="false"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/ic_baseline_today_24" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="날짜 선택"
-                android:textSize="20dp" />
-
-        </LinearLayout>
-
         <View
-            android:layout_width="2dp"
-            android:layout_height="50dp"
-            android:layout_margin="50dp"
-            android:background="#AAA" />
-
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
         <LinearLayout
             android:id="@+id/alarmAddDay_button_set_days"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginEnd="20dp"
             android:clickable="true"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <Button
-                android:clickable="false"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/ic_week" />
+                android:background="@drawable/ic_week"
+                android:clickable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="기간 선택"
-                android:textSize="20dp" />
-
-
+                android:layout_marginStart="7dp"
+                android:text="활성 기간 선택"
+                android:textSize="17sp" />
         </LinearLayout>
-
-
     </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/text_show_period"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:text="활성 기간  : 기간 설정 없음"
-        android:textColor="#448"
-        android:textSize="15dp"
-        android:textStyle="bold" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -98,16 +83,15 @@
             android:gravity="center">
 
             <Button
-                android:clickable="false"
                 android:id="@+id/alarmAddDay_days_button_SUN"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/background_transparent"
+                android:clickable="false"
                 android:gravity="center"
                 android:text="일"
-                android:textSize="20dp" />
-
-
+                android:textColor="@color/colorWarningLight"
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -119,14 +103,14 @@
             android:gravity="center">
 
             <Button
-                android:clickable="false"
                 android:id="@+id/alarmAddDay_days_button_MON"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/background_transparent"
+                android:clickable="false"
                 android:gravity="center"
                 android:text="월"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -138,14 +122,14 @@
             android:gravity="center">
 
             <Button
-                android:clickable="false"
                 android:id="@+id/alarmAddDay_days_button_TUE"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/background_transparent"
+                android:clickable="false"
                 android:gravity="center"
                 android:text="화"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -157,14 +141,14 @@
             android:gravity="center">
 
             <Button
-                android:clickable="false"
                 android:id="@+id/alarmAddDay_days_button_WED"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/background_transparent"
+                android:clickable="false"
                 android:gravity="center"
                 android:text="수"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -176,14 +160,14 @@
             android:gravity="center">
 
             <Button
-                android:clickable="false"
                 android:id="@+id/alarmAddDay_days_button_THU"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/background_transparent"
+                android:clickable="false"
                 android:gravity="center"
                 android:text="목"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -195,14 +179,14 @@
             android:gravity="center">
 
             <Button
-                android:clickable="false"
                 android:id="@+id/alarmAddDay_days_button_FRI"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/background_transparent"
+                android:clickable="false"
                 android:gravity="center"
                 android:text="금"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -214,20 +198,27 @@
             android:gravity="center">
 
             <Button
-                android:clickable="false"
                 android:id="@+id/alarmAddDay_days_button_SAT"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/background_transparent"
+                android:clickable="false"
                 android:gravity="center"
                 android:text="토"
-                android:textSize="20dp" />
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp" />
         </LinearLayout>
-
-
     </LinearLayout>
 
-
+    <TextView
+        android:id="@+id/text_show_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="110dp"
+        android:paddingLeft="15dp"
+        android:text="활성 기간  : 기간 설정 없음"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp" />
 </LinearLayout>
 
 
