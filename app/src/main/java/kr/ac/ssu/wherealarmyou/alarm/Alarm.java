@@ -84,7 +84,6 @@ public abstract class Alarm implements Serializable {
     }
 
 
-
     public boolean hasLocation() {
         if (locationCondition != null)
             return true;

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -18,13 +19,26 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
-import kr.ac.ssu.wherealarmyou.alarm.*;
+import kr.ac.ssu.wherealarmyou.alarm.LocationCondition;
+import kr.ac.ssu.wherealarmyou.alarm.Period;
+import kr.ac.ssu.wherealarmyou.alarm.Repetition;
+import kr.ac.ssu.wherealarmyou.alarm.Time;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
 import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
 import kr.ac.ssu.wherealarmyou.group.Group;
-import kr.ac.ssu.wherealarmyou.location.Location;
 import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.adapter.AlarmCategoryItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
@@ -36,11 +50,6 @@ import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddViewModel;
 import lombok.Builder;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.annotation.Nullable;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class AlarmAddFragment extends Fragment implements View.OnClickListener
 {
@@ -207,7 +216,15 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             });
         }
         else if (category == WEEK) {
-        
+            AlarmAddViewModel<Integer> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), daysSum -> {
+                if (daysSum == 1) {
+
+                } else {
+
+                }
+            });
+            viewModel.getInfoString().observe(getViewLifecycleOwner(), string -> setInfo(string, category));
         }
         else if (category == GROUP) {
             AlarmAddViewModel<Group> viewModel = new ViewModelProvider(requireActivity( )).get(AlarmAddGroupViewModel.class);
