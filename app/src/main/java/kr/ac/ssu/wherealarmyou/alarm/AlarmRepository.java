@@ -10,7 +10,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class AlarmRepository
@@ -103,9 +102,4 @@ public class AlarmRepository
         });
     }
 
-    public Flux<Alarm> getGroupAlarmFlux(String groupAlarmUid) {
-//        return alarmsRef.orderByChild("groupUid").equalTo(groupAlarmUid).addChildEventListener(new ChildEventListener() {
-//        })
-        return null;
-    }
 }

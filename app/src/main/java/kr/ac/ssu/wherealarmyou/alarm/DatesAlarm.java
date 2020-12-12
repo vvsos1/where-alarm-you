@@ -20,8 +20,8 @@ public class DatesAlarm extends Alarm implements Serializable {
     List<Date> dates;
 
     @Builder
-    public DatesAlarm(String uid, String title, String description, Time time, LocationCondition locationCondition, String group, Boolean sound, Boolean vibe, Repetition repetition, List<Date> dates) {
-        super(TYPE, title, description, time, locationCondition, group, sound, vibe, repetition);
+    public DatesAlarm(String uid, String title, String description, Time time, LocationCondition locationCondition, String groupUid, Boolean sound, Boolean vibe, Repetition repetition, List<Date> dates) {
+        super(TYPE, title, description, time, locationCondition, groupUid, sound, vibe, repetition);
         this.dates = dates;
         setUid(uid);
     }

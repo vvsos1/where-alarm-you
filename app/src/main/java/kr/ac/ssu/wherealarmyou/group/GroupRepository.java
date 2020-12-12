@@ -3,12 +3,14 @@ package kr.ac.ssu.wherealarmyou.group;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -108,27 +110,48 @@ public class GroupRepository
                 }));
     }
 
-    // user가 가입된 그룹들
-    public Flux<Group> findGroupsByUserUid(String userUid) {
+    // group에 등록된 알람 리스너
+    public Flux<String> findAlarmUidsByGroupUid(String groupUid) {
         return Flux.create(fluxSink ->
-                groupsRef.orderByChild("members")
-                        .orderByKey()
-                        .equalTo(userUid)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                snapshot.getChildren().forEach(dataSnapshot -> {
-                                    Group group = dataSnapshot.getValue(Group.class);
-                                    fluxSink.next(group);
-                                });
-                                fluxSink.complete();
-                            }
+                groupsRef.child(groupUid).child("alarms").addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        String alarmUid = snapshot.getKey();
+                        fluxSink.next(alarmUid);
+                    }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                fluxSink.error(error.toException());
-                            }
-                        })
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        fluxSink.error(error.toException());
+                    }
+                })
         );
+    }
+
+    public Mono<Void> addAlarmToGroup(Alarm newAlarm) {
+        String groupUid = newAlarm.getGroupUid();
+        return Mono.create(voidMonoSink -> {
+            groupsRef.child(groupUid).child("alarms").child(newAlarm.getUid()).setValue(Boolean.TRUE, (error, ref) -> {
+                if (error != null)
+                    voidMonoSink.error(error.toException());
+                else
+                    voidMonoSink.success();
+            });
+        });
     }
 }

@@ -31,32 +31,32 @@ public class AlarmSaveRequest {
     // 알람이 울릴 시간
     Time time;
 
-    @Nullable
     // 알람이 활성화될 장소의 조건
-            LocationCondition locationCondition;
-
     @Nullable
+    LocationCondition locationCondition;
+
     // 알람이 등록될 그룹
-            String group;
+    @Nullable
+    String groupUid;
 
-    @Builder.Default
     // 소리
-            Boolean sound = Boolean.TRUE;
-
     @Builder.Default
+    Boolean sound = Boolean.TRUE;
+
     // 진동
-            Boolean vibe = Boolean.TRUE;
+    @Builder.Default
+    Boolean vibe = Boolean.TRUE;
 
     // 반복
     Repetition repetition;
 
-    @Nullable
     // 알람이 활성화될 기간
-            Period activePeriod;
-
     @Nullable
+    Period activePeriod;
+
     // 알람이 울릴 요일; Key: 요일
-            Map<String, Boolean> daysOfWeek;
+    @Nullable
+    Map<String, Boolean> daysOfWeek;
 
     @Nullable
     List<Date> dates;
@@ -78,7 +78,7 @@ public class AlarmSaveRequest {
                     .sound(sound)
                     .description(description)
                     .title(title)
-                    .group(group)
+                    .groupUid(groupUid)
                     .locationCondition(locationCondition)
                     .dates(dates)
                     .build();
@@ -90,7 +90,7 @@ public class AlarmSaveRequest {
                     .sound(sound)
                     .description(description)
                     .title(title)
-                    .group(group)
+                    .groupUid(groupUid)
                     .locationCondition(locationCondition)
                     .activePeriod(activePeriod)
                     .daysOfWeek(daysOfWeek)
