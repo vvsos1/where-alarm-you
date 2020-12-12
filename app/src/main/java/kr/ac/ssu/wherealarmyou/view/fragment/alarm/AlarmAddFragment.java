@@ -255,8 +255,11 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     
     private void setInfo(String string, int position)
     {
+        if (string == null)
+            return;
+
         TextView infoText = Objects.requireNonNull(layoutManager.findViewByPosition(position))
-                                   .findViewById(R.id.item_alarmAddCategory_textViewInfo);
+                .findViewById(R.id.item_alarmAddCategory_textViewInfo);
         infoText.setText(string);
     }
     

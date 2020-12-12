@@ -13,13 +13,15 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/alarmAddDay_button_set_dates"
+            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/alarmAddDay_button_set_dates"
+                android:clickable="false"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"
@@ -42,13 +44,15 @@
 
 
         <LinearLayout
+            android:id="@+id/alarmAddDay_button_set_days"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:clickable="true"
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/alarmAddDay_button_set_days"
+                android:clickable="false"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"
@@ -68,6 +72,15 @@
     </LinearLayout>
 
 
+    <TextView
+        android:id="@+id/text_show_period"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:text="활성 기간  : 기간 설정 없음"
+        android:textColor="#448"
+        android:textSize="15dp"
+        android:textStyle="bold" />
 
 
     <LinearLayout
