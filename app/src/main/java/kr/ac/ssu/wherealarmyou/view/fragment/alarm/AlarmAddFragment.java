@@ -165,16 +165,16 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
         
         if (category == TIME) {
-            fragmentTransaction.add(R.id.alarmAdd_frameLayoutTime, new AlarmAddTimeFragment( ));
+            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutTime, new AlarmAddTimeFragment( ));
         }
         else if (category == WEEK) {
-            fragmentTransaction.add(R.id.alarmAdd_frameLayoutWeek, new AlarmAddDaysFragment( ));
+            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutWeek, new AlarmAddDaysFragment( ));
         }
         else if (category == LOCATION) {
 //            fragmentTransaction.add(R.id.alarmAdd_frameLayoutLocation, new AlarmAddLocationFragment( ));
         }
         else if (category == GROUP) {
-            fragmentTransaction.add(R.id.alarmAdd_frameLayoutGroup, new AlarmAddGroupFragment( ));
+            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutGroup, new AlarmAddGroupFragment( ));
         }
         else if (category == MEMO) {
 //            fragmentTransaction.add(R.id.alarmAdd_frameLayoutMemo, new AlarmAddMemoFragment( ));
@@ -202,6 +202,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             viewModel.onComplete( ).observe(getViewLifecycleOwner( ), isComplete -> {
                 if (isComplete) {
                     changeCategory(currentVisibleCategoryPosition.get( ) + 1);
+                    viewModel.reset( );
                 }
             });
         }
