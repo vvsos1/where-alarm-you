@@ -41,8 +41,12 @@
         </receiver>
 
         <activity android:name=".view.alarm.AlarmActivity" />
-        <activity android:name=".view.LocationAddActivity" />
-        <activity android:name=".view.MainActivity" />
+        <activity android:name=".view.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <!-- login package activities -->
         <activity android:name=".view.login.StartActivity">
             <intent-filter>

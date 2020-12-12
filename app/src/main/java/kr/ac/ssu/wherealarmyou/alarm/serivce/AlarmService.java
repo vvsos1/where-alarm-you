@@ -285,6 +285,13 @@ public class AlarmService {
                               .flatMap(alarmRepository::getAlarmByUid);
     }
 
+    public Flux<Alarm> gerAlarmsByGroupUid(String groupUid) {
+        return groupRepository.findGroupByUid(groupUid)
+                .map(Group::getAlarms)
+                .flatMapIterable(Map::keySet)
+                .flatMap(alarmRepository::getAlarmByUid);
+    }
+
     public Flux<Alarm> getGroupAlarmPublisher(String groupUid) {
         return groupRepository.findAlarmUidsByGroupUid(groupUid)
                 .flatMap(alarmRepository::getAlarmByUid);

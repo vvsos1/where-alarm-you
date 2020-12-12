@@ -1,26 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/group_linearLayoutParent"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="#5B38"
-        android:text="장소 1" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/group_linearLayoutParent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="장소 이름"
-        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="장소 이름"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:hint="입력해주세요" />
-</LinearLayout>
+        <EditText
+            android:id="@+id/et_address_title"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:hint="입력해주세요"
+            app:layout_constraintStart_toEndOf="@+id/textView3"
+            app:layout_constraintTop_toTopOf="@+id/textView3" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="72dp"
+            android:text="위치 검색"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_current_location"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintEnd_toEndOf="@+id/map"
+            app:layout_constraintTop_toTopOf="@+id/textView4"
+            app:srcCompat="@drawable/current_location" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="192dp"
+            android:layout_marginTop="4dp"
+            android:text="현위치"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/iv_current_location"
+            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintTop_toTopOf="@+id/textView2" />
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.naver.maps.map.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="373dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rv_search_result" />
+
+        <EditText
+            android:id="@+id/et_address_search"
+            android:layout_width="341dp"
+            android:layout_height="43dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name"
+            app:layout_constraintEnd_toEndOf="@+id/iv_current_location"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_search_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="@+id/et_address_search"
+            app:layout_constraintStart_toStartOf="@+id/et_address_search"
+            app:layout_constraintTop_toBottomOf="@+id/et_address_search" />
+
+        <SeekBar
+            android:id="@+id/sb_range"
+            android:layout_width="213dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="24dp"
+            android:max="200"
+            android:min="20"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toBottomOf="@+id/map" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintLeft_toLeftOf="@id/map"
+            app:layout_constraintRight_toRightOf="@id/map"
+            app:layout_constraintTop_toBottomOf="@+id/sb_range">
+
+            <TextView
+                android:id="@+id/groupMake_textViewUnused1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="색  "
+                android:textColor="#000"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/groupMake_textViewUnused2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/groupMake_textViewUnused1"
+                android:layout_marginBottom="2dp"
+                android:layout_toEndOf="@id/groupMake_textViewUnused1"
+                android:text=" |  "
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/groupMake_textViewUnused3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/groupMake_textViewUnused1"
+                android:layout_toEndOf="@id/groupMake_textViewUnused2"
+                android:text="현재 선택된 색"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/groupMake_buttonIconColor"
+                android:layout_width="15sp"
+                android:layout_height="15sp"
+                android:layout_alignBottom="@id/groupMake_textViewUnused3"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="1dp"
+                android:layout_toEndOf="@id/groupMake_textViewUnused3"
+                android:background="@drawable/round_corners_ultra_mini"
+                android:stateListAnimator="@null" />
+
+            <TextView
+                android:id="@+id/groupMake_textViewNewColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/groupMake_textViewUnused3"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@id/groupMake_imageViewNewColor"
+                android:text="+ 사용자 지정색 추가"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/groupMake_imageViewNewColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/groupMake_textViewUnused3"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/ic_color_lens" />
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_location_color"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/round_corners_icon_list"
+            android:gravity="center_vertical"
+            android:overScrollMode="never"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/map"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="문구"
+            android:textColor="#000"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/rv_location_color"
+            app:layout_constraintTop_toBottomOf="@id/rv_location_color" />
+
+        <EditText
+            android:id="@+id/et_icon_text"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/round_corners_edittext"
+            android:hint="아이콘에 삽입할 문구를 입력해주세요"
+            android:maxLength="6"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/rv_location_color"
+            app:layout_constraintStart_toStartOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@id/textView5" />
+
+        <Button
+            android:id="@+id/btn_location_make"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/round_corners_button"
+            android:stateListAnimator="@null"
+            android:text="장소 만들기"
+            android:textColor="@color/colorAccent"
+            android:textSize="15sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_icon_text" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
