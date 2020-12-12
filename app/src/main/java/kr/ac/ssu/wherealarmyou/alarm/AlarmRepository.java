@@ -12,20 +12,21 @@ import java.util.Map;
 
 import reactor.core.publisher.Mono;
 
-public class AlarmRepository
-{
+public class AlarmRepository {
     private static AlarmRepository instance;
-    
+
     private final DatabaseReference alarmsRef;
-    
-    private AlarmRepository(FirebaseDatabase mDatabase)
-    {
+    private final DatabaseReference rootRef;
+
+    private AlarmRepository(FirebaseDatabase mDatabase) {
         this.alarmsRef = mDatabase.getReference("alarms");
+        this.rootRef = mDatabase.getReference();
     }
-    
-    public static AlarmRepository getInstance( )
-    {
-        if (instance == null) { instance = new AlarmRepository(FirebaseDatabase.getInstance( )); }
+
+    public static AlarmRepository getInstance() {
+        if (instance == null) {
+            instance = new AlarmRepository(FirebaseDatabase.getInstance());
+        }
         return instance;
     }
     
@@ -91,14 +92,13 @@ public class AlarmRepository
                 }));
     }
 
-    public Mono<Void> updateSwitchOn(String alarmUid, Boolean isSwitchOn) {
+    public Mono<Void> updateSwitchOn(String userUid, String alarmUid, Boolean isSwitchOn) {
         return Mono.create(monoSink -> {
-            alarmsRef.child(alarmUid).updateChildren(Map.of("isSwitchOn", isSwitchOn), (error, ref) -> {
-                if (error != null)
-                    monoSink.error(error.toException());
-                else
-                    monoSink.success();
-            });
+            rootRef.updateChildren(
+                    Map.of("alarms/" + alarmUid + "/isSwitchOn", isSwitchOn,
+                            "users/" + userUid + "/alarms/" + alarmUid + "/isSwitchOn", isSwitchOn))
+                    .addOnSuccessListener(aVoid -> monoSink.success())
+                    .addOnFailureListener(monoSink::error);
         });
     }
 

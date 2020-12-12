@@ -284,7 +284,8 @@ public class AlarmService {
     }
 
     public Mono<Alarm> changeSwitch(Alarm alarm, Boolean isSwitchOn) {
-        return alarmRepository.updateSwitchOn(alarm.getUid(), isSwitchOn)
+        String currentUserUid = userService.getCurrentUserUid();
+        return alarmRepository.updateSwitchOn(currentUserUid, alarm.getUid(), isSwitchOn)
                 .doOnNext(aVoid -> alarm.updateSwitch(isSwitchOn))
                 .thenReturn(alarm);
     }
