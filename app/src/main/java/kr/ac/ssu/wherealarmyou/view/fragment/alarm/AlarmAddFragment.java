@@ -45,6 +45,7 @@ import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddGroupViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddMemoViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddViewModel;
 import lombok.Builder;
@@ -186,10 +187,10 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             fragmentTransaction.replace(R.id.alarmAdd_frameLayoutGroup, new AlarmAddGroupFragment( ));
         }
         else if (category == MEMO) {
-//            fragmentTransaction.add(R.id.alarmAdd_frameLayoutMemo, new AlarmAddMemoFragment( ));
+            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutMemo, new AlarmAddMemoFragment());
         }
         else if (category == DETAIL) {
-//            fragmentTransaction.add(R.id.alarmAdd_frameLayoutDetail, new AlarmAddDetailFragment( ));
+            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutDetail, new AlarmAddDetailFragment());
         }
         fragmentTransaction.setCustomAnimations(R.anim.fade_in, 0, R.anim.fade_in, 0)
                            .addToBackStack(null)
@@ -217,27 +218,51 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         }
         else if (category == WEEK) {
             AlarmAddViewModel<Integer> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
+            AlarmAddDaysViewModel alarmAddDaysViewModel = (AlarmAddDaysViewModel) viewModel;
             viewModel.getLiveData().observe(getViewLifecycleOwner(), daysSum -> {
                 if (daysSum == 1) {
-
+                    daysOfWeek = null;
+                    activePeriod = null;
+                    dates = alarmAddDaysViewModel.getDates();
+                    Toast.makeText(getContext(), dates.toString(), Toast.LENGTH_SHORT).show();
                 } else {
-
+                    daysOfWeek = alarmAddDaysViewModel.getDaysOfWeek();
+                    if (daysSum >= 510510)
+                        daysOfWeek.put("EVERY_DAY", true);
+                    activePeriod = alarmAddDaysViewModel.getActivePeriod();
+                    dates = null;
+                    Toast.makeText(getContext(), daysOfWeek.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
             viewModel.getInfoString().observe(getViewLifecycleOwner(), string -> setInfo(string, category));
         }
         else if (category == GROUP) {
-            AlarmAddViewModel<Group> viewModel = new ViewModelProvider(requireActivity( )).get(AlarmAddGroupViewModel.class);
-            viewModel.getLiveData( ).observe(getViewLifecycleOwner( ), group -> {
+            AlarmAddViewModel<Group> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddGroupViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), group -> {
                 if (group != null) {
                     this.group = group;
                     setInfo(group.getName(), category);
                 }
             });
-            viewModel.onComplete( ).observe(getViewLifecycleOwner( ), isComplete -> {
+            viewModel.onComplete().observe(getViewLifecycleOwner(), isComplete -> {
                 if (isComplete) {
-                    changeCategory(currentVisibleCategoryPosition.get( ) + 1);
-                    viewModel.reset( );
+                    changeCategory(currentVisibleCategoryPosition.get() + 1);
+                    viewModel.reset();
+                }
+            });
+        } else if (category == MEMO) {
+            AlarmAddViewModel<String> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddMemoViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), string -> {
+                this.description = string;
+            });
+            viewModel.getInfoString().observe(getViewLifecycleOwner(), s -> {
+                setInfo(s, category);
+                this.title = s;
+            });
+            viewModel.onComplete().observe(getViewLifecycleOwner(), isComplete -> {
+                if (isComplete) {
+                    changeCategory(currentVisibleCategoryPosition.get() + 1);
+                    viewModel.reset();
                 }
             });
         }
@@ -249,6 +274,8 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             return new ViewModelProvider(requireActivity()).get(AlarmAddTimeViewModel.class);
         } else if (category == WEEK) {
             return new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
+        } else if (category == MEMO) {
+            return new ViewModelProvider(requireActivity()).get(AlarmAddMemoViewModel.class);
         }
         return null;
     }

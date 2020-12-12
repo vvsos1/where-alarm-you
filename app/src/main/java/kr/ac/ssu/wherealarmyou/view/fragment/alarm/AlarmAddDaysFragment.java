@@ -25,13 +25,15 @@ import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.Period;
 import kr.ac.ssu.wherealarmyou.dialog.ActivePeriodClickListener;
+import kr.ac.ssu.wherealarmyou.dialog.DatesClickListener;
 import kr.ac.ssu.wherealarmyou.dialog.SetActivePeriodDialog;
+import kr.ac.ssu.wherealarmyou.dialog.SetDatesDialog;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
 
 
-public class AlarmAddDaysFragment extends Fragment implements View.OnClickListener, OnBackPressedListener, ActivePeriodClickListener {
+public class AlarmAddDaysFragment extends Fragment implements View.OnClickListener, OnBackPressedListener, ActivePeriodClickListener, DatesClickListener {
 
 
     private static AlarmAddDaysFragment instance;
@@ -66,24 +68,29 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
         alarmAddDaysViewModel = new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
 
         //todo : 알람 애드 프래그먼트에서 정보를 받아 설정할 예정
-        daysSum = 1;
-        toViewModel = "";
         isSelected = new boolean[]{false, false, false, false, false, false, false};
         dates = new ArrayList<>();
         daysOfWeek = new HashMap<>();
         activePeriod = null;
+        daysSum = 1;
+        toViewModel = makeInfoString();
+        alarmAddDaysViewModel.setInfoString(toViewModel);
 
         setDays = contentView.findViewById(R.id.alarmAddDay_button_set_days);
         setDays.setOnClickListener(v -> {
-            SetActivePeriodDialog activePeriodDialog = new SetActivePeriodDialog(getContext(), this);
-            activePeriodDialog.setCanceledOnTouchOutside(true);
-            activePeriodDialog.setCancelable(true);
-            activePeriodDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-            activePeriodDialog.show();
+            SetActivePeriodDialog setActivePeriodDialog = new SetActivePeriodDialog(getContext(), this);
+            setActivePeriodDialog.setCanceledOnTouchOutside(true);
+            setActivePeriodDialog.setCancelable(true);
+            setActivePeriodDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            setActivePeriodDialog.show();
         });
         setDates = contentView.findViewById(R.id.alarmAddDay_button_set_dates);
         setDates.setOnClickListener(v -> {
-
+            SetDatesDialog setDatesDialog = new SetDatesDialog(getContext(), this);
+            setDatesDialog.setCanceledOnTouchOutside(true);
+            setDatesDialog.setCancelable(true);
+            setDatesDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            setDatesDialog.show();
         });
 
         textPeriod = contentView.findViewById(R.id.text_show_period);
@@ -110,6 +117,9 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
         buttons.add(contentView.findViewById(R.id.alarmAddDay_days_button_FRI));
         buttons.add(contentView.findViewById(R.id.alarmAddDay_days_button_SAT));
 
+        for (TextView view : buttons) {
+            view.setBackground(transparentBackground);
+        }
 
         return contentView;
     }
@@ -129,20 +139,18 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
 
             if (daysSum == 1) {
                 toViewModel = "";
-                boolean flag = true;
 
                 if (dates.isEmpty()) {
                     return "오늘";
                 }
 
-                for (Date date : dates) {
-                    if (flag) {
-                        flag = false;
-                        toViewModel = date.toString();
-                    } else {
-                        toViewModel = toViewModel + ", " + date.toString();
-                    }
+                String tmp = dates.get(0).toString();
+
+                if (dates.size() > 1) {
+                    tmp = tmp + "...";
                 }
+
+                return tmp;
 
             } else if (daysSum < 510510) {
                 boolean isFirst = true;
@@ -217,6 +225,7 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View v) {
         int buttonIndex = buttonLikes.indexOf(v);
+        dates = new ArrayList<>();
 
         if (isSelected[buttonIndex]) {
             buttons.get(buttonIndex).setBackground(transparentBackground);
@@ -243,10 +252,9 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
 
         }
 
+        alarmAddDaysViewModel.setInfoString(makeInfoString());
         alarmAddDaysViewModel.setDaysOfWeek(daysOfWeek);
         alarmAddDaysViewModel.setLiveData(daysSum);
-        alarmAddDaysViewModel.setInfoString(makeInfoString());
-
 
     }
 
@@ -269,13 +277,36 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
     }
 
     @Override
-    public void acceptDialog(Period activePeriod) {
+    public void acceptPeriod(Period activePeriod) {
         this.activePeriod = activePeriod;
-        if (activePeriod != null)
+
+        textPeriod.setText("활성 기간 : 기간 설정 없음");
+
+        alarmAddDaysViewModel.setActivePeriod(activePeriod);
+
+        dates = new ArrayList<>();
+        if (activePeriod.getStart() != null && activePeriod.getEnd() != null)
             textPeriod.setText("활성 기간 : " + activePeriod.getStart() + " ~ " + activePeriod.getEnd());
-        else {
-            textPeriod.setText("활성 기간 : 기간 설정 없음");
+        else if (activePeriod.getStart() != null)
+            textPeriod.setText("활성 기간 : " + activePeriod.getStart() + " ~ ");
+        else if (activePeriod.getEnd() != null)
+            textPeriod.setText("활성 기간 : " + " ~ " + activePeriod.getEnd());
+
+    }
+
+    @Override
+    public void acceptDates(List<Date> dates) {
+        this.dates = dates;
+        textPeriod.setText("활성 기간 : 기간 설정 없음");
+        daysSum = 1;
+        daysOfWeek = new HashMap<>();
+        for (int i = 0; i < isSelected.length; i++) {
+            isSelected[i] = false;
+            buttons.get(i).setBackground(transparentBackground);
         }
+        alarmAddDaysViewModel.setDates(dates);
+        alarmAddDaysViewModel.setInfoString(makeInfoString());
+
     }
 
 }

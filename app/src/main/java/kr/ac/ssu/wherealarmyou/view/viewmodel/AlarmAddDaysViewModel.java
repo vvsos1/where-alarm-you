@@ -47,4 +47,17 @@ public class AlarmAddDaysViewModel extends AlarmAddViewModel<Integer> {
     public void setLiveData(Integer liveData) {
         super.setLiveData(liveData);
     }
+
+    public Period getActivePeriod() {
+        return activePeriod;
+    }
+
+    public List<Date> getDates() {
+        return dates;
+    }
+
+    public Map<String, Boolean> getDaysOfWeek() {
+        return daysOfWeek;
+    }
+
 }
