@@ -58,7 +58,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Bundle bundle = Objects.requireNonNull(getArguments( ));
-
+        
         getGroupAlarm(group.getUid( ));
         
         View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
@@ -132,8 +132,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
             
             textViewAlarmAdd.setOnClickListener(this);
             textViewGroupDelete.setOnClickListener(this);
-            textViewGroupSetting.setOnClickListener(
-                    view -> Toast.makeText(getContext( ), "그룹 설정(미구현)", Toast.LENGTH_SHORT).show( ));
+            textViewGroupSetting.setOnClickListener(view ->
+                    MainFrameActivity.showTopFragment(new GroupMakeFragment(group, GroupMakeFragment.Mode.GROUP_EDIT)));
             textViewManageMember.setOnClickListener(view -> normalRecyclerAdapter.bind(Boolean.TRUE));
             
             if (group.getWaitingUsers( ) != null) {

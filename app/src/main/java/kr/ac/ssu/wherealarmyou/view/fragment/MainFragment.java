@@ -145,6 +145,7 @@ public class MainFragment extends Fragment implements View.OnClickListener
             }
         });
         
+        
         // Content View Setting - Alarm Recycler View Setting
         RecyclerView           recyclerViewAlarm      = contentView.findViewById(R.id.main_recyclerViewAlarm);
         AlarmItemAdapter       alarmItemAdapter       = new AlarmItemAdapter(getContext( ), alarms);

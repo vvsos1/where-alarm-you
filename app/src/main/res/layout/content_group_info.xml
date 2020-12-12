@@ -172,7 +172,7 @@
                     android:layout_toStartOf="@id/groupInfo_buttonHideGroupAlarm"
                     android:text="+ 알람 추가"
                     android:textSize="14sp"
-                    android:visibility="invisible"/>
+                    android:visibility="invisible" />
 
                 <Button
                     android:id="@+id/groupInfo_buttonHideGroupAlarm"
