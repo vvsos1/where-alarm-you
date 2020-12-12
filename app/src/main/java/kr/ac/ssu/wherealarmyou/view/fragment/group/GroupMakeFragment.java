@@ -111,7 +111,7 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
         IconItemAdapter     iconItemAdapter     = new IconItemAdapter(getContext( ), icons);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext( ));
         
-        iconItemAdapter.setOnItemClickListener((itemView, icon) -> {
+        iconItemAdapter.setOnItemClickListener((position, icon) -> {
             GradientDrawable drawable = (GradientDrawable)buttonIconColor.getBackground( );
             drawable.setColor(Color.parseColor(icon.getColorHex( )));
             iconColor = icon.getColorHex( );

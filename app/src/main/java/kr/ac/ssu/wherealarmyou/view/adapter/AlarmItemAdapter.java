@@ -51,37 +51,47 @@ public class AlarmItemAdapter extends RecyclerView.Adapter<AlarmItemAdapter.Alar
     {
         Alarm alarm = alarms.get(position);
         
-        for (Group group : Objects.requireNonNull(dataManager.getGroupData( ).getValue( ))) {
-            if (Objects.equals(alarm.getGroupUid( ), group.getUid( ))) {
-                holder.textViewGroup.setText(group.getName( ));
+        if (alarm.hasGroup( )) {
+            for (Group group : Objects.requireNonNull(dataManager.getGroupData( ).getValue( ))) {
+                if (Objects.equals(alarm.getGroupUid( ), group.getUid( ))) {
+                    holder.textViewGroup.setText(group.getName( ));
+                }
             }
         }
         
-        boolean isInclude = true;
-        List<Location> locations = new ArrayList<>( );
-        if (alarm.getLocationCondition( ).isInclude( )) {
-            Set<String> uidSet = alarm.getLocationCondition( ).getInclude( ).keySet( );
-            locations = Objects.requireNonNull(dataManager.getLocationData( ).getValue( )).stream( ).filter(location ->
-                    uidSet.contains(location.getUid( ))).collect(Collectors.toList( ));
-        }
-        else if (!alarm.getLocationCondition( ).isInclude()) {
-            isInclude = false;
-            Set<String> uidSet = alarm.getLocationCondition( ).getExclude( ).keySet( );
-            locations = Objects.requireNonNull(dataManager.getLocationData( ).getValue( )).stream( ).filter(location ->
-                    uidSet.contains(location.getUid( ))).collect(Collectors.toList( ));
-        }
-        for (Location location : locations) {
-            String origin = (String)holder.textViewLocation.getText( );
-            holder.textViewLocation.setText(origin + " " + location.getTitle( ));
-            if (!isInclude) {
-                String old = (String)holder.textViewLocation.getText( );
-                holder.textViewLocation.setText(old + "밖에서");
+        if (alarm.hasLocation( )) {
+            boolean isInclude = true;
+            
+            List<Location> locations = new ArrayList<>( );
+            if (alarm.getLocationCondition( ).isInclude( )) {
+                Set<String> uidSet = alarm.getLocationCondition( ).getInclude( ).keySet( );
+                locations = Objects.requireNonNull(dataManager.getLocationData( ).getValue( ))
+                                   .stream( )
+                                   .filter(location -> uidSet.contains(location.getUid( )))
+                                   .collect(Collectors.toList( ));
+            }
+            else if (!alarm.getLocationCondition( ).isInclude( )) {
+                isInclude = false;
+                Set<String> uidSet = alarm.getLocationCondition( ).getExclude( ).keySet( );
+                locations = Objects.requireNonNull(dataManager.getLocationData( ).getValue( ))
+                                   .stream( )
+                                   .filter(location -> uidSet.contains(location.getUid( )))
+                                   .collect(Collectors.toList( ));
+            }
+            for (Location location : locations) {
+                String origin = (String)holder.textViewLocation.getText( );
+                holder.textViewLocation.setText(origin + " " + location.getTitle( ));
+                if (!isInclude) {
+                    String old = (String)holder.textViewLocation.getText( );
+                    holder.textViewLocation.setText(old + "밖에서");
+                }
             }
         }
         
-        holder.textViewHours.setText(alarm.getTime( ).getHours( ).toString( ));
+        int hour = (alarm.getTime( ).getHours( ) % 12 != 0) ? alarm.getTime().getHours() % 12
+                                                            : 12;
+        holder.textViewHours.setText(Integer.toString(hour));
         holder.textViewMinutes.setText(alarm.getTime( ).getMinutes( ).toString( ));
-        holder.textViewLocation.setText("미구현");
         holder.aSwitch.setChecked(alarm.getIsSwitchOn( ));
         holder.aSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 onSwitchCheckedChangeListener.onSwitchCheckedChangeListener(alarm, isChecked));

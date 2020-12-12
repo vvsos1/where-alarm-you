@@ -34,6 +34,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainFragment extends Fragment implements View.OnClickListener
 {
@@ -102,47 +103,55 @@ public class MainFragment extends Fragment implements View.OnClickListener
         });
         
         
+        // Content View Setting
+        TextView textViewToLocation   = contentView.findViewById(R.id.main_textViewToLocation);
+        TextView textViewToGroup      = contentView.findViewById(R.id.main_textViewToGroup);
+        TextView textViewUserProfile  = contentView.findViewById(R.id.main_textViewUserProfile);
+        TextView textViewLocationInfo = contentView.findViewById(R.id.main_textViewLocationInfo);
+        TextView textViewGroupInfo    = contentView.findViewById(R.id.main_textViewGroupInfo);
+        
+        textViewToLocation.setOnClickListener(this);
+        textViewToGroup.setOnClickListener(this);
+        textViewUserProfile.setOnClickListener(this);
+        
+        
         // Content View Setting - Location Recycler View Setting
         RecyclerView        recyclerViewLocation = contentView.findViewById(R.id.main_recyclerViewLocation);
-        IconItemAdapter     locationAdapter      = new IconItemAdapter(getContext( ), locationIcons);
+        IconItemAdapter     locationIconAdapter  = new IconItemAdapter(getContext( ), locationIcons);
         LinearLayoutManager linearLayoutManagerL = new LinearLayoutManager(getContext( ));
         
-        locationAdapter.setOnItemClickListener((view, icon) -> {
+        locationIconAdapter.setOnItemClickListener((view, icon) -> {
             // TODO : 알람 필터링 구현
         });
         
         linearLayoutManagerL.setOrientation(RecyclerView.HORIZONTAL);
-        recyclerViewLocation.setAdapter(locationAdapter);
+        recyclerViewLocation.setAdapter(locationIconAdapter);
         recyclerViewLocation.setLayoutManager(linearLayoutManagerL);
         
         
         // Content View Setting - Group Recycler View Setting
         RecyclerView        recyclerViewGroup    = contentView.findViewById(R.id.main_recyclerViewGroup);
-        IconItemAdapter     groupAdapter         = new IconItemAdapter(getContext( ), groupIcons);
+        IconItemAdapter     groupIconAdapter     = new IconItemAdapter(getContext( ), groupIcons);
         LinearLayoutManager linearLayoutManagerG = new LinearLayoutManager(getContext( ));
         
-        groupAdapter.setOnItemClickListener((view, icon) -> {
-            // TODO : 알람 필터링 구현
-        });
+        groupIconAdapter.setOnItemClickListener((position, icon) ->
+                textViewGroupInfo.setText(Objects.requireNonNull(groups).get(position).getName( )));
         
         linearLayoutManagerG.setOrientation(RecyclerView.HORIZONTAL);
-        recyclerViewGroup.setAdapter(groupAdapter);
+        recyclerViewGroup.setAdapter(groupIconAdapter);
         recyclerViewGroup.setLayoutManager(linearLayoutManagerG);
         
-        dataManager.isObservable( ).observe(getViewLifecycleOwner( ), observable -> {
-            if (observable) {
-                dataManager.getGroupData( ).observe(getViewLifecycleOwner( ), groups_ -> {
-                    groupIcons.clear( );
-                    for (Group group : groups_) {
-                        groupIcons.add(group.getIcon( ));
-                    }
-                    IconItemAdapter newGroupAdapter = new IconItemAdapter(getContext( ), groupIcons);
-                    recyclerViewGroup.setAdapter(newGroupAdapter);
-                });
+        dataManager.getGroupData( ).observe(getViewLifecycleOwner( ), groups_ -> {
+            groupIcons.clear( );
+            for (Group group : groups_) {
+                groupIcons.add(group.getIcon( ));
             }
-            else {
-                dataManager.getGroupData( ).removeObservers(getViewLifecycleOwner( ));
-            }
+            IconItemAdapter newGroupIconAdapter = new IconItemAdapter(getContext( ), groupIcons);
+            newGroupIconAdapter.setOnItemClickListener((position, icon) -> {
+                textViewGroupInfo.setText(Objects.requireNonNull(groups).get(position).getName( ));
+                filterAlarmByGroup(groups.get(position));
+            });
+            recyclerViewGroup.setAdapter(newGroupIconAdapter);
         });
         
         
@@ -198,16 +207,6 @@ public class MainFragment extends Fragment implements View.OnClickListener
             }
         });
         
-        
-        // Content View Setting - Other Items
-        TextView textViewLocationInfo = contentView.findViewById(R.id.main_textViewToLocation);
-        TextView textVIewGroupInfo    = contentView.findViewById(R.id.main_textViewToGroup);
-        TextView textViewUserProfile  = contentView.findViewById(R.id.main_textViewUserProfile);
-        
-        textViewLocationInfo.setOnClickListener(this);
-        textVIewGroupInfo.setOnClickListener(this);
-        textViewUserProfile.setOnClickListener(this);
-        
         return contentView;
     }
     
@@ -218,10 +217,17 @@ public class MainFragment extends Fragment implements View.OnClickListener
         AlarmService alarmService = AlarmService.getInstance(getContext( ));
         
         alarmService.changeSwitch(alarm, isChecked)
+                    .flatMap(alarmService::unregister)
                     .doOnSuccess(unused -> dataManager.updateAlarmLiveData( ))
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))
                     .subscribe( );
+    }
+    
+    private List<Alarm> filterAlarmByGroup(Group group)
+    {
+        List<Alarm> filteredAlarms = new ArrayList<>( );
+        return filteredAlarms;
     }
     
     @Override

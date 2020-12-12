@@ -47,7 +47,7 @@ public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.IconCo
         drawable.setColor(Color.parseColor(icon.getColorHex( )));
         holder.buttonIcon.setOnClickListener(view -> {
             if ((position != RecyclerView.NO_POSITION) && (listener != null)) {
-                listener.onItemClick(view, icon);
+                listener.onItemClick(position, icon);
             }
         });
     }
@@ -65,7 +65,7 @@ public class IconItemAdapter extends RecyclerView.Adapter<IconItemAdapter.IconCo
     
     public interface OnItemClickListener
     {
-        void onItemClick(View view, Icon icon);
+        void onItemClick(int position, Icon icon);
     }
     
     public static class IconContentViewHolder extends RecyclerView.ViewHolder
