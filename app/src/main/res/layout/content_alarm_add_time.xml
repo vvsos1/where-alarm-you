@@ -1,283 +1,287 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:visibility="visible"
-        android:id="@+id/alarmAddTime_linearLayoutSetAMPM"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/alarmAddTime_buttonAM"
-                android:layout_width="92dp"
-                android:layout_height="92dp"
-                android:background="@drawable/ic_baseline_wb_sunny_24" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="오전"
-                android:textSize="30dp" />
-
-        </LinearLayout>
-
-
-        <View
-            android:layout_width="2dp"
-            android:layout_height="100dp"
-            android:layout_margin="50dp"
-            android:background="#AAA" />
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/alarmAddTime_buttonPM"
-                android:layout_width="92dp"
-                android:layout_height="92dp"
-
-                android:background="@drawable/ic_baseline_nights_stay_24" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="오후"
-                android:textSize="30dp" />
-
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/alarmAddTime_linearLayoutSetTimes"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-
-        <LinearLayout
+            android:id="@+id/alarmAddTime_linearLayoutSetAMPM"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp">
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            android:layout_weight="7">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/alarmAddTIme_linearLayoutAm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
 
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/alarmAddTime_lottieAnimationViewAm"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_horizontal"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="noon.json"
+                    app:lottie_loop="true" />
 
-                <RelativeLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true">
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:text="오전"
+                    android:textSize="20sp" />
+            </LinearLayout>
 
-                    <View
-                        android:id="@+id/underline_alarm_add_time"
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_alignLeft="@+id/text_view_alarm_add_time"
-                        android:layout_alignRight="@+id/text_view_alarm_add_time"
-                        android:layout_alignBottom="@+id/hour_or_minute_alarm_add_time"
-                        android:background="#000" />
+            <View
+                android:layout_width="2dp"
+                android:layout_height="100dp"
+                android:layout_margin="50dp"
+                android:background="#AAA" />
 
-                    <TextView
-                        android:id="@+id/text_view_alarm_add_time"
+            <LinearLayout
+                android:id="@+id/alarmAddTIme_linearLayoutPm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/alarmAddTime_lottieAnimationViewPm"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_horizontal"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="night.json"
+                    app:lottie_loop="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:text="오후"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/alarmAddTime_linearLayoutSetTimes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/underline_alarm_add_time"
-                        android:layout_alignTop="@+id/hour_or_minute_alarm_add_time"
-                        android:layout_centerVertical="true"
-                        android:gravity="center"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:text=""
-                        android:textSize="25dp" />
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true">
 
-                    <TextView
-                        android:id="@+id/hour_or_minute_alarm_add_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toEndOf="@+id/underline_alarm_add_time"
-                        android:text="시"
-                        android:textSize="30dp" />
+                        <View
+                            android:id="@+id/underline_alarm_add_time"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_alignLeft="@+id/text_view_alarm_add_time"
+                            android:layout_alignRight="@+id/text_view_alarm_add_time"
+                            android:layout_alignBottom="@+id/hour_or_minute_alarm_add_time"
+                            android:background="#000" />
 
+                        <TextView
+                            android:id="@+id/text_view_alarm_add_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_above="@+id/underline_alarm_add_time"
+                            android:layout_alignTop="@+id/hour_or_minute_alarm_add_time"
+                            android:layout_centerVertical="true"
+                            android:gravity="center"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:text=""
+                            android:textSize="25dp" />
 
+                        <TextView
+                            android:id="@+id/hour_or_minute_alarm_add_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toEndOf="@+id/underline_alarm_add_time"
+                            android:text="시"
+                            android:textSize="30dp" />
+                    </RelativeLayout>
+
+                    <Button
+                        android:id="@+id/button_arrow_left"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="40dp"
+                        android:background="@drawable/ic_baseline_keyboard_arrow_left_24" />
+
+                    <Button
+                        android:id="@+id/button_arrow_right"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="40dp"
+                        android:background="@drawable/ic_baseline_keyboard_arrow_right_24" />
                 </RelativeLayout>
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="15dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="visible">
 
                 <Button
-                    android:id="@+id/button_arrow_left"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="40dp"
-                    android:background="@drawable/ic_baseline_keyboard_arrow_left_24" />
+                    android:id="@+id/button_number_1"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_number_background"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textSize="20sp" />
 
                 <Button
-                    android:id="@+id/button_arrow_right"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="40dp"
-                    android:background="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                    android:id="@+id/button_number_2"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_number_background"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textSize="20sp" />
 
+                <Button
+                    android:id="@+id/button_number_3"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_number_background"
+                    android:gravity="center"
+                    android:text="3"
+                    android:textSize="20sp" />
 
-            </RelativeLayout>
+                <Button
+                    android:id="@+id/button_number_4"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_number_background"
+                    android:gravity="center"
+                    android:text="4"
+                    android:textSize="20sp" />
 
+                <Button
+                    android:id="@+id/button_number_5"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/button_number_background"
+                    android:gravity="center"
+                    android:text="5"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/button_number_6"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_number_background"
+                    android:gravity="center"
+                    android:text="6"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/button_number_7"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_number_background"
+                    android:gravity="center"
+                    android:text="7"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/button_number_8"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_number_background"
+                    android:gravity="center"
+                    android:text="8"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/button_number_9"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_number_background"
+                    android:gravity="center"
+                    android:text="9"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/button_number_0"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_number_background"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="20sp" />
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <Button
-                android:id="@+id/button_number_1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_number_background"
-                android:gravity="center"
-                android:text="1"
-                android:textSize="25dp"></Button>
-
-            <Button
-                android:id="@+id/button_number_2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_number_background"
-                android:gravity="center"
-                android:text="2"
-                android:textSize="25dp"></Button>
-
-            <Button
-                android:id="@+id/button_number_3"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_number_background"
-                android:gravity="center"
-                android:text="3"
-                android:textSize="25dp"></Button>
-
-            <Button
-                android:id="@+id/button_number_4"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_number_background"
-                android:gravity="center"
-                android:text="4"
-                android:textSize="25dp"></Button>
-
-            <Button
-                android:id="@+id/button_number_5"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_number_background"
-                android:gravity="center"
-                android:text="5"
-                android:textSize="25dp"></Button>
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <Button
-                android:id="@+id/button_number_6"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_number_background"
-                android:gravity="center"
-                android:text="6"
-                android:textSize="25dp"></Button>
-
-            <Button
-                android:id="@+id/button_number_7"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_number_background"
-                android:gravity="center"
-                android:text="7"
-                android:textSize="25dp"></Button>
-
-            <Button
-                android:id="@+id/button_number_8"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_number_background"
-                android:gravity="center"
-                android:text="8"
-                android:textSize="25dp"></Button>
-
-            <Button
-                android:id="@+id/button_number_9"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_number_background"
-                android:gravity="center"
-                android:text="9"
-                android:textSize="25dp"></Button>
-
-            <Button
-                android:id="@+id/button_number_0"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_number_background"
-                android:gravity="center"
-                android:text="0"
-                android:textSize="25dp"></Button>
-        </LinearLayout>
-
-
+            android:layout_height="0dp"
+            android:layout_weight="2"/>
     </LinearLayout>
-
 </FrameLayout>

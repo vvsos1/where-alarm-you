@@ -100,24 +100,6 @@
                     android:layout_toEndOf="@id/groupMake_textViewUnused3"
                     android:background="@drawable/round_corners_ultra_mini"
                     android:stateListAnimator="@null" />
-
-                <TextView
-                    android:id="@+id/groupMake_textViewNewColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/groupMake_textViewUnused3"
-                    android:layout_marginEnd="5dp"
-                    android:layout_toStartOf="@id/groupMake_imageViewNewColor"
-                    android:text="+ 사용자 지정색 추가"
-                    android:textSize="14sp" />
-
-                <ImageView
-                    android:id="@+id/groupMake_imageViewNewColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/groupMake_textViewUnused3"
-                    android:layout_alignParentEnd="true"
-                    android:background="@drawable/ic_color_lens" />
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView

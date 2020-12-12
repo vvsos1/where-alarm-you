@@ -42,13 +42,7 @@
 
         <activity android:name=".view.alarm.AlarmActivity" />
         <activity android:name=".view.LocationAddActivity" />
-        <activity android:name=".view.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+        <activity android:name=".view.MainActivity" />
         <!-- login package activities -->
         <activity android:name=".view.login.StartActivity">
             <intent-filter>
@@ -70,5 +64,4 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/naver_cloud_platform_client_id" />
     </application>
-
 </manifest>

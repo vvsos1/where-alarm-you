@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.airbnb.lottie.LottieAnimationView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
@@ -30,9 +31,10 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
 
     private LinearLayout linearLayoutSetAMPM;
     private LinearLayout linearLayoutSetTime;
-
-    private Button buttonAm;
-    private Button buttonPm;
+    
+    private LinearLayout linearLayoutAm;
+    private LinearLayout linearLayoutPm;
+    
     private TextView timeTextView;
     private TextView hourOrMinute;
 
@@ -40,7 +42,9 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
 
     private Button buttonArrowLeft;
     private Button buttonArrowRight;
-
+    
+    public AlarmAddTimeFragment( ) {}
+    
     public static AlarmAddTimeFragment getInstance() {
         return new AlarmAddTimeFragment();
     }
@@ -56,9 +60,9 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
 
         linearLayoutSetAMPM = contentView.findViewById(R.id.alarmAddTime_linearLayoutSetAMPM);
         linearLayoutSetTime = contentView.findViewById(R.id.alarmAddTime_linearLayoutSetTimes);
-
-        buttonAm = contentView.findViewById(R.id.alarmAddTime_buttonAM);
-        buttonPm = contentView.findViewById(R.id.alarmAddTime_buttonPM);
+        
+        linearLayoutAm = contentView.findViewById(R.id.alarmAddTIme_linearLayoutAm);
+        linearLayoutPm = contentView.findViewById(R.id.alarmAddTIme_linearLayoutPm);
 
         timeTextView = contentView.findViewById(R.id.text_view_alarm_add_time);
         hourOrMinute = contentView.findViewById(R.id.hour_or_minute_alarm_add_time);
@@ -86,8 +90,8 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
         buttonArrowLeft.setOnClickListener(this::onClick);
         buttonArrowRight.setOnClickListener(this::onClick);
 
-        buttonAm.setOnClickListener(this::onClick);
-        buttonPm.setOnClickListener(this::onClick);
+        linearLayoutAm.setOnClickListener(this);
+        linearLayoutPm.setOnClickListener(this);
         return contentView;
     }
     
@@ -97,10 +101,10 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
             timeTextView.setText(
                     timeTextView.getText() + Integer.toString(buttonNumber.indexOf(view)));
         } else if (stage == 0) {
-            if (view == buttonAm) {
+            if (view == linearLayoutAm) {
                 alarmAddTimeViewModel.selectAmPm(false);
             }
-            if (view == buttonPm) {
+            if (view == linearLayoutPm) {
                 alarmAddTimeViewModel.selectAmPm(true);
             }
             hours = -1;
