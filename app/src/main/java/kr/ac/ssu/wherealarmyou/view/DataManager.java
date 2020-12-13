@@ -26,8 +26,8 @@ public class DataManager
     private final MutableLiveData<Boolean> observable = new MutableLiveData<>( );
     
     private final MutableLiveData<List<Alarm>>    alarmMutableLiveData    = new MutableLiveData<>(new ArrayList<>( ));
-    private final MutableLiveData<List<Location>> locationMutableLiveData = new MutableLiveData<>(new ArrayList<>( ));
     private final MutableLiveData<List<Group>>    groupMutableLiveData    = new MutableLiveData<>(new ArrayList<>( ));
+    private final MutableLiveData<List<Location>> locationMutableLiveData = new MutableLiveData<>(new ArrayList<>( ));
     
     public static DataManager getInstance( )
     {

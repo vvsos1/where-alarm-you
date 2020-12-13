@@ -12,17 +12,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/switch_detail_sound"
+            android:layout_toStartOf="@+id/alarmDetail_switchSound"
             android:gravity="left"
             android:paddingRight="100dp"
             android:text="알람음"
             android:textSize="30sp" />
 
         <Switch
-            android:id="@+id/switch_detail_sound"
+            android:id="@+id/alarmDetail_switchSound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            android:layout_centerVertical="true"/>
 
     </RelativeLayout>
 
@@ -33,17 +36,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/switch_detail_vibe"
+            android:layout_toStartOf="@+id/alarmAddDetail_switchVibration"
             android:gravity="left"
             android:paddingRight="100dp"
             android:text="진동"
             android:textSize="30sp" />
 
         <Switch
-            android:id="@+id/switch_detail_vibe"
+            android:id="@+id/alarmAddDetail_switchVibration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"/>
 
     </RelativeLayout>
 
@@ -54,18 +59,41 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/switch_detail_repetition"
+            android:layout_toStartOf="@+id/alarmAddDetail_switchRepeat"
             android:gravity="left"
             android:paddingRight="100dp"
             android:text="반복"
             android:textSize="30sp" />
 
         <Switch
-            android:id="@+id/switch_detail_repetition"
+            android:id="@+id/alarmAddDetail_switchRepeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"/>
 
+
+
+        <EditText
+            android:visibility="gone"
+            android:inputType="numberDecimal"
+            android:id="@+id/alarmAddDetail_editTextInterval"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_below="@id/alarmAddDetail_switchRepeat"
+            android:background="@drawable/button_number_background"
+            android:layout_alignEnd="@id/alarmAddDetail_switchRepeat" />
+
+        <EditText
+            android:visibility="gone"
+            android:inputType="numberDecimal"
+            android:id="@+id/alarmAddDetail_editTextCount"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_below="@id/alarmAddDetail_editTextInterval"
+            android:background="@drawable/button_number_background"
+            android:layout_alignEnd="@id/alarmAddDetail_switchRepeat" />
 
     </RelativeLayout>
 
