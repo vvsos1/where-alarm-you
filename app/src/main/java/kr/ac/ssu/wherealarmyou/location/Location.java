@@ -18,6 +18,9 @@ import reactor.util.annotation.NonNull;
 public abstract class Location {
     String uid;
 
+    @NonNull
+    String type;
+
     // 사용자가 지정한 장소 이름
     @NonNull
     String title;
@@ -34,7 +37,8 @@ public abstract class Location {
     @NonNull
     Icon icon;
 
-    protected Location(String title, Address address, Integer range, Icon icon) {
+    protected Location(String type, String title, Address address, Integer range, Icon icon) {
+        this.type = type;
         this.title = title;
         this.address = address;
         this.range = range;

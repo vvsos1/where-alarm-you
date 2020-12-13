@@ -8,7 +8,14 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,6 +25,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
@@ -35,8 +43,10 @@ import kr.ac.ssu.wherealarmyou.group.service.GroupService;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 public class AlarmService {
+    private static final String TAG = "AlarmService";
 
     private static AlarmService instance;
     private final GroupService groupService;
@@ -72,6 +82,10 @@ public class AlarmService {
         return instance;
     }
 
+    public void subscribeGroupAlarm(Set<String> groupUids) {
+        Log.d(TAG, "subscribeGroupAlarm" + groupUids.toString());
+        groupUids.forEach(groupUid -> FirebaseMessaging.getInstance().subscribeToTopic(groupUid).addOnSuccessListener(aVoid -> Log.d(TAG, groupUid + "구독 완료")));
+    }
 
     public void setContext(Context context) {
         this.context = context;
@@ -240,6 +254,7 @@ public class AlarmService {
 
     }
 
+
     // 알람을 Realtime Database에 저장
     public Mono<Alarm> save(AlarmSaveRequest request) {
         String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -249,7 +264,7 @@ public class AlarmService {
         return alarmRepository.save(alarm)
                 .flatMap(newAlarm -> {
                     if (newAlarm.hasGroup()) {
-                        return groupRepository.addAlarmToGroup(newAlarm);
+                        return sendGroupAlarmRegisterMessage(newAlarm).then(groupRepository.addAlarmToGroup(newAlarm));
                     } else {
                         return userService.addAlarm(newAlarm);
                     }
@@ -303,5 +318,30 @@ public class AlarmService {
         return alarmRepository.updateSwitchOn(currentUserUid, alarm.getUid(), isSwitchOn)
                 .doOnNext(aVoid -> alarm.updateSwitch(isSwitchOn))
                 .thenReturn(alarm);
+    }
+
+    private Mono<Integer> sendGroupAlarmRegisterMessage(Alarm alarm) {
+        return Mono.fromCallable(() -> {
+            String topic = alarm.getGroupUid();
+
+            String alarmUid = alarm.getUid();
+
+            URL url = new URL("http://192.168.0.5:8080" + "/message/" + topic);
+
+            URLConnection urlConnection = url.openConnection();
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
+
+            writer.write(alarmUid);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+            StringBuffer sb = new StringBuffer();
+            String s;
+            while ((s = reader.readLine()) != null) {
+                sb.append(s);
+            }
+            return Integer.parseInt(sb.toString());
+        }).subscribeOn(Schedulers.elastic());
     }
 }

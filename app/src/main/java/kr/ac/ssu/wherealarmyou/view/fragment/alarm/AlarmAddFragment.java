@@ -47,7 +47,6 @@ import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddGroupViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddViewModel;
-import lombok.Builder;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.annotation.Nullable;
 
@@ -75,10 +74,8 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     @Nullable
     private Group group;
     // 소리
-    @Builder.Default
     private Boolean sound = Boolean.TRUE;
     // 진동
-    @Builder.Default
     private Boolean vibe = Boolean.TRUE;
     // 반복
     private Repetition repetition;
