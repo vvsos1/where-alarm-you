@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import jahirfiquitiva.libs.fabsmenu.FABsMenu;
@@ -37,23 +37,31 @@ import reactor.core.scheduler.Schedulers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MainFragment extends Fragment implements View.OnClickListener
 {
     private final DataManager dataManager = DataManager.getInstance( );
     
+    private final AtomicReference<IconItemAdapter> groupIconAdapter    = new AtomicReference<>( );
+    private final AtomicReference<IconItemAdapter> locationIconAdapter = new AtomicReference<>( );
+    
+    private final MutableLiveData<List<Alarm>>    filteredAlarms    = new MutableLiveData<>(new ArrayList<>( ));
+    private final MutableLiveData<List<Location>> selectedLocations = new MutableLiveData<>(new ArrayList<>( ));
+    private final MutableLiveData<List<Group>>
+    
+    
+    private List<Alarm>       alarms;
     private MainFrameActivity mainFrameActivity;
     
     // FAB ( Floating Action Button )
     private FABsMenu fabsMenu;
     private View     fabsBlind;
-    
-    private final AtomicReference<IconItemAdapter> groupIconAdapter    = new AtomicReference<>( );
-    private final AtomicReference<IconItemAdapter> locationIconAdapter = new AtomicReference<>( );
-    
     private TextView textViewGroupInfo;
+    private TextView textViewLocationInfo;
     private Button   buttonRefreshGroup;
+    private Button   buttonRefreshLocation;
     
     public static MainFragment getInstance( )
     {
@@ -63,7 +71,7 @@ public class MainFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        List<Alarm>    alarms    = dataManager.getAlarmData( ).getValue( );
+        alarms = dataManager.getAlarmData( ).getValue( );
         List<Group>    groups    = dataManager.getGroupData( ).getValue( );
         List<Location> locations = dataManager.getLocationData( ).getValue( );
         
@@ -113,17 +121,19 @@ public class MainFragment extends Fragment implements View.OnClickListener
         
         
         // Content View Setting
-        TextView textViewToLocation   = contentView.findViewById(R.id.main_textViewToLocation);
-        TextView textViewToGroup      = contentView.findViewById(R.id.main_textViewToGroup);
-        TextView textViewUserProfile  = contentView.findViewById(R.id.main_textViewUserProfile);
-        TextView textViewLocationInfo = contentView.findViewById(R.id.main_textViewLocationInfo);
-        textViewGroupInfo  = contentView.findViewById(R.id.main_textViewGroupInfo);
-        buttonRefreshGroup = contentView.findViewById(R.id.main_buttonRefreshGroup);
+        TextView textViewToLocation  = contentView.findViewById(R.id.main_textViewToLocation);
+        TextView textViewToGroup     = contentView.findViewById(R.id.main_textViewToGroup);
+        TextView textViewUserProfile = contentView.findViewById(R.id.main_textViewUserProfile);
+        textViewLocationInfo  = contentView.findViewById(R.id.main_textViewLocationInfo);
+        textViewGroupInfo     = contentView.findViewById(R.id.main_textViewGroupInfo);
+        buttonRefreshGroup    = contentView.findViewById(R.id.main_buttonRefreshGroup);
+        buttonRefreshLocation = contentView.findViewById(R.id.main_buttonRefreshLocation);
         
         textViewToLocation.setOnClickListener(this);
         textViewToGroup.setOnClickListener(this);
         textViewUserProfile.setOnClickListener(this);
         buttonRefreshGroup.setOnClickListener(this);
+        buttonRefreshLocation.setOnClickListener(this);
         
         
         // Content View Setting - Location Recycler View Setting
@@ -131,9 +141,8 @@ public class MainFragment extends Fragment implements View.OnClickListener
         LinearLayoutManager linearLayoutManagerL = new LinearLayoutManager(getContext( ));
         
         locationIconAdapter.set(new IconItemAdapter(getContext( ), locationIcons));
-        locationIconAdapter.get( ).setOnItemClickListener((view, icon) -> {
-            // TODO : 알람 필터링 구현
-        });
+        locationIconAdapter.get( ).setOnItemClickListener((position, icon) ->
+                textViewLocationInfo.setText(Objects.requireNonNull(groups).get(position).getName( )));
         
         linearLayoutManagerL.setOrientation(RecyclerView.HORIZONTAL);
         recyclerViewLocation.setAdapter(locationIconAdapter.get( ));
@@ -147,9 +156,9 @@ public class MainFragment extends Fragment implements View.OnClickListener
             locationIconAdapter.set(new IconItemAdapter(getContext( ), locationIcons));
             locationIconAdapter.get( ).setOnItemClickListener((position, icon) -> {
                 textViewLocationInfo.setText(Objects.requireNonNull(locations).get(position).getTitle( ));
-                //filterAlarmByLocation(locations.get(position));
+                filterAlarmByLocation(locations.get(position));
                 locationIconAdapter.get( ).iconSelected(Boolean.TRUE, position);
-                //buttonRefreshLocation.setVisibility(View.VISIBLE);
+                buttonRefreshLocation.setVisibility(View.VISIBLE);
             });
             recyclerViewLocation.setAdapter(locationIconAdapter.get( ));
         });
@@ -235,6 +244,15 @@ public class MainFragment extends Fragment implements View.OnClickListener
             }
         });
         
+        filteredAlarms.observe(getViewLifecycleOwner( ), alarms_ -> {
+            AlarmItemAdapter newAlarmItemAdapter = new AlarmItemAdapter(getContext( ), alarms_);
+            newAlarmItemAdapter.setOnItemClickListener((view, alarm) -> {
+                // TODO : 알람 클릭 이벤트 구현
+            });
+            newAlarmItemAdapter.setOnSwitchCheckedChangeListener(this::changeAlarmState);
+            recyclerViewAlarm.setAdapter(newAlarmItemAdapter);
+        });
+        
         return contentView;
     }
     
@@ -252,10 +270,19 @@ public class MainFragment extends Fragment implements View.OnClickListener
                     .subscribe( );
     }
     
-    private List<Alarm> filterAlarmByGroup(Group group)
+    private void filterAlarmByGroup(Group group)
     {
-        List<Alarm> filteredAlarms = new ArrayList<>( );
-        return filteredAlarms;
+        filteredAlarms.setValue(Alarm.filterAlarms(alarms, Set.of(group.getUid( )), null));
+    }
+    
+    private void filterAlarmByLocation(Location location)
+    {
+        filteredAlarms.setValue(Alarm.filterAlarms(alarms, null, Set.of(location.getUid( ))));
+    }
+    
+    private void resetFilter( )
+    {
+        filteredAlarms.setValue(alarms);
     }
     
     @Override
@@ -283,10 +310,17 @@ public class MainFragment extends Fragment implements View.OnClickListener
                 MainFrameActivity.showTopFragment(GroupAddFragment.getInstance( ));
                 fabsMenu.collapse( );
                 break;
+            case (R.id.main_buttonRefreshLocation):
+                locationIconAdapter.get( ).iconSelected(Boolean.FALSE, 0);
+                buttonRefreshLocation.setVisibility(View.INVISIBLE);
+                textViewLocationInfo.setText("");
+                resetFilter( );
+                break;
             case (R.id.main_buttonRefreshGroup):
                 groupIconAdapter.get( ).iconSelected(Boolean.FALSE, 0);
                 buttonRefreshGroup.setVisibility(View.INVISIBLE);
                 textViewGroupInfo.setText("");
+                resetFilter( );
                 break;
         }
     }

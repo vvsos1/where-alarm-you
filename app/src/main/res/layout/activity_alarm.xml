@@ -65,6 +65,7 @@
             android:background="@drawable/round_corners_button_color"
             android:text="해제"
             android:textColor="#FFF"
+            android:stateListAnimator="@null"
             android:textSize="18sp" />
 
         <Button

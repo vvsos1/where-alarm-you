@@ -75,6 +75,17 @@
                 android:text="현위치 : 집"
                 android:textSize="14sp" />
 
+            <Button
+                android:id="@+id/main_buttonRefreshLocation"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignBottom="@id/main_textViewLocationInfo"
+                android:layout_marginStart="7dp"
+                android:layout_toEndOf="@id/main_textViewLocationInfo"
+                android:background="@drawable/ic_refresh"
+                android:stateListAnimator="@null"
+                android:visibility="invisible"/>
+
             <TextView
                 android:id="@+id/main_textViewToLocation"
                 android:layout_width="wrap_content"
@@ -82,7 +93,7 @@
                 android:layout_alignBaseline="@id/main_textViewUnused1"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="7dp"
-                android:text="장소 페이지로" />
+                android:text="장소 페이지로 이동" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/main_recyclerViewLocation"

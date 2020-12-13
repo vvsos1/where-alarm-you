@@ -34,7 +34,12 @@ import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
 
 
-public class AlarmAddDaysFragment extends Fragment implements View.OnClickListener, OnBackPressedListener, ActivePeriodClickListener, DatesClickListener {
+public class AlarmAddDaysFragment
+        extends Fragment
+        implements View.OnClickListener,
+        OnBackPressedListener,
+        ActivePeriodClickListener,
+        DatesClickListener {
 
 
     private static AlarmAddDaysFragment instance;

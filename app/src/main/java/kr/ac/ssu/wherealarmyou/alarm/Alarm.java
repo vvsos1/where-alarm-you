@@ -1,5 +1,6 @@
 package kr.ac.ssu.wherealarmyou.alarm;
 
+import android.util.Log;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Exclude;
 
@@ -71,6 +72,7 @@ public abstract class Alarm implements Serializable {
 
     public static Alarm fromSnapShot(DataSnapshot snapshot) {
         String type = snapshot.child("type").getValue(String.class);
+        Log.d("Alarm","fromSnapShot: uid : "+snapshot.getKey()+", type: "+type );
         if (DaysAlarm.TYPE.equals(type)) {
             return snapshot.getValue(DaysAlarm.class);
         } else if (DatesAlarm.TYPE.equals(type)) {

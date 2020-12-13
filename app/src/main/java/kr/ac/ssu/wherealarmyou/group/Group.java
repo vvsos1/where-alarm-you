@@ -33,11 +33,11 @@ public class Group {
 
     Map<String, Boolean> alarms = new ArrayMap<>( );
 
-    Map<String, String> members;
+    Map<String, String> members = new ArrayMap<>(  );
 
-    Map<String, Authority> roles;
+    Map<String, Authority> roles = new ArrayMap<>(  );
 
-    Map<String, Boolean> waitingUsers;
+    Map<String, Boolean> waitingUsers = new ArrayMap<>();
 
     @Builder
     public Group(String adminUid, String name, Icon icon, String description) {
