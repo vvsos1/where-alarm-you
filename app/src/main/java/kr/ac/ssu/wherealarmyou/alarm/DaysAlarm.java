@@ -27,6 +27,8 @@ public class DaysAlarm extends Alarm implements Serializable {
     public DaysAlarm(String uid, String title, String description, Time time, LocationCondition locationCondition, String group, Boolean sound, Boolean vibe, Repetition repetition, Period activePeriod, Map<String, Boolean> daysOfWeek) {
         super(TYPE, title, description, time, locationCondition, group, sound, vibe, repetition);
         this.activePeriod = activePeriod;
+        if (activePeriod == null)
+            this.activePeriod = new Period(null, null);
         this.daysOfWeek = daysOfWeek;
         setUid(uid);
     }

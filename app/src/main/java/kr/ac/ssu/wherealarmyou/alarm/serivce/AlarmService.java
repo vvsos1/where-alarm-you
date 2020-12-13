@@ -17,7 +17,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
@@ -25,13 +24,9 @@ import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.DatesAlarm;
 import kr.ac.ssu.wherealarmyou.alarm.DaysAlarm;
 import kr.ac.ssu.wherealarmyou.alarm.Time;
-import kr.ac.ssu.wherealarmyou.alarm.component.AlarmBootReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.component.AlarmNotifyReceiver;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmModifyRequest;
 import kr.ac.ssu.wherealarmyou.alarm.dto.AlarmSaveRequest;
-import kr.ac.ssu.wherealarmyou.group.Group;
-import kr.ac.ssu.wherealarmyou.user.User;
-import kr.ac.ssu.wherealarmyou.user.UserRepository;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -104,20 +99,32 @@ public class AlarmService {
                     }
                 }
             } else if (alarm instanceof DaysAlarm) {
-                Date startDate = ((DaysAlarm) alarm).getActivePeriod().getStart();
-                Date endDate = ((DaysAlarm) alarm).getActivePeriod().getEnd();
-                ZonedDateTime startZonedDate = Year.of(startDate.getYear())
-                        .atMonth(startDate.getMonth())
-                        .atDay(startDate.getDay())
-                        .atTime(time.getHours(), time.getMinutes())
-                        .atZone(ZoneId.of("Asia/Seoul"));
-                ZonedDateTime endZonedDateTime = Year.of(endDate.getYear())
-                        .atMonth(endDate.getMonth())
-                        .atDay(endDate.getDay())
-                        .atTime(time.getHours(), time.getMinutes())
-                        .atZone(ZoneId.of("Asia/Seoul"));
 
-                if (currentTime.isAfter(startZonedDate) && currentTime.isBefore(endZonedDateTime)) {
+                boolean flag1 = true;
+                boolean flag2 = true;
+
+                if (((DaysAlarm) alarm).getActivePeriod().getStart() != null) {
+                    Date startDate = ((DaysAlarm) alarm).getActivePeriod().getStart();
+                    ZonedDateTime startZonedDate = Year.of(startDate.getYear())
+                            .atMonth(startDate.getMonth())
+                            .atDay(startDate.getDay())
+                            .atTime(time.getHours(), time.getMinutes())
+                            .atZone(ZoneId.of("Asia/Seoul"));
+                    flag1 = currentTime.isAfter(startZonedDate);
+                }
+
+                if (((DaysAlarm) alarm).getActivePeriod().getEnd() != null) {
+
+                    Date endDate = ((DaysAlarm) alarm).getActivePeriod().getEnd();
+                    ZonedDateTime endZonedDateTime = Year.of(endDate.getYear())
+                            .atMonth(endDate.getMonth())
+                            .atDay(endDate.getDay())
+                            .atTime(time.getHours(), time.getMinutes())
+                            .atZone(ZoneId.of("Asia/Seoul"));
+                    flag2 = currentTime.isBefore(endZonedDateTime);
+                }
+
+                if (flag1 && flag2) {
                     if (((DaysAlarm) alarm).getDaysOfWeek().containsKey("EVERY_DAY")) {
                         Long rtcTime;
                         ZonedDateTime rtcZonedDateTime = LocalDate.now()
@@ -128,7 +135,7 @@ public class AlarmService {
                         }
                         rtcTime = rtcZonedDateTime.toInstant().toEpochMilli();
                         int requestCode = (alarm.getUid()).hashCode();
-                        Intent toAlarm = new Intent(context, AlarmBootReceiver.class);
+                        Intent toAlarm = new Intent(context, AlarmNotifyReceiver.class);
                         toAlarm.putExtra("Bundle", bundle)
                                 .putExtra("RequestCode", requestCode)
                                 .putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());

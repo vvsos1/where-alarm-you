@@ -20,10 +20,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -93,6 +91,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     private List<Date> dates;
 
     private RecyclerView.LayoutManager layoutManager;
+
     @Nullable
     private Alarm alarm;
 
@@ -105,33 +104,27 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     }
     
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        if (alarm == null) {
-            time        = new Time( );
-            title       = "";
-            description = "";
-            repetition  = new Repetition(1);
-        }
-        else {
-            time              = alarm.getTime( );
-            title             = alarm.getTitle( );
-            description       = alarm.getDescription( );
-            repetition        = alarm.getRepetition( );
-            locationCondition = alarm.getLocationCondition( );
-            sound             = alarm.getSound( );
-            vibe              = alarm.getVibe( );
-            
-        }
-        
-        Bundle bundle = Objects.requireNonNull(getArguments( ));
-        
-        View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        time = new Time();
+        title = "";
+        description = "";
+        repetition = new Repetition(2);
+        dates = new ArrayList<Date>();
+        LocalDate now = LocalDate.now();
+        dates.add(new Date(now.getDayOfMonth(), now.getMonthValue(), now.getYear()));
+
+
+        Bundle bundle = Objects.requireNonNull(getArguments());
+
+        View frameView = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_alarm_add, null);
 
         // Frame View Setting
         OverlappingView overlappingView = frameView.findViewById(R.id.overlap_view);
-        if (alarm == null) { overlappingView.setAtOnce(bundle, frameView, contentView, "알람 추가", false, true); }
+        if (alarm == null) {
+            overlappingView.setAtOnce(bundle, frameView, contentView, "알람 추가", false, true);
+        }
         else { overlappingView.setAtOnce(bundle, frameView, contentView, "알람 수정", false, true); }
         
         // Make Category List
@@ -221,17 +214,15 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             AlarmAddDaysViewModel alarmAddDaysViewModel = (AlarmAddDaysViewModel) viewModel;
             viewModel.getLiveData().observe(getViewLifecycleOwner(), daysSum -> {
                 if (daysSum == 1) {
-                    daysOfWeek = null;
-                    activePeriod = null;
-                    dates = alarmAddDaysViewModel.getDates();
-                    Toast.makeText(getContext(), dates.toString(), Toast.LENGTH_SHORT).show();
+                    this.daysOfWeek = null;
+                    this.activePeriod = null;
+                    this.dates = alarmAddDaysViewModel.getDates();
                 } else {
-                    daysOfWeek = alarmAddDaysViewModel.getDaysOfWeek();
+                    this.daysOfWeek = alarmAddDaysViewModel.getDaysOfWeek();
                     if (daysSum >= 510510)
                         daysOfWeek.put("EVERY_DAY", true);
-                    activePeriod = alarmAddDaysViewModel.getActivePeriod();
-                    dates = null;
-                    Toast.makeText(getContext(), daysOfWeek.toString(), Toast.LENGTH_SHORT).show();
+                    this.activePeriod = alarmAddDaysViewModel.getActivePeriod();
+                    this.dates = null;
                 }
             });
             viewModel.getInfoString().observe(getViewLifecycleOwner(), string -> setInfo(string, category));
@@ -313,27 +304,34 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         
     }
     
-    private void registerAlarm(Time time)
-    {
-        AlarmService alarmService = AlarmService.getInstance(getContext( ));
-        
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        
-        Date date = new Date(now.getDayOfMonth( ), now.getMonth( ).getValue( ), now.getYear( ));
-        
-        AlarmSaveRequest req = AlarmSaveRequest.builder(time)
-                                               .dates(Arrays.asList(date)).repetition(repetition)
-                                               .build( );
-        
-        
-        Log.d("AlarmAddFragment", req.toString( ));
-        
+    private void registerAlarm(Time time) {
+        if (time == null || time.getHours() == null || time.getMinutes() == null) {
+            Toast.makeText(getContext(), "시간 없는 알람을 만들 수 없습니다", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        AlarmService alarmService = AlarmService.getInstance(getContext());
+
+
+        AlarmSaveRequest req = AlarmSaveRequest.builder(time).dates(dates)
+                .repetition(repetition)
+                .description(description)
+                .title(title)
+                .activePeriod(activePeriod)
+                .daysOfWeek(daysOfWeek)
+                .vibe(true)
+                .sound(false)
+                .build();
+
+
+        Log.d("AlarmAddFragment", req.toString());
+
         alarmService.save(req)
-                    .doOnSuccess(alarm -> DataManager.getInstance( ).updateAlarmLiveData( ))
-                    .doOnError(throwable -> Log.e("AlarmAddFragment", throwable.getMessage( )))
-                    .flatMap(alarmService::register)
-                    .publishOn(Schedulers.elastic( ))
-                    .subscribeOn(Schedulers.elastic( ))
+                .doOnSuccess(alarm -> DataManager.getInstance().updateAlarmLiveData())
+                .doOnError(throwable -> Log.e("AlarmAddFragment", throwable.getMessage()))
+                .flatMap(alarmService::register)
+                .publishOn(Schedulers.elastic())
+                .subscribeOn(Schedulers.elastic())
                     .subscribe( );
     }
     

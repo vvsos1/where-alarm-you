@@ -127,8 +127,10 @@ public class AlarmNotifyService extends Service {
 
     @Override
     public void onDestroy() {
-        vibrator.cancel();
-        mediaPlayer.release();
+        if (vibrator != null)
+            vibrator.cancel();
+        if (mediaPlayer != null)
+            mediaPlayer.release();
         if (AlarmActivity.AlarmActivity != null)
             AlarmActivity.AlarmActivity.finish();
         super.onDestroy();

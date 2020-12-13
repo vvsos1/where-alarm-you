@@ -53,8 +53,7 @@ public class AlarmRegisterReceiver extends BroadcastReceiver {
                 PendingIntent repeatAlarmPendingIntent = PendingIntent.getBroadcast(context, requestCode, toAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        //Todo : 나중에 20초가 아니라 5분으로 바꿀 예정
-                        SystemClock.elapsedRealtime() + (Duration.ofSeconds(20).toMillis()),
+                        SystemClock.elapsedRealtime() + (Duration.ofMillis(5).toMillis()),
                         repeatAlarmPendingIntent);
 
             }
@@ -72,25 +71,30 @@ public class AlarmRegisterReceiver extends BroadcastReceiver {
 
 
                     Time time = alarm.getTime();
-                    Date endDate = ((DaysAlarm) alarm).getActivePeriod().getEnd();
                     ZonedDateTime currentDay = LocalDate.now().atTime(time.getHours(), time.getMinutes())
                             .atZone(ZoneId.of("Asia/Seoul"));
-                    ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
-                    ZonedDateTime endZonedDateTime = Year.of(endDate.getYear())
-                            .atMonth(endDate.getMonth())
-                            .atDay(endDate.getDay())
-                            .atTime(time.getHours(), time.getMinutes())
-                            .atZone(ZoneId.of("Asia/Seoul"));
+                    boolean flag = true;
+                    if (((DaysAlarm) alarm).getActivePeriod().getEnd() != null) {
+                        ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
-                    if (currentTime.isBefore(endZonedDateTime)) {
+                        Date endDate = ((DaysAlarm) alarm).getActivePeriod().getEnd();
+                        ZonedDateTime endZonedDateTime = Year.of(endDate.getYear())
+                                .atMonth(endDate.getMonth())
+                                .atDay(endDate.getDay())
+                                .atTime(time.getHours(), time.getMinutes())
+                                .atZone(ZoneId.of("Asia/Seoul"));
+
+                        flag = currentTime.isBefore(endZonedDateTime);
+                    }
+
+                    if (flag) {
                         long rtcTime;
 
-                        //Todo: days알람 테스트를 위해 plusSeconds를 사용 나중에 20 -> 1, 40 -> 7 로 바꿈
                         if (((DaysAlarm) alarm).getDaysOfWeek().keySet().contains("EVERY_DAY")) {
-                            rtcTime = currentDay.plusSeconds(20).toInstant().toEpochMilli();
+                            rtcTime = currentDay.plusDays(1).toInstant().toEpochMilli();
                         } else {
-                            rtcTime = currentDay.plusSeconds(40).toInstant().toEpochMilli();
+                            rtcTime = currentDay.plusDays(7).toInstant().toEpochMilli();
                         }
 
                         toAlarm.putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());

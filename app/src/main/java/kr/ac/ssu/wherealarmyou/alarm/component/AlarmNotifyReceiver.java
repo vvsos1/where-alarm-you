@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.ZoneId;
@@ -43,24 +44,30 @@ public class AlarmNotifyReceiver extends BroadcastReceiver {
             PendingIntent repeatAlarmPendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + (interval * 1000 * 60),
+                    SystemClock.elapsedRealtime() + (interval * Duration.ofMinutes(1).toMillis()),
                     repeatAlarmPendingIntent);
         } else {
             if (alarm instanceof DaysAlarm) {
 
                 Time time = alarm.getTime();
-                Date endDate = ((DaysAlarm) alarm).getActivePeriod().getEnd();
                 ZonedDateTime currentDay = LocalDate.now().atTime(time.getHours(), time.getMinutes())
                         .atZone(ZoneId.of("Asia/Seoul"));
-                ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
-                ZonedDateTime endZonedDateTime = Year.of(endDate.getYear())
-                        .atMonth(endDate.getMonth())
-                        .atDay(endDate.getDay())
-                        .atTime(time.getHours(), time.getMinutes())
-                        .atZone(ZoneId.of("Asia/Seoul"));
+                boolean flag = true;
+                if (((DaysAlarm) alarm).getActivePeriod().getEnd() != null) {
+                    ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
-                if (currentTime.isBefore(endZonedDateTime)) {
+                    Date endDate = ((DaysAlarm) alarm).getActivePeriod().getEnd();
+                    ZonedDateTime endZonedDateTime = Year.of(endDate.getYear())
+                            .atMonth(endDate.getMonth())
+                            .atDay(endDate.getDay())
+                            .atTime(time.getHours(), time.getMinutes())
+                            .atZone(ZoneId.of("Asia/Seoul"));
+
+                    flag = currentTime.isBefore(endZonedDateTime);
+                }
+
+                if (flag) {
                     long rtcTime;
 
                     if (((DaysAlarm) alarm).getDaysOfWeek().keySet().contains("EVERY_DAY")) {
@@ -72,7 +79,9 @@ public class AlarmNotifyReceiver extends BroadcastReceiver {
                     intent.putExtra("RepeatCount", alarm.getRepetition().getRepeatCount());
                     PendingIntent daysAlarmPendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, rtcTime, daysAlarmPendingIntent);
+
                 }
+
             }
 
         }
