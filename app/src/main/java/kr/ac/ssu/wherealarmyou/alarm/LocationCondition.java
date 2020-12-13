@@ -1,5 +1,7 @@
 package kr.ac.ssu.wherealarmyou.alarm;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -15,7 +17,6 @@ import lombok.experimental.FieldDefaults;
 // 알람이 활성화될 장소의 조건
 @SuppressWarnings("serial")
 @ToString
-@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,12 +24,15 @@ import lombok.experimental.FieldDefaults;
 public class LocationCondition implements Serializable {
     // Key : Location Uid
     @Singular("include")
+    @Getter
     Map<String, Boolean> include;
 
     // Key : Location Uid
     @Singular("exclude")
+    @Getter
     Map<String, Boolean> exclude;
 
+    @Exclude
     public boolean isInclude() {
         if (include != null)
             return true;
