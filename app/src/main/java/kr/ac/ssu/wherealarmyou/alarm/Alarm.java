@@ -4,6 +4,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -65,7 +69,6 @@ public abstract class Alarm implements Serializable {
     }
 
 
-
     public static Alarm fromSnapShot(DataSnapshot snapshot) {
         String type = snapshot.child("type").getValue(String.class);
         if (DaysAlarm.TYPE.equals(type)) {
@@ -103,5 +106,35 @@ public abstract class Alarm implements Serializable {
 
     public void updateSwitch(boolean isSwitchOn) {
         this.isSwitchOn = isSwitchOn;
+    }
+
+    public static List<Alarm> filterAlarms(List<Alarm> alarms, @Nullable Set<String> groupUids, @Nullable Set<String> locationUids) {
+        return alarms.stream()
+                .filter(alarm -> {
+                    boolean groupPredicate;
+                    boolean locationPredicate;
+                    if (groupUids == null || groupUids.size() == 0) {
+                        groupPredicate = true;
+                    } else {
+                        groupPredicate = groupUids.contains(alarm.getGroupUid());
+                    }
+                    if (locationUids == null || locationUids.size() == 0) {
+                        locationPredicate = true;
+                    } else {
+                        LocationCondition locationCondition = alarm.getLocationCondition();
+                        locationPredicate = false;
+                        if (locationCondition != null) {
+                            if (locationCondition.getInclude() != null && locationCondition.getInclude().size() != 0) {
+                                locationPredicate = !Collections.disjoint(locationCondition.getInclude().keySet(), locationUids);
+
+                            } else if (locationCondition.getExclude() != null && locationCondition.getExclude().size() != 0) {
+                                locationPredicate = Collections.disjoint(locationCondition.getExclude().keySet(), locationUids);
+                            }
+                        }
+
+                    }
+                    return groupPredicate && locationPredicate;
+                })
+                .collect(Collectors.toList());
     }
 }
