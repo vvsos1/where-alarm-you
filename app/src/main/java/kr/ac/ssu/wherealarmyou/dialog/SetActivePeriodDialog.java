@@ -35,6 +35,7 @@ public class SetActivePeriodDialog extends Dialog implements View.OnClickListene
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //todo : 일단 초기화 나중에 입력받을 것
         activePeriod = new Period();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_active_period);
@@ -44,7 +45,7 @@ public class SetActivePeriodDialog extends Dialog implements View.OnClickListene
         endBtn.setOnClickListener(this::onClick);
         acceptBtn = findViewById(R.id.dialog_days_accept_button);
         acceptBtn.setOnClickListener(v -> {
-            this.activePeriodClickListener.acceptDialog(activePeriod);
+            this.activePeriodClickListener.acceptPeriod(activePeriod);
             dismiss();
         });
         cancelBtn = findViewById(R.id.dialog_days_cancel_button);
@@ -67,11 +68,11 @@ public class SetActivePeriodDialog extends Dialog implements View.OnClickListene
             String string = year + "-" + (month + 1) + "-" + dayOfMonth;
 
             if (clickView == startBtn) {
-                activePeriod = new Period(new Date(year, (month + 1), dayOfMonth), activePeriod.getEnd());
+                activePeriod = new Period(new Date(dayOfMonth, (month + 1), year), activePeriod.getEnd());
                 startBtn.setText("시작 날짜 : " + string);
 
             } else if (clickView == endBtn) {
-                activePeriod = new Period(activePeriod.getStart(), new Date(year, (month + 1), dayOfMonth));
+                activePeriod = new Period(activePeriod.getStart(), new Date(dayOfMonth, (month + 1), year));
                 endBtn.setText("종료 날짜 : " + string);
 
             }

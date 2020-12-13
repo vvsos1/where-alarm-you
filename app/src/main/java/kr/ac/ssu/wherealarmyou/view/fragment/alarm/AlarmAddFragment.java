@@ -20,10 +20,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,6 +43,7 @@ import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddGroupViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddMemoViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddViewModel;
 import lombok.Builder;
@@ -92,6 +91,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     private List<Date> dates;
 
     private RecyclerView.LayoutManager layoutManager;
+
     @Nullable
     private Alarm alarm;
 
@@ -104,33 +104,24 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     }
     
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        if (alarm == null) {
-            time        = new Time( );
-            title       = "";
-            description = "";
-            repetition  = new Repetition(1);
-        }
-        else {
-            time              = alarm.getTime( );
-            title             = alarm.getTitle( );
-            description       = alarm.getDescription( );
-            repetition        = alarm.getRepetition( );
-            locationCondition = alarm.getLocationCondition( );
-            sound             = alarm.getSound( );
-            vibe              = alarm.getVibe( );
-            
-        }
-        
-        Bundle bundle = Objects.requireNonNull(getArguments( ));
-        
-        View frameView   = inflater.inflate(R.layout.frame_overlap, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        title = "";
+        description = "";
+        time = new Time();
+        repetition = new Repetition(2);
+
+
+        Bundle bundle = Objects.requireNonNull(getArguments());
+
+        View frameView = inflater.inflate(R.layout.frame_overlap, container, false);
         View contentView = inflater.inflate(R.layout.content_alarm_add, null);
 
         // Frame View Setting
         OverlappingView overlappingView = frameView.findViewById(R.id.overlap_view);
-        if (alarm == null) { overlappingView.setAtOnce(bundle, frameView, contentView, "알람 추가", false, true); }
+        if (alarm == null) {
+            overlappingView.setAtOnce(bundle, frameView, contentView, "알람 추가", false, true);
+        }
         else { overlappingView.setAtOnce(bundle, frameView, contentView, "알람 수정", false, true); }
         
         // Make Category List
@@ -152,12 +143,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         // Content View Event Listener
         currentVisibleCategoryPosition = new AtomicInteger();
         alarmCategoryItemAdapter.setOnItemClickListener((view, position) -> {
-            if (time == null && position != TIME) {
-                Toast.makeText(getContext(), "시간을 먼저 설정해 주세요", Toast.LENGTH_SHORT).show();
-            } else {
                 changeCategory(position);
-            }
-
         });
         
         recyclerView.setAdapter(alarmCategoryItemAdapter);
@@ -186,10 +172,10 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             fragmentTransaction.replace(R.id.alarmAdd_frameLayoutGroup, new AlarmAddGroupFragment( ));
         }
         else if (category == MEMO) {
-//            fragmentTransaction.add(R.id.alarmAdd_frameLayoutMemo, new AlarmAddMemoFragment( ));
+            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutMemo, new AlarmAddMemoFragment());
         }
         else if (category == DETAIL) {
-//            fragmentTransaction.add(R.id.alarmAdd_frameLayoutDetail, new AlarmAddDetailFragment( ));
+            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutDetail, new AlarmAddDetailFragment());
         }
         fragmentTransaction.setCustomAnimations(R.anim.fade_in, 0, R.anim.fade_in, 0)
                            .addToBackStack(null)
@@ -216,28 +202,60 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             });
         }
         else if (category == WEEK) {
-            AlarmAddViewModel<Integer> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
-            viewModel.getLiveData().observe(getViewLifecycleOwner(), daysSum -> {
-                if (daysSum == 1) {
-
-                } else {
-
+            AlarmAddViewModel<Map> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), map -> {
+                if ((map.get("dates") instanceof List)) {
+                    if (((List) map.get("dates")).isEmpty()) {
+                        if (map.get("daysOfWeek") instanceof Map) {
+                            dates = (List) map.get("dates");
+                            daysOfWeek = (Map) map.get("daysOfWeek");
+                            activePeriod = (Period) map.get("activePeriod");
+                        }
+                    } else {
+                        dates = (List) map.get("dates");
+                        daysOfWeek = null;
+                        activePeriod = null;
+                    }
                 }
             });
             viewModel.getInfoString().observe(getViewLifecycleOwner(), string -> setInfo(string, category));
         }
         else if (category == GROUP) {
-            AlarmAddViewModel<Group> viewModel = new ViewModelProvider(requireActivity( )).get(AlarmAddGroupViewModel.class);
-            viewModel.getLiveData( ).observe(getViewLifecycleOwner( ), group -> {
+            AlarmAddViewModel<Group> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddGroupViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), group -> {
                 if (group != null) {
                     this.group = group;
                     setInfo(group.getName(), category);
                 }
             });
-            viewModel.onComplete( ).observe(getViewLifecycleOwner( ), isComplete -> {
+            viewModel.onComplete().observe(getViewLifecycleOwner(), isComplete -> {
                 if (isComplete) {
-                    changeCategory(currentVisibleCategoryPosition.get( ) + 1);
-                    viewModel.reset( );
+                    changeCategory(currentVisibleCategoryPosition.get() + 1);
+                    viewModel.reset();
+                }
+            });
+        } else if (category == MEMO) {
+            AlarmAddViewModel<Map> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddMemoViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), map -> {
+                if (map == null)
+                    return;
+
+                if (map.get("title") != null) {
+                    this.title = (String) map.get("title");
+                    viewModel.setInfoString(title);
+                }
+
+                if (map.get("description") != null) {
+                    this.description = (String) map.get("description");
+                }
+            });
+            viewModel.getInfoString().observe(getViewLifecycleOwner(), s -> {
+                setInfo(s, category);
+            });
+            viewModel.onComplete().observe(getViewLifecycleOwner(), isComplete -> {
+                if (isComplete) {
+                    changeCategory(currentVisibleCategoryPosition.get() + 1);
+                    viewModel.reset();
                 }
             });
         }
@@ -249,6 +267,8 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             return new ViewModelProvider(requireActivity()).get(AlarmAddTimeViewModel.class);
         } else if (category == WEEK) {
             return new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
+        } else if (category == MEMO) {
+            return new ViewModelProvider(requireActivity()).get(AlarmAddMemoViewModel.class);
         }
         return null;
     }
@@ -275,38 +295,45 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     public void onClick(View view) { }
     
     @Override
-    public void onStop( )
-    {
-        super.onStop( );
-        if (time.getMinutes( ) != null) {
-            Toast.makeText(getContext( ), time.getHours( ) + "시 " + time.getMinutes( ) + "분",
-                    Toast.LENGTH_SHORT).show( );
-            registerAlarm(time);
-        }
-        
+    public void onStop( ) {
+        super.onStop();
+        registerAlarm();
+
     }
-    
-    private void registerAlarm(Time time)
-    {
-        AlarmService alarmService = AlarmService.getInstance(getContext( ));
-        
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        
-        Date date = new Date(now.getDayOfMonth( ), now.getMonth( ).getValue( ), now.getYear( ));
-        
-        AlarmSaveRequest req = AlarmSaveRequest.builder(time)
-                                               .dates(Arrays.asList(date)).repetition(repetition)
-                                               .build( );
-        
-        
-        Log.d("AlarmAddFragment", req.toString( ));
-        
+
+    private void registerAlarm() {
+        if (time == null || time.getHours() == null || time.getMinutes() == null) {
+            Toast.makeText(getContext(), "시간 없는 알람을 만들 수 없습니다", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        AlarmService alarmService = AlarmService.getInstance(getContext());
+        if (daysOfWeek == null && (dates == null || dates.isEmpty())) {
+            dates = new ArrayList<Date>();
+            LocalDate now = LocalDate.now();
+            dates.add(new Date(now.getDayOfMonth(), now.getMonthValue(), now.getYear()));
+        }
+
+
+        AlarmSaveRequest req = AlarmSaveRequest.builder(time).dates(dates)
+                .repetition(repetition)
+                .description(description)
+                .title(title)
+                .activePeriod(activePeriod)
+                .daysOfWeek(daysOfWeek)
+                .vibe(true)
+                .sound(false)
+                .build();
+
+
+        Log.d("AlarmAddFragment", req.toString());
+
         alarmService.save(req)
-                    .doOnSuccess(alarm -> DataManager.getInstance( ).updateAlarmLiveData( ))
-                    .doOnError(throwable -> Log.e("AlarmAddFragment", throwable.getMessage( )))
-                    .flatMap(alarmService::register)
-                    .publishOn(Schedulers.elastic( ))
-                    .subscribeOn(Schedulers.elastic( ))
+                .doOnSuccess(alarm -> DataManager.getInstance().updateAlarmLiveData())
+                .doOnError(throwable -> Log.e("AlarmAddFragment", throwable.getMessage()))
+                .flatMap(alarmService::register)
+                .publishOn(Schedulers.elastic())
+                .subscribeOn(Schedulers.elastic())
                     .subscribe( );
     }
     

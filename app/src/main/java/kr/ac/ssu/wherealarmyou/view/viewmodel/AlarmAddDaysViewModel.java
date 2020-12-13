@@ -1,14 +1,12 @@
 package kr.ac.ssu.wherealarmyou.view.viewmodel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import kr.ac.ssu.wherealarmyou.alarm.Date;
 import kr.ac.ssu.wherealarmyou.alarm.Period;
 
-public class AlarmAddDaysViewModel extends AlarmAddViewModel<Integer> {
+public class AlarmAddDaysViewModel extends AlarmAddViewModel<Map> {
 
 
     private List<Date> dates;
@@ -18,18 +16,7 @@ public class AlarmAddDaysViewModel extends AlarmAddViewModel<Integer> {
     private Map<String, Boolean> daysOfWeek;
 
 
-    public void setNecessary(List<Date> dates, Period activePeriod, Map<String, Boolean> daysOfWeek) {
-        this.dates = dates;
-        this.activePeriod = activePeriod;
-        this.daysOfWeek = daysOfWeek;
-        if (this.dates == null) {
-            this.dates = new ArrayList<>();
-        }
 
-        if (this.daysOfWeek == null) {
-            this.daysOfWeek = new HashMap<>();
-        }
-    }
 
     public void setDates(List<Date> dates) {
         this.dates = dates;
@@ -44,7 +31,20 @@ public class AlarmAddDaysViewModel extends AlarmAddViewModel<Integer> {
     }
 
     @Override
-    public void setLiveData(Integer liveData) {
+    public void setLiveData(Map liveData) {
         super.setLiveData(liveData);
     }
+
+    public Period getActivePeriod() {
+        return activePeriod;
+    }
+
+    public List<Date> getDates() {
+        return dates;
+    }
+
+    public Map<String, Boolean> getDaysOfWeek() {
+        return daysOfWeek;
+    }
+
 }
