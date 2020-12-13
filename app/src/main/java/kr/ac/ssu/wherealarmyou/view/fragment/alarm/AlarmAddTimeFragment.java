@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.airbnb.lottie.LottieAnimationView;
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
@@ -61,7 +60,7 @@ public class AlarmAddTimeFragment extends Fragment implements View.OnClickListen
         linearLayoutSetAMPM = contentView.findViewById(R.id.alarmAddTime_linearLayoutSetAMPM);
         linearLayoutSetTime = contentView.findViewById(R.id.alarmAddTime_linearLayoutSetTimes);
         
-        linearLayoutAm = contentView.findViewById(R.id.alarmAddTIme_linearLayoutAm);
+        linearLayoutAm = contentView.findViewById(R.id.alarmAddTime_linearLayoutAm);
         linearLayoutPm = contentView.findViewById(R.id.alarmAddTIme_linearLayoutPm);
 
         timeTextView = contentView.findViewById(R.id.text_view_alarm_add_time);

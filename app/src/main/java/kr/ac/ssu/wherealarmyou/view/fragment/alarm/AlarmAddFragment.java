@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,19 +42,23 @@ import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.adapter.AlarmCategoryItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import kr.ac.ssu.wherealarmyou.view.viewmodel.*;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddGroupViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddLocationViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddMemoViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddTimeViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddViewModel;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.annotation.Nullable;
 
-public class AlarmAddFragment extends Fragment implements View.OnClickListener
-{
-    private static final int TIME     = 0;
-    private static final int WEEK     = 1;
+public class AlarmAddFragment extends Fragment implements View.OnClickListener {
+    private static final int TIME = 0;
+    private static final int WEEK = 1;
     private static final int LOCATION = 2;
-    private static final int GROUP    = 3;
-    private static final int MEMO     = 4;
-    private static final int DETAIL   = 5;
-    
+    private static final int GROUP = 3;
+    private static final int MEMO = 4;
+    private static final int DETAIL = 5;
+
     AlarmAddViewModel<?> viewModel;
     AtomicInteger currentVisibleCategoryPosition;
     //알람의 시간
@@ -95,13 +100,14 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     public static AlarmAddFragment getInstance(Alarm alarm) {
         return new AlarmAddFragment(alarm);
     }
-    
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         title = "";
         description = "";
         time = new Time();
+        group = new Group();
         repetition = new Repetition(2);
 
 
@@ -114,9 +120,10 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         OverlappingView overlappingView = frameView.findViewById(R.id.overlap_view);
         if (alarm == null) {
             overlappingView.setAtOnce(bundle, frameView, contentView, "알람 추가", false, true);
+        } else {
+            overlappingView.setAtOnce(bundle, frameView, contentView, "알람 수정", false, true);
         }
-        else { overlappingView.setAtOnce(bundle, frameView, contentView, "알람 수정", false, true); }
-        
+
         // Make Category List
         List<AlarmAddFrameItem> items = new ArrayList<>();
         items.add(new AlarmAddFrameItem(R.drawable.ic_time, "시간", ""));
@@ -125,76 +132,68 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         items.add(new AlarmAddFrameItem(R.drawable.ic_group, "그룹", ""));
         items.add(new AlarmAddFrameItem(R.drawable.ic_note, "내용", ""));
         items.add(new AlarmAddFrameItem(R.drawable.ic_add_box, "세부 설정", ""));
-        
+
         // Content View Setting
-        RecyclerView             recyclerView             = frameView.findViewById(R.id.alarmAdd_recyclerView);
-        AlarmCategoryItemAdapter alarmCategoryItemAdapter = new AlarmCategoryItemAdapter(getContext( ), items);
-        LinearLayoutManager      linearLayoutManager      = new LinearLayoutManager(getContext( ));
-        DividerItemDecoration decoration = new DividerItemDecoration(Objects.requireNonNull(getContext( )),
-                linearLayoutManager.getOrientation( ));
-        
+        RecyclerView recyclerView = frameView.findViewById(R.id.alarmAdd_recyclerView);
+        AlarmCategoryItemAdapter alarmCategoryItemAdapter = new AlarmCategoryItemAdapter(getContext(), items);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        DividerItemDecoration decoration = new DividerItemDecoration(Objects.requireNonNull(getContext()),
+                linearLayoutManager.getOrientation());
+
         // Content View Event Listener
         currentVisibleCategoryPosition = new AtomicInteger();
         alarmCategoryItemAdapter.setOnItemClickListener((view, position) -> {
-                changeCategory(position);
+            changeCategory(position);
         });
-        
+
         recyclerView.setAdapter(alarmCategoryItemAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(decoration);
-        layoutManager = recyclerView.getLayoutManager( );
-        
+        layoutManager = recyclerView.getLayoutManager();
+
         return frameView;
     }
-    
-    private void startCategoryFragment(int category)
-    {
-        FragmentManager     fragmentManager     = Objects.requireNonNull(getActivity( )).getSupportFragmentManager( );
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction( );
-        
+
+    private void startCategoryFragment(int category) {
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
         if (category == TIME) {
-            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutTime, new AlarmAddTimeFragment( ));
-        }
-        else if (category == WEEK) {
-            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutWeek, new AlarmAddDaysFragment( ));
-        }
-        else if (category == LOCATION) {
-//            fragmentTransaction.add(R.id.alarmAdd_frameLayoutLocation, new AlarmAddLocationFragment( ));
-        }
-        else if (category == GROUP) {
-            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutGroup, new AlarmAddGroupFragment( ));
-        }
-        else if (category == MEMO) {
+            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutTime, new AlarmAddTimeFragment());
+        } else if (category == WEEK) {
+            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutWeek, new AlarmAddDaysFragment());
+        } else if (category == LOCATION) {
+            fragmentTransaction.add(R.id.alarmAdd_frameLayoutLocation, new AlarmAddLocationFragment());
+        } else if (category == GROUP) {
+            fragmentTransaction.replace(R.id.alarmAdd_frameLayoutGroup, new AlarmAddGroupFragment());
+        } else if (category == MEMO) {
             fragmentTransaction.replace(R.id.alarmAdd_frameLayoutMemo, new AlarmAddMemoFragment());
-        }
-        else if (category == DETAIL) {
+        } else if (category == DETAIL) {
             fragmentTransaction.replace(R.id.alarmAdd_frameLayoutDetail, new AlarmAddDetailFragment());
         }
         fragmentTransaction.setCustomAnimations(R.anim.fade_in, 0, R.anim.fade_in, 0)
-                           .addToBackStack(null)
-                           .commit( );
-        
+                .addToBackStack(null)
+                .commit();
+
     }
-    
+
     // TODO ViewModel에서 setData와 setInfo 분리하기 (getViewModel 이용)
-    private void setViewModel(int category)
-    {
+    private void setViewModel(int category) {
         if (category == TIME) {
-            AlarmAddViewModel<Time> viewModel = new ViewModelProvider(requireActivity( )).get(AlarmAddTimeViewModel.class);
-            viewModel.getLiveData( ).observe(getViewLifecycleOwner( ), time -> {
+            AlarmAddViewModel<Time> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddTimeViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), time -> {
                 if (time != null) {
                     this.time = time;
                 }
             });
-            viewModel.getInfoString( ).observe(getViewLifecycleOwner( ), string -> setInfo(string, category));
-            viewModel.onComplete( ).observe(getViewLifecycleOwner( ), isComplete -> {
+            viewModel.getInfoString().observe(getViewLifecycleOwner(), string -> setInfo(string, category));
+            viewModel.onComplete().observe(getViewLifecycleOwner(), isComplete -> {
                 if (isComplete) {
-                    changeCategory(currentVisibleCategoryPosition.get( ) + 1);
-                    viewModel.reset( );
+                    changeCategory(currentVisibleCategoryPosition.get() + 1);
+                    viewModel.reset();
                 }
             });
-        }
-        else if (category == WEEK) {
+        } else if (category == WEEK) {
             AlarmAddViewModel<Map> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
             viewModel.getLiveData().observe(getViewLifecycleOwner(), map -> {
                 if ((map.get("dates") instanceof List)) {
@@ -212,11 +211,11 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
                 }
             });
             viewModel.getInfoString().observe(getViewLifecycleOwner(), string -> setInfo(string, category));
-        }
-        else if (category == GROUP) {
+        } else if (category == GROUP) {
             AlarmAddViewModel<Group> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddGroupViewModel.class);
             viewModel.getLiveData().observe(getViewLifecycleOwner(), group -> {
                 if (group != null) {
+                    Log.d("AlaGround", group.toString());
                     this.group = group;
                     setInfo(group.getName(), category);
                 }
@@ -251,53 +250,36 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
                     viewModel.reset();
                 }
             });
-        }
-        else if (category == DETAIL) {
-            AlarmAddViewModel<Map<String, Integer>> viewModel =
-                    new ViewModelProvider(requireActivity()).get(AlarmAddDetailViewModel.class);
+        } else if (category == LOCATION) {
+            AlarmAddViewModel<Map> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddLocationViewModel.class);
+            viewModel.getInfoString().observe(getViewLifecycleOwner(), s -> {
+                setInfo(s, category);
+            });
             viewModel.getLiveData().observe(getViewLifecycleOwner(), map -> {
-                if (map == null) { return; }
-                for (String key : map.keySet( )) {
-                    switch (key) {
-                        case "sound":
-                            this.sound = (map.get(key) == AlarmAddDetailViewModel.Switch.On.ordinal( ));
-                            break;
-                        case "vibration":
-                            this.vibe = (map.get(key) == AlarmAddDetailViewModel.Switch.On.ordinal( ));
-                            break;
-                        case "repeat":
-                            if (map.get(key) == AlarmAddDetailViewModel.Switch.On.ordinal( )) {
-                                this.repetition = new Repetition(map.get("repeatCount"), map.get("repeatInterval"));
-                            }
-                            else {
-                                this.repetition = new Repetition(1);
-                            }
-                            break;
+                if (map == null)
+                    return;
+
+                if (map.get("uid") instanceof String) {
+                    if (map.get("isInclude") instanceof Boolean) {
+                        Log.d("Alarm", "please");
+                        HashMap<String, Boolean> hashMap = new HashMap<>();
+                        hashMap.put((String) map.get("uid"), true);
+                        this.locationCondition = new LocationCondition(hashMap, (boolean) map.get("isInclude"));
                     }
                 }
+
             });
             viewModel.onComplete().observe(getViewLifecycleOwner(), isComplete -> {
                 if (isComplete) {
+                    changeCategory(currentVisibleCategoryPosition.get() + 1);
                     viewModel.reset();
                 }
             });
         }
     }
-    
-    private AlarmAddViewModel<?> getViewModel(int category)
-    {
-        if (category == TIME) {
-            return new ViewModelProvider(requireActivity()).get(AlarmAddTimeViewModel.class);
-        } else if (category == WEEK) {
-            return new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
-        } else if (category == MEMO) {
-            return new ViewModelProvider(requireActivity()).get(AlarmAddMemoViewModel.class);
-        }
-        return null;
-    }
-    
-    private void setInfo(String string, int position)
-    {
+
+
+    private void setInfo(String string, int position) {
         if (string == null)
             return;
 
@@ -305,20 +287,20 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
                 .findViewById(R.id.item_alarmAddCategory_textViewInfo);
         infoText.setText(string);
     }
-    
-    private void changeCategory(int category)
-    {
+
+    private void changeCategory(int category) {
         startCategoryFragment(category);
         setViewModel(category);
-        changeVisibleCategoryView(currentVisibleCategoryPosition.get( ), category);
+        changeVisibleCategoryView(currentVisibleCategoryPosition.get(), category);
         currentVisibleCategoryPosition.set(category);
     }
-    
+
     @Override
-    public void onClick(View view) { }
-    
+    public void onClick(View view) {
+    }
+
     @Override
-    public void onStop( ) {
+    public void onStop() {
         super.onStop();
         registerAlarm();
 
@@ -338,14 +320,17 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         }
 
 
-        AlarmSaveRequest req = AlarmSaveRequest.builder(time).dates(dates)
-                .repetition(repetition)
-                .description(description)
-                .title(title)
-                .activePeriod(activePeriod)
+        AlarmSaveRequest req = AlarmSaveRequest.builder(time)
+                .dates(dates)
                 .daysOfWeek(daysOfWeek)
-                .vibe(true)
-                .sound(false)
+                .activePeriod(activePeriod)
+                .locationCondition(locationCondition)
+                .group(group.getUid())
+                .title(title)
+                .description(description)
+                .sound(sound)
+                .vibe(vibe)
+                .repetition(repetition)
                 .build();
 
 
@@ -357,48 +342,47 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
                 .flatMap(alarmService::register)
                 .publishOn(Schedulers.elastic())
                 .subscribeOn(Schedulers.elastic())
-                    .subscribe( );
+                .subscribe();
     }
-    
-    private void changeVisibleCategoryView(int position_oldView, int position_newView)
-    {
+
+    private void changeVisibleCategoryView(int position_oldView, int position_newView) {
         View oldView = Objects.requireNonNull(layoutManager.findViewByPosition(position_oldView));
         View newView = Objects.requireNonNull(layoutManager.findViewByPosition(position_newView));
-        
-        RelativeLayout oldHead      = oldView.findViewById(R.id.item_alarmAddCategory_relativeLayoutHead);
-        RelativeLayout newHead      = newView.findViewById(R.id.item_alarmAddCategory_relativeLayoutHead);
-        ImageView      oldPictogram = oldView.findViewById(R.id.item_alarmAddCategory_imageViewPictogram);
-        ImageView      newPictogram = newView.findViewById(R.id.item_alarmAddCategory_imageViewPictogram);
-        TextView       oldNameView  = oldView.findViewById(R.id.item_alarmAddCategory_textViewName);
-        TextView       newNameView  = newView.findViewById(R.id.item_alarmAddCategory_textViewName);
-        TextView       oldInfoView  = oldView.findViewById(R.id.item_alarmAddCategory_textViewInfo);
-        TextView       newInfoView  = newView.findViewById(R.id.item_alarmAddCategory_textViewInfo);
-        
-        int oldPadding = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_oldHeadPadding);
-        int newPadding = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_newHeadPadding);
+
+        RelativeLayout oldHead = oldView.findViewById(R.id.item_alarmAddCategory_relativeLayoutHead);
+        RelativeLayout newHead = newView.findViewById(R.id.item_alarmAddCategory_relativeLayoutHead);
+        ImageView oldPictogram = oldView.findViewById(R.id.item_alarmAddCategory_imageViewPictogram);
+        ImageView newPictogram = newView.findViewById(R.id.item_alarmAddCategory_imageViewPictogram);
+        TextView oldNameView = oldView.findViewById(R.id.item_alarmAddCategory_textViewName);
+        TextView newNameView = newView.findViewById(R.id.item_alarmAddCategory_textViewName);
+        TextView oldInfoView = oldView.findViewById(R.id.item_alarmAddCategory_textViewInfo);
+        TextView newInfoView = newView.findViewById(R.id.item_alarmAddCategory_textViewInfo);
+
+        int oldPadding = (int) getResources().getDimension(R.dimen.alarmAddFrag_oldHeadPadding);
+        int newPadding = (int) getResources().getDimension(R.dimen.alarmAddFrag_newHeadPadding);
         oldHead.setPadding(0, oldPadding, 0, oldPadding);
         newHead.setPadding(0, newPadding, 0, newPadding);
-        
-        int oldLength = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_oldPictogram);
-        int newLength = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_newPictogram);
-        oldPictogram.requestLayout( );
-        oldPictogram.getLayoutParams( ).width  = oldLength;
-        oldPictogram.getLayoutParams( ).height = oldLength;
+
+        int oldLength = (int) getResources().getDimension(R.dimen.alarmAddFrag_oldPictogram);
+        int newLength = (int) getResources().getDimension(R.dimen.alarmAddFrag_newPictogram);
+        oldPictogram.requestLayout();
+        oldPictogram.getLayoutParams().width = oldLength;
+        oldPictogram.getLayoutParams().height = oldLength;
         oldPictogram.setScaleType(ImageView.ScaleType.FIT_XY);
-        newPictogram.requestLayout( );
-        newPictogram.getLayoutParams( ).width  = newLength;
-        newPictogram.getLayoutParams( ).height = newLength;
+        newPictogram.requestLayout();
+        newPictogram.getLayoutParams().width = newLength;
+        newPictogram.getLayoutParams().height = newLength;
         newPictogram.setScaleType(ImageView.ScaleType.FIT_XY);
-        
-        int oldNameSize = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_oldCategoryName);
-        int newNameSize = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_newCategoryName);
-        int oldInfoSize = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_oldCategoryInfo);
-        int newInfoSize = (int)getResources( ).getDimension(R.dimen.alarmAddFrag_newCategoryInfo);
+
+        int oldNameSize = (int) getResources().getDimension(R.dimen.alarmAddFrag_oldCategoryName);
+        int newNameSize = (int) getResources().getDimension(R.dimen.alarmAddFrag_newCategoryName);
+        int oldInfoSize = (int) getResources().getDimension(R.dimen.alarmAddFrag_oldCategoryInfo);
+        int newInfoSize = (int) getResources().getDimension(R.dimen.alarmAddFrag_newCategoryInfo);
         oldNameView.setTextSize(TypedValue.COMPLEX_UNIT_PX, oldNameSize);
         newNameView.setTextSize(TypedValue.COMPLEX_UNIT_PX, newNameSize);
         oldInfoView.setTextSize(TypedValue.COMPLEX_UNIT_PX, oldInfoSize);
         newInfoView.setTextSize(TypedValue.COMPLEX_UNIT_PX, newInfoSize);
-        
+
         switch (position_oldView) {
             case TIME:
                 oldView.findViewById(R.id.alarmAdd_frameLayoutTime).setVisibility(View.GONE);
@@ -439,6 +423,6 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
                 newView.findViewById(R.id.alarmAdd_frameLayoutDetail).setVisibility(View.VISIBLE);
                 break;
         }
-        
+
     }
 }
