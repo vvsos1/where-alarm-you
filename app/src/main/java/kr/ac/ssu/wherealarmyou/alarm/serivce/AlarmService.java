@@ -271,6 +271,8 @@ public class AlarmService {
         String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Alarm alarm = request.toAlarm();
+        Log.d(TAG, "save : " + alarm.toString());
+
 
         return alarmRepository.save(alarm)
                 .flatMap(newAlarm -> {
@@ -337,13 +339,19 @@ public class AlarmService {
 
             String alarmUid = alarm.getUid();
 
-            URL url = new URL("https://where-alarm-you.run.goorm.io:80" + "/message/" + topic);
+            Log.d(TAG, "sendGroupAlarmRegisterMessage; alarmUid : " + alarmUid);
 
+            URL url = new URL("http://where-alarm-you.run.goorm.io/message/" + topic);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.setDefaultUseCaches(false);
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
             urlConnection.setRequestMethod("POST");
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
 
             writer.write(alarmUid);
+            writer.flush();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
@@ -352,6 +360,8 @@ public class AlarmService {
             while ((s = reader.readLine()) != null) {
                 sb.append(s);
             }
+            reader.close();
+            writer.close();
             return Integer.parseInt(sb.toString());
         }).subscribeOn(Schedulers.elastic());
     }

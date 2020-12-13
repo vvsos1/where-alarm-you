@@ -2,7 +2,14 @@ package kr.ac.ssu.wherealarmyou.view;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
 import kr.ac.ssu.wherealarmyou.group.Group;
@@ -13,11 +20,6 @@ import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.UserRepository;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
 import reactor.core.scheduler.Schedulers;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class DataManager
 {
@@ -54,9 +56,8 @@ public class DataManager
         
         UserRepository userRepository = UserRepository.getInstance( );
         userRepository.findUserByUid(currentUserUid)
-                      .map(User::getAlarms)
-                      .flatMapIterable(Map::keySet)
-                      .flatMap(alarmRepository::getAlarmByUid)
+                .map(User::getAlarms)
+                .flatMapIterable(Map::values)
                       .doOnNext(alarm -> instance.addAlarmLiveData(alarm))
                       .doOnComplete(this::resumeObserve)
                       .publishOn(Schedulers.elastic( ))

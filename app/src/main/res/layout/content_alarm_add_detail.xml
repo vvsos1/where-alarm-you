@@ -76,6 +76,7 @@
 
 
         <EditText
+            android:hint="간격 입력(분)"
             android:visibility="gone"
             android:inputType="numberDecimal"
             android:id="@+id/alarmAddDetail_editTextInterval"
@@ -85,7 +86,9 @@
             android:background="@drawable/button_number_background"
             android:layout_alignEnd="@id/alarmAddDetail_switchRepeat" />
 
+
         <EditText
+            android:hint="반복 횟수 입력"
             android:visibility="gone"
             android:inputType="numberDecimal"
             android:id="@+id/alarmAddDetail_editTextCount"

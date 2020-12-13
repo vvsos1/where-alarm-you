@@ -166,6 +166,7 @@ public class MainFrameActivity extends AppCompatActivity {
                 return userService.addAlarm(alarm).zipWith(alarmService.register(alarm)).then();
             }).subscribe();
         }
+        dataManager.updateAlarmLiveData();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package kr.ac.ssu.wherealarmyou.alarm;
 
 import com.google.firebase.database.Exclude;
-=
 
 import java.io.Serializable;
 import java.util.Map;
@@ -33,7 +32,6 @@ public class LocationCondition implements Serializable {
     @Getter
     Map<String, Boolean> exclude;
 
-    @Exclude
     public LocationCondition(Map map, boolean isInclude) {
         if (isInclude)
             include = map;

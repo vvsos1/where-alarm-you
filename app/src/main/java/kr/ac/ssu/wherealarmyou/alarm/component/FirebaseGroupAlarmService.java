@@ -48,7 +48,7 @@ public class FirebaseGroupAlarmService extends FirebaseMessagingService {
         Map<String, String> dataMap = remoteMessage.getData();
 
         String topic = dataMap.get("topic");
-        String alarmUid = dataMap.get("alarmUid");
+        String alarmUid = dataMap.get("alarmUid").replace("=", "");
 
         Log.d(TAG, "message received, topic : " + topic + ", alarmUid : " + alarmUid);
 
