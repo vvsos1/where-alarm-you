@@ -4,8 +4,11 @@ import java.io.Serializable;
 import java.util.Map;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
@@ -13,13 +16,17 @@ import lombok.experimental.FieldDefaults;
 @SuppressWarnings("serial")
 @ToString
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class LocationCondition implements Serializable {
     // Key : Location Uid
+    @Singular("include")
     Map<String, Boolean> include;
 
     // Key : Location Uid
+    @Singular("exclude")
     Map<String, Boolean> exclude;
 
     public boolean isInclude() {
