@@ -55,7 +55,7 @@ public class AlarmAddGroupFragment extends Fragment implements OnBackPressedList
         alarmAddGroupViewModel = new ViewModelProvider(requireActivity()).get(AlarmAddGroupViewModel.class);
 
         // Content View Setting - Group Recycler View (그룹 리스트)
-        RecyclerView recyclerView = contentView.findViewById(R.id.alarmAddLocation_recyclerView);
+        RecyclerView recyclerView = contentView.findViewById(R.id.alarmAddGroup_recyclerView);
         GroupItemAdapter groupItemAdapter = new GroupItemAdapter(getContext(), adminGroups);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         RecyclerViewDecoration recyclerViewDecoration = new RecyclerViewDecoration(30);
