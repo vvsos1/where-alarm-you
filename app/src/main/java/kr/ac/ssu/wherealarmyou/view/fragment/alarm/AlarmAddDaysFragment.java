@@ -307,6 +307,7 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
         else if (activePeriod.getEnd() != null)
             textPeriod.setText("활성 기간 : " + " ~ " + activePeriod.getEnd());
 
+        alarmAddDaysViewModel.setInfoString(makeInfoString());
         toParent.put("activePeriod", activePeriod);
         toParent.put("daysOfWeek", (Serializable) daysOfWeek);
         toParent.put("dates", dates);

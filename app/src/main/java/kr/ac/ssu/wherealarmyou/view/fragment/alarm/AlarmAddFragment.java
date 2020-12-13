@@ -109,6 +109,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         title = "";
         description = "";
         time = new Time();
+        group = new Group();
         repetition = new Repetition(2);
 
 
@@ -224,6 +225,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             AlarmAddViewModel<Group> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddGroupViewModel.class);
             viewModel.getLiveData().observe(getViewLifecycleOwner(), group -> {
                 if (group != null) {
+                    Log.d("AlaGround", group.toString());
                     this.group = group;
                     setInfo(group.getName(), category);
                 }
@@ -316,6 +318,8 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
 
 
         AlarmSaveRequest req = AlarmSaveRequest.builder(time).dates(dates)
+                .locationCondition(null)
+                .group(group.getUid())
                 .repetition(repetition)
                 .description(description)
                 .title(title)
