@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Random;
 
@@ -29,6 +31,7 @@ public class AlarmActivity extends AppCompatActivity {
     Intent toRegisterReceiver;
     Handler handler;
     
+    TextView currentData;
     TextView currentTime;
     Button button_reAlarm;
     Button button_cancel;
@@ -110,6 +113,8 @@ public class AlarmActivity extends AppCompatActivity {
             @Override
             public void run() {
                 LocalTime now = LocalTime.now();
+                LocalDate localDate = LocalDate.now( );
+                currentData.setText(localDate.getMonthValue() + "월 " + localDate.getDayOfMonth() + "일");
                 currentTime.setText(now.getHour() + "시 " + now.getMinute() + "분 " + now.getSecond() + "초");
 //                if(second > 5 ){
 //                    if(second % 2 == 0){

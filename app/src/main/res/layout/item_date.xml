@@ -2,21 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp">
 
     <TextView
         android:id="@+id/item_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_weight="1"
-        android:gravity="center"
+        android:paddingStart="20dp"
+        android:gravity="left"
         android:text="2020-11-11"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:textColor="#000"/>
 
     <Button
         android:id="@+id/item_date_cancel"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/ic_baseline_close_24" />
-
 </LinearLayout>

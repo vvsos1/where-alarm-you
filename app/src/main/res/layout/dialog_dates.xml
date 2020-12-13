@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -7,45 +8,61 @@
     android:paddingTop="20dp"
     android:paddingBottom="20dp">
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:text="날짜 목록"
-            android:textSize="20dp" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/button_dates_add"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="right"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/ic_add"
-            android:gravity="center_vertical" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:paddingLeft="20dp"
+                android:text="날짜 목록"
+                android:textColor="#000"
+                android:textSize="22sp" />
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/alarmAddTime_lottieAnimationViewCalendar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="calendar_dialog.json"
+                app:lottie_loop="true" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/button_dates_add"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/ic_add"
+                android:gravity="center_vertical" />
+        </LinearLayout>
     </FrameLayout>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dialog_dates_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:layout_alignParentBottom="true" />
-
+        android:layout_alignParentBottom="true"
+        android:overScrollMode="never"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </LinearLayout>
+        android:layout_height="wrap_content"></LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -55,27 +72,29 @@
 
         <TextView
             android:id="@+id/dialog_dates_cancel_button"
-            android:layout_width="0dp"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/edge"
             android:gravity="center"
             android:text="취소"
-            android:textColor="#933"
-            android:textSize="20dp" />
+            android:textColor="@color/colorWarningLight"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.05"
+            android:background="#777" />
 
         <TextView
             android:id="@+id/dialog_dates_accept_button"
-            android:layout_width="0dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:background="@drawable/edge"
             android:gravity="center"
             android:text="확인"
-            android:textColor="#339"
-            android:textSize="20dp" />
-
+            android:textColor="@color/colorAccent"
+            android:textSize="17sp" />
     </LinearLayout>
-
-
 </LinearLayout>

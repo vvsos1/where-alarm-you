@@ -17,8 +17,8 @@ import reactor.util.annotation.NonNull;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Group {
-    private static final String ROLE_ADMIN = "ADMIN";
-    private static final String ROLE_DEFAULT = "USER";
+    public static final String ROLE_ADMIN = "ADMIN";
+    public static final String ROLE_DEFAULT = "USER";
 
     String uid;
 
@@ -30,6 +30,8 @@ public class Group {
 
     // 소개글
     String description;
+    
+    String adminName;
 
     Map<String, Boolean> alarms = new ArrayMap<>( );
 
@@ -40,11 +42,12 @@ public class Group {
     Map<String, Boolean> waitingUsers = new ArrayMap<>();
 
     @Builder
-    public Group(String adminUid, String name, Icon icon, String description) {
+    public Group(String adminUid, String name, Icon icon, String description,String adminName) {
         this.setAdmin(adminUid);
         this.name = name;
         this.icon = icon;
         this.description = description;
+        this.adminName = adminName;
     }
 
     // 관리자 설정

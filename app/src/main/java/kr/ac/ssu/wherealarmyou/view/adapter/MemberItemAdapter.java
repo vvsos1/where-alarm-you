@@ -7,18 +7,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.user.User;
 import kr.ac.ssu.wherealarmyou.user.service.UserService;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MemberItemAdapter extends RecyclerView.Adapter<MemberItemAdapter.MemberViewHolder>
 {
@@ -45,20 +43,21 @@ public class MemberItemAdapter extends RecyclerView.Adapter<MemberItemAdapter.Me
     }
     
     @Override
-    public void onBindViewHolder(@NonNull MemberViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MemberViewHolder holder, int position)
+    {
         String memberUid = members.get(position);
-
+        
         //TODO: 유저객체 생성자에 맞게 변경
         AtomicReference<User> user = new AtomicReference<>(null);
-
-        UserService userService = UserService.getInstance();
+        
+        UserService userService = UserService.getInstance( );
         userService.findUser(memberUid)
-                .doOnSuccess(user_ -> {
-                    user.set(user_);
-                    holder.textViewName.setText(user.get().getName());
-                })
-                .subscribe();
-
+                   .doOnSuccess(user_ -> {
+                       user.set(user_);
+                       holder.textViewName.setText(user.get( ).getName( ));
+                   })
+                   .subscribe( );
+        
         LiveData<Boolean> booleanLiveData = showMemberManageButton;
         booleanLiveData.observeForever(aBoolean -> {
             if (showMemberManageButton.getValue( ) == Boolean.TRUE) {

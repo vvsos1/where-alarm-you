@@ -79,24 +79,25 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
         drawable.setColor(Color.parseColor(group.getIcon( ).getColorHex( )));
         buttonIcon.setText(group.getIcon( ).getText( ));
         textViewName.setText(group.getName( ));
-        textViewAdmin.setText("(미구현)");
+        textViewAdmin.setText(group.getAdminName( ));
         textViewIntroduction.setText(group.getDescription( ));
         
         textViewGroupExit.setOnClickListener(this);
         
-        List<String> members = Lists.newArrayList(group.getMembers( ).keySet( ));
-        List<String> admin   = new ArrayList<>( );
-        List<String> normal  = new ArrayList<>( );
+        List<String> members    = Lists.newArrayList(group.getMembers( ).keySet( ));
+        List<String> adminUid   = new ArrayList<>( );
+        List<String> normalsUid = new ArrayList<>( );
         for (String member : members) {
             String grade = Objects.requireNonNull(group.getMembers( ).get(member));
             if (grade.equals("ADMIN")) {
-                admin.add(member);
+                adminUid.add(member);
             }
             else if (grade.equals("USER")) {
-                normal.add(member);
+                normalsUid.add(member);
             }
         }
         
+        // Content View Setting - Recycler View ADMIN & MEMBER
         RecyclerView        recyclerViewAlarm   = contentView.findViewById(R.id.groupInfo_recyclerViewAlarm);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext( ));
         alarmItemAdapter = new AlarmItemAdapter(getContext( ), groupAlarms);
@@ -106,8 +107,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
         
         RecyclerView           recyclerViewAdmin      = contentView.findViewById(R.id.groupInfo_recyclerViewAdmin);
         RecyclerView           recyclerViewNormal     = contentView.findViewById(R.id.groupInfo_recyclerViewNormal);
-        MemberItemAdapter      adminRecyclerAdapter   = new MemberItemAdapter(getContext( ), admin);
-        MemberItemAdapter      normalRecyclerAdapter  = new MemberItemAdapter(getContext( ), normal);
+        MemberItemAdapter      adminRecyclerAdapter   = new MemberItemAdapter(getContext( ), adminUid);
+        MemberItemAdapter      normalRecyclerAdapter  = new MemberItemAdapter(getContext( ), normalsUid);
         LinearLayoutManager    linearLayoutManagerA   = new LinearLayoutManager(getContext( ));
         LinearLayoutManager    linearLayoutManagerN   = new LinearLayoutManager(getContext( ));
         RecyclerViewDecoration recyclerViewDecoration = new RecyclerViewDecoration(3);
@@ -129,6 +130,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
             textViewAlarmAdd.setVisibility(View.VISIBLE);
             linearLayoutAdmin.setVisibility(View.VISIBLE);
             textViewManageMember.setVisibility(View.VISIBLE);
+            textViewGroupExit.setVisibility(View.INVISIBLE);
             
             textViewAlarmAdd.setOnClickListener(this);
             textViewGroupDelete.setOnClickListener(this);
@@ -137,13 +139,13 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
             textViewManageMember.setOnClickListener(view -> normalRecyclerAdapter.bind(Boolean.TRUE));
             
             if (group.getWaitingUsers( ) != null) {
-                List<String> waiter = Lists.newArrayList(group.getWaitingUsers( ).keySet( ));
+                List<String> waitersUid = Lists.newArrayList(group.getWaitingUsers( ).keySet( ));
                 
                 LinearLayout linearLayoutWaiter = contentView.findViewById(R.id.groupInfo_linearLayoutWaiter);
                 linearLayoutWaiter.setVisibility(View.VISIBLE);
                 
                 RecyclerView        recyclerViewWaiter    = contentView.findViewById(R.id.groupInfo_recyclerViewWaiter);
-                MemberItemAdapter   waiterRecyclerAdapter = new MemberItemAdapter(getContext( ), waiter);
+                MemberItemAdapter   waiterRecyclerAdapter = new MemberItemAdapter(getContext( ), waitersUid);
                 LinearLayoutManager linearLayoutManagerW  = new LinearLayoutManager(getContext( ));
                 
                 waiterRecyclerAdapter.setOnItemClickListener((view, userUid) -> {
@@ -151,8 +153,16 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener
                     if (view.getId( ) == R.id.item_name_and_button_buttonCheck) {
                         groupService.acceptWaitingUser(group.getUid( ), userUid)
                                     .doOnSuccess(unused -> {
-                                        waiterRecyclerAdapter.notifyDataSetChanged( );
-                                        normalRecyclerAdapter.notifyDataSetChanged( );
+                                        int index = -1;
+                                        for (String waiter : waitersUid) {
+                                            if (userUid.equals(waiter)) {
+                                                index = waitersUid.indexOf(waiter);
+                                                waitersUid.remove(index);
+                                            }
+                                        }
+                                        normalsUid.add(userUid);
+                                        waiterRecyclerAdapter.notifyItemRemoved(index);
+                                        normalRecyclerAdapter.notifyItemInserted(normalRecyclerAdapter.getItemCount());
                                     })
                                     .publishOn(Schedulers.elastic( ))
                                     .subscribeOn(Schedulers.elastic( ))

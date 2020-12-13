@@ -235,10 +235,11 @@ public class GroupMakeFragment extends Fragment implements View.OnClickListener
             String iconText   = editTextIconText.getText( ).toString( ).trim( );
             String groupInfo  = editTextGroupInfo.getText( ).toString( ).trim( );
             String groupAdmin = FirebaseAuth.getInstance( ).getUid( );
+            String adminName  = Objects.requireNonNull(FirebaseAuth.getInstance( ).getCurrentUser( )).getDisplayName( );
             
             if (fragmentMode == Mode.GROUP_MAKE) {
                 GroupCreateRequest request = new GroupCreateRequest(groupName, iconColor, iconText,
-                        groupInfo, groupAdmin);
+                        groupInfo, groupAdmin, adminName);
                 makeGroup(request);
             }
             else if (fragmentMode == Mode.GROUP_EDIT) {

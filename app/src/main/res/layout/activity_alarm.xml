@@ -35,7 +35,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:textColor="#000"
-                android:textSize="40sp"
+                android:textSize="30sp"
                 android:text="12시 30분 12초"/>
         </LinearLayout>
 

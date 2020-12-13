@@ -65,7 +65,7 @@ public class SetActivePeriodDialog extends Dialog implements View.OnClickListene
 
 
             Toast.makeText(getContext(), year + "-" + (month + 1) + "-" + dayOfMonth, Toast.LENGTH_SHORT).show();
-            String string = year + "-" + (month + 1) + "-" + dayOfMonth;
+            String string = year + "년 " + (month + 1) + "월 "  + dayOfMonth + "일 ";
 
             if (clickView == startBtn) {
                 activePeriod = new Period(new Date(dayOfMonth, (month + 1), year), activePeriod.getEnd());

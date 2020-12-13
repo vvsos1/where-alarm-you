@@ -15,6 +15,8 @@ public class GroupCreateRequest {
     String description;
 
     String adminUid;
+    
+    String adminName;
 
     public Group toGroup() {
         return Group.builder()
@@ -22,6 +24,7 @@ public class GroupCreateRequest {
                 .icon(new Icon(iconColorHex, iconText))
                 .description(description)
                 .adminUid(adminUid)
+                    .adminName(adminName)
                 .build();
     }
 }

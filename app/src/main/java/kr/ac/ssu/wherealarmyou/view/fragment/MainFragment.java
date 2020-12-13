@@ -47,10 +47,7 @@ public class MainFragment extends Fragment implements View.OnClickListener
     private final AtomicReference<IconItemAdapter> groupIconAdapter    = new AtomicReference<>( );
     private final AtomicReference<IconItemAdapter> locationIconAdapter = new AtomicReference<>( );
     
-    private final MutableLiveData<List<Alarm>>    filteredAlarms    = new MutableLiveData<>(new ArrayList<>( ));
-    private final MutableLiveData<List<Location>> selectedLocations = new MutableLiveData<>(new ArrayList<>( ));
-    private final MutableLiveData<List<Group>>
-    
+    private final MutableLiveData<List<Alarm>> filteredAlarms = new MutableLiveData<>(new ArrayList<>( ));
     
     private List<Alarm>       alarms;
     private MainFrameActivity mainFrameActivity;
@@ -311,12 +308,10 @@ public class MainFragment extends Fragment implements View.OnClickListener
                 fabsMenu.collapse( );
                 break;
             case (R.id.main_buttonRefreshLocation):
+            case (R.id.main_buttonRefreshGroup):
                 locationIconAdapter.get( ).iconSelected(Boolean.FALSE, 0);
                 buttonRefreshLocation.setVisibility(View.INVISIBLE);
                 textViewLocationInfo.setText("");
-                resetFilter( );
-                break;
-            case (R.id.main_buttonRefreshGroup):
                 groupIconAdapter.get( ).iconSelected(Boolean.FALSE, 0);
                 buttonRefreshGroup.setVisibility(View.INVISIBLE);
                 textViewGroupInfo.setText("");

@@ -112,10 +112,12 @@ public class LocationAddFragment extends Fragment {
         iconRv = contentView.findViewById(R.id.rv_location_color);
         currentLocationImageView = contentView.findViewById(R.id.iv_current_location);
         rangeSeekBar = contentView.findViewById(R.id.sb_range);
+        TextView textViewRangeValue = contentView.findViewById(R.id.textViewRangeValue);
         rangeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 setRangeOverlay(progress);
+                textViewRangeValue.setText(String.valueOf(progress) + "m");
             }
 
             @Override
