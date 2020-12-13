@@ -167,6 +167,8 @@ public class MainFrameActivity extends AppCompatActivity {
             }).subscribe();
         }
         dataManager.updateAlarmLiveData();
+        dataManager.updateGroupLiveData();
+        dataManager.updateLocationLiveData();
     }
 
     @Override

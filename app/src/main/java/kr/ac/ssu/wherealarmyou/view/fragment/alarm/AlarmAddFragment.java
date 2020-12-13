@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,8 +42,8 @@ import kr.ac.ssu.wherealarmyou.view.adapter.AlarmCategoryItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDetailViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddGroupViewModel;
-import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddLocationViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddMemoViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddViewModel;
@@ -250,21 +249,28 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener {
                     viewModel.reset();
                 }
             });
-        } else if (category == LOCATION) {
-            AlarmAddViewModel<Map> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddLocationViewModel.class);
-            viewModel.getInfoString().observe(getViewLifecycleOwner(), s -> {
-                setInfo(s, category);
-            });
+        } else if (category == DETAIL) {
+            AlarmAddViewModel<Map<String, Integer>> viewModel =
+                    new ViewModelProvider(requireActivity()).get(AlarmAddDetailViewModel.class);
             viewModel.getLiveData().observe(getViewLifecycleOwner(), map -> {
-                if (map == null)
+                if (map == null) {
                     return;
-
-                if (map.get("uid") instanceof String) {
-                    if (map.get("isInclude") instanceof Boolean) {
-                        Log.d("Alarm", "please");
-                        HashMap<String, Boolean> hashMap = new HashMap<>();
-                        hashMap.put((String) map.get("uid"), true);
-                        this.locationCondition = new LocationCondition(hashMap, (boolean) map.get("isInclude"));
+                }
+                for (String key : map.keySet()) {
+                    switch (key) {
+                        case "sound":
+                            this.sound = (map.get(key) == AlarmAddDetailViewModel.Switch.On.ordinal());
+                            break;
+                        case "vibration":
+                            this.vibe = (map.get(key) == AlarmAddDetailViewModel.Switch.On.ordinal());
+                            break;
+                        case "repeat":
+                            if (map.get(key) == AlarmAddDetailViewModel.Switch.On.ordinal()) {
+                                this.repetition = new Repetition(map.get("repeatCount"), map.get("repeatInterval"));
+                            } else {
+                                this.repetition = new Repetition(1);
+                            }
+                            break;
                     }
                 }
 
