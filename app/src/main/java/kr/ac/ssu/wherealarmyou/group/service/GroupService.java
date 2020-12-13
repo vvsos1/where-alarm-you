@@ -1,10 +1,13 @@
 package kr.ac.ssu.wherealarmyou.group.service;
 
 import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Map;
 
+import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
 import kr.ac.ssu.wherealarmyou.common.Icon;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.GroupRepository;
@@ -22,6 +25,7 @@ public class GroupService {
     private GroupRepository groupRepository;
     private UserRepository userRepository;
     private UserService userService;
+    private AlarmService alarmService;
 
     public GroupService(GroupRepository groupRepository, UserRepository userRepository, UserService userService) {
         this.groupRepository = groupRepository;
@@ -50,6 +54,7 @@ public class GroupService {
         String adminUid = group.getMembers().keySet().iterator().next();
         return groupRepository.save(group)
                 .map(Group::getUid)
+                .doOnNext(groupUid -> FirebaseMessaging.getInstance().subscribeToTopic(groupUid).addOnSuccessListener(aVoid -> Log.d("GroupService", groupUid + "구독 완료")))
                 .flatMap(groupUid -> userService.addGroup(adminUid, groupUid))
                 .thenReturn(group);
     }
@@ -77,7 +82,7 @@ public class GroupService {
     public Mono<Group> findGroup(String groupUid) {
         return groupRepository.findGroupByUid(groupUid);
     }
-    
+
     public Flux<Group> findGroupsByName(String groupName) {
         return groupRepository.findGroupsByName(groupName);
     }

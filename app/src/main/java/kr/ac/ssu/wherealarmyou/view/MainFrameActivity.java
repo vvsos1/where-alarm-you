@@ -3,6 +3,7 @@ package kr.ac.ssu.wherealarmyou.view;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -10,17 +11,23 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.Objects;
+
 import kr.ac.ssu.wherealarmyou.R;
+import kr.ac.ssu.wherealarmyou.group.Group;
+import kr.ac.ssu.wherealarmyou.group.service.GroupService;
 import kr.ac.ssu.wherealarmyou.view.fragment.MainFragment;
 import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 import kr.ac.ssu.wherealarmyou.view.login.SetUserInfoActivity;
-
-import java.util.Objects;
 
 public class MainFrameActivity extends AppCompatActivity
 {
@@ -124,16 +131,19 @@ public class MainFrameActivity extends AppCompatActivity
                 animation.setDuration(500);
                 blind.setAnimation(animation);
                 blind.setVisibility(View.GONE);
-            }
-            else {
-                if (blind.getVisibility( ) != View.VISIBLE) {
+            } else {
+                if (blind.getVisibility() != View.VISIBLE) {
                     Animation animation = new AlphaAnimation(0, 1);
-                    animation.setInterpolator(new DecelerateInterpolator( ));
+                    animation.setInterpolator(new DecelerateInterpolator());
                     animation.setDuration(500);
                     blind.setAnimation(animation);
                 }
                 blind.setVisibility(View.VISIBLE);
             }
+        });
+
+        GroupService.getInstance().getJoinedGroup().map(Group::getUid).subscribe(s -> {
+            FirebaseMessaging.getInstance().subscribeToTopic(s).addOnSuccessListener(aVoid -> Log.d("MainFrameActivity", s + "구독 완료"));
         });
     }
     

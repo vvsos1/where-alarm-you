@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,6 +19,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher_background" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
+        <!-- Firebase Cloud Messaging -->
+        <service
+            android:name=".alarm.component.FirebaseGroupAlarmService"
+            android:directBootAware="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <service
             android:name=".alarm.component.AlarmNotifyService"
             android:enabled="true"
@@ -59,7 +80,13 @@
         <activity android:name=".view.login.SetUserInfoActivity" />
         <activity
             android:name=".view.MainFrameActivity"
-            android:screenOrientation="portrait" /> <!-- Naver Mobile Dynamic Map SDK를 위한 설정 -->
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name=".MainFrameActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!-- Naver Mobile Dynamic Map SDK를 위한 설정 -->
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/naver_cloud_platform_client_id" />

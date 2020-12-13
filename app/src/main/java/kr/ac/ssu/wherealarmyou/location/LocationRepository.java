@@ -55,7 +55,7 @@ public class LocationRepository
             locationsRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    locationMonoSink.success(snapshot.getValue(Location.class));
+                    locationMonoSink.success(Location.fromSnapShot(snapshot));
                 }
 
                 @Override

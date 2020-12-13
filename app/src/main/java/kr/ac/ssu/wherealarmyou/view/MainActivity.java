@@ -11,15 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.List;
-import java.util.Set;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import kr.ac.ssu.wherealarmyou.R;
-import kr.ac.ssu.wherealarmyou.alarm.Alarm;
 import kr.ac.ssu.wherealarmyou.alarm.AlarmRepository;
-import kr.ac.ssu.wherealarmyou.alarm.DatesAlarm;
-import kr.ac.ssu.wherealarmyou.alarm.LocationCondition;
 import kr.ac.ssu.wherealarmyou.alarm.serivce.AlarmService;
 import kr.ac.ssu.wherealarmyou.location.LocationRepository;
 import kr.ac.ssu.wherealarmyou.location.service.LocationService;
@@ -77,31 +72,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //        alarmService.save(req).subscribe();
 
-        Alarm alarm1 = DatesAlarm.builder()
-                .title("title1")
-                .locationCondition(LocationCondition.builder().include("location1", true).include("location2", true).build())
-                .groupUid("group1")
-                .build();
-
-        Alarm alarm2 = DatesAlarm.builder()
-                .title("title2")
-                .locationCondition(LocationCondition.builder()
-                        .include("location2", true)
-                        .include("location3", true)
-                        .build())
-                .groupUid("group2").build();
-
-        Alarm alarm3 = DatesAlarm.builder()
-                .title("title3")
-                .locationCondition(LocationCondition.builder()
-                        .exclude("location2", true)
-                        .build())
-                .groupUid("group1")
-                .build();
-
-        List<Alarm> list = List.of(alarm1, alarm2, alarm3);
-
-        Alarm.filterAlarms(list, Set.of("group1", "group2"), Set.of("location3")).forEach(alarm -> Log.d(TAG, "alarm title : " + alarm.getTitle()));
+        FirebaseMessaging.getInstance().subscribeToTopic("test").addOnSuccessListener(aVoid -> Log.d(TAG, "test 토픽 구독 완료"));
 
     }
 

@@ -14,11 +14,12 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserLocation extends Location {
+    public static final String TYPE = "user";
     String ownerUid;
 
     @Builder
     public UserLocation(String title, Address address, Integer range, Icon icon, String ownerUid) {
-        super(title, address, range, icon);
+        super(TYPE, title, address, range, icon);
         this.ownerUid = ownerUid;
     }
 }
