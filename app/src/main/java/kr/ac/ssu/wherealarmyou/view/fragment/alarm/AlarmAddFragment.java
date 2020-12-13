@@ -41,11 +41,7 @@ import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.adapter.AlarmCategoryItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
-import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
-import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddGroupViewModel;
-import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddMemoViewModel;
-import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddTimeViewModel;
-import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.*;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.annotation.Nullable;
 
@@ -252,6 +248,36 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             viewModel.onComplete().observe(getViewLifecycleOwner(), isComplete -> {
                 if (isComplete) {
                     changeCategory(currentVisibleCategoryPosition.get() + 1);
+                    viewModel.reset();
+                }
+            });
+        }
+        else if (category == DETAIL) {
+            AlarmAddViewModel<Map<String, Integer>> viewModel =
+                    new ViewModelProvider(requireActivity()).get(AlarmAddDetailViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), map -> {
+                if (map == null) { return; }
+                for (String key : map.keySet( )) {
+                    switch (key) {
+                        case "sound":
+                            this.sound = (map.get(key) == AlarmAddDetailViewModel.Switch.On.ordinal( ));
+                            break;
+                        case "vibration":
+                            this.vibe = (map.get(key) == AlarmAddDetailViewModel.Switch.On.ordinal( ));
+                            break;
+                        case "repeat":
+                            if (map.get(key) == AlarmAddDetailViewModel.Switch.On.ordinal( )) {
+                                this.repetition = new Repetition(map.get("repeatCount"), map.get("repeatInterval"));
+                            }
+                            else {
+                                this.repetition = new Repetition(1);
+                            }
+                            break;
+                    }
+                }
+            });
+            viewModel.onComplete().observe(getViewLifecycleOwner(), isComplete -> {
+                if (isComplete) {
                     viewModel.reset();
                 }
             });
