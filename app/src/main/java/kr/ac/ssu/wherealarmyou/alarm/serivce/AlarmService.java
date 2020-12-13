@@ -14,8 +14,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -337,10 +337,10 @@ public class AlarmService {
 
             String alarmUid = alarm.getUid();
 
-            URL url = new URL("http://192.168.0.5:8080" + "/message/" + topic);
+            URL url = new URL("https://where-alarm-you.run.goorm.io:80" + "/message/" + topic);
 
-            URLConnection urlConnection = url.openConnection();
-
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("POST");
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
 
             writer.write(alarmUid);
