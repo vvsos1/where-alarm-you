@@ -43,6 +43,7 @@ import kr.ac.ssu.wherealarmyou.view.custom_view.AlarmAddFrameItem;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddDaysViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddGroupViewModel;
+import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddLocationsViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddMemoViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddTimeViewModel;
 import kr.ac.ssu.wherealarmyou.view.viewmodel.AlarmAddViewModel;
@@ -167,7 +168,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             fragmentTransaction.replace(R.id.alarmAdd_frameLayoutWeek, new AlarmAddDaysFragment( ));
         }
         else if (category == LOCATION) {
-//            fragmentTransaction.add(R.id.alarmAdd_frameLayoutLocation, new AlarmAddLocationFragment( ));
+            fragmentTransaction.add(R.id.alarmAdd_frameLayoutLocation, new AlarmAddLocationsFragment());
         }
         else if (category == GROUP) {
             fragmentTransaction.replace(R.id.alarmAdd_frameLayoutGroup, new AlarmAddGroupFragment( ));
@@ -260,21 +261,18 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
                     viewModel.reset();
                 }
             });
+        } else if (category == LOCATION) {
+            AlarmAddViewModel<LocationCondition> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddLocationsViewModel.class);
+            viewModel.getInfoString().observe(getViewLifecycleOwner(), s -> {
+                setInfo(s, category);
+            });
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), locationCondition -> {
+                this.locationCondition = locationCondition;
+            });
         }
     }
     
-    private AlarmAddViewModel<?> getViewModel(int category)
-    {
-        if (category == TIME) {
-            return new ViewModelProvider(requireActivity()).get(AlarmAddTimeViewModel.class);
-        } else if (category == WEEK) {
-            return new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
-        } else if (category == MEMO) {
-            return new ViewModelProvider(requireActivity()).get(AlarmAddMemoViewModel.class);
-        }
-        return null;
-    }
-    
+
     private void setInfo(String string, int position)
     {
         if (string == null)
@@ -317,16 +315,17 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         }
 
 
-        AlarmSaveRequest req = AlarmSaveRequest.builder(time).dates(dates)
+        AlarmSaveRequest req = AlarmSaveRequest.builder(time)
+                .dates(dates)
+                .daysOfWeek(daysOfWeek)
+                .activePeriod(activePeriod)
                 .locationCondition(null)
                 .group(group.getUid())
-                .repetition(repetition)
-                .description(description)
                 .title(title)
-                .activePeriod(activePeriod)
-                .daysOfWeek(daysOfWeek)
-                .vibe(true)
-                .sound(false)
+                .description(description)
+                .sound(sound)
+                .vibe(vibe)
+                .repetition(repetition)
                 .build();
 
 

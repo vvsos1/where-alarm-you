@@ -8,12 +8,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/alarmAddLocation_buttonAddLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="장소 추가 버튼" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/alarmAddLocation_recyclerView"
             android:layout_width="match_parent"
@@ -64,7 +58,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
                     android:text="선택 장소일 때"
-                    android:textSize="17sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <View
@@ -104,6 +98,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
             android:text="알람이 울림"
+            android:layout_marginBottom="40dp"
             android:textSize="20sp" />
     </LinearLayout>
 </FrameLayout>

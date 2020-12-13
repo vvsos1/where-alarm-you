@@ -4,11 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/alarmAddGroup_buttonAddGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="그룹 추가 버튼" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/alarmAddGroup_recyclerView"

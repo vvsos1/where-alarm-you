@@ -16,17 +16,51 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class LocationCondition implements Serializable {
+    boolean isInclude;
     // Key : Location Uid
     Map<String, Boolean> include;
 
     // Key : Location Uid
     Map<String, Boolean> exclude;
 
+    public LocationCondition(Map map, boolean isInclude) {
+        this.isInclude = isInclude;
+        if (isInclude)
+            include = map;
+        else
+            exclude = map;
+    }
+
     public boolean isInclude() {
-        if (include != null)
+        if (isInclude)
             return true;
 
         return false;
     }
+
+    public void addLocation(String uid) {
+        if (isInclude)
+            include.put(uid, true);
+        else
+            exclude.put(uid, true);
+
+    }
+
+    public void deleteLocation(String uid) {
+        if (isInclude)
+            if (include.containsKey(uid))
+                include.remove(uid);
+            else if (exclude.containsKey(uid))
+                exclude.remove(uid);
+
+    }
+
+    public Map getMap() {
+        if (isInclude)
+            return include;
+        else
+            return exclude;
+    }
+
 
 }
