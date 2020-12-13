@@ -6,18 +6,6 @@
     android:orientation="vertical"
     android:padding="30dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/button_save_memo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:background="#0000"
-            android:text="저장" />
-    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
+        android:singleLine="true"
         android:hint="제목 입력"
         android:textSize="15dp" />
 
@@ -49,6 +38,7 @@
         android:id="@+id/edit_text_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:singleLine="true"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:hint="내용 입력"

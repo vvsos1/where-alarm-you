@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
     List<Button> buttons;
     View setDays;
     View setDates;
-    List<Date> dates;
+    ArrayList<Date> dates;
     Period activePeriod;
     boolean isSelected[];
     int daysSum;
@@ -53,6 +54,7 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
     private Drawable transparentBackground;
     String toViewModel;
     private AlarmAddDaysViewModel alarmAddDaysViewModel;
+    private Map<String, Serializable> toParent;
 
     public static Fragment getInstance() {
         return new AlarmAddDaysFragment();
@@ -69,6 +71,8 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
 
         //todo : 알람 애드 프래그먼트에서 정보를 받아 설정할 예정
         isSelected = new boolean[]{false, false, false, false, false, false, false};
+        HashMap<String, Serializable> initData = new HashMap<String, Serializable>();
+        toParent = new HashMap<>();
         dates = new ArrayList<>();
         daysOfWeek = new HashMap<>();
         activePeriod = null;
@@ -252,9 +256,12 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
 
         }
 
+
+        toParent.put("activePeriod", activePeriod);
+        toParent.put("daysOfWeek", (Serializable) daysOfWeek);
+        toParent.put("dates", dates);
+        alarmAddDaysViewModel.setLiveData(new HashMap(toParent));
         alarmAddDaysViewModel.setInfoString(makeInfoString());
-        alarmAddDaysViewModel.setDaysOfWeek(daysOfWeek);
-        alarmAddDaysViewModel.setLiveData(daysSum);
 
     }
 
@@ -280,6 +287,14 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
     public void acceptPeriod(Period activePeriod) {
         this.activePeriod = activePeriod;
 
+        if (daysSum == 1) {
+            daysSum = 510510;
+            for (int i = 0; i < isSelected.length; i++) {
+                isSelected[i] = true;
+                buttons.get(i).setBackground(selectedMark);
+            }
+
+        }
         textPeriod.setText("활성 기간 : 기간 설정 없음");
 
         alarmAddDaysViewModel.setActivePeriod(activePeriod);
@@ -292,10 +307,15 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
         else if (activePeriod.getEnd() != null)
             textPeriod.setText("활성 기간 : " + " ~ " + activePeriod.getEnd());
 
+        toParent.put("activePeriod", activePeriod);
+        toParent.put("daysOfWeek", (Serializable) daysOfWeek);
+        toParent.put("dates", dates);
+        alarmAddDaysViewModel.setLiveData(new HashMap(toParent));
+
     }
 
     @Override
-    public void acceptDates(List<Date> dates) {
+    public void acceptDates(ArrayList<Date> dates) {
         this.dates = dates;
         textPeriod.setText("활성 기간 : 기간 설정 없음");
         daysSum = 1;
@@ -304,7 +324,10 @@ public class AlarmAddDaysFragment extends Fragment implements View.OnClickListen
             isSelected[i] = false;
             buttons.get(i).setBackground(transparentBackground);
         }
-        alarmAddDaysViewModel.setDates(dates);
+        toParent.put("activePeriod", activePeriod);
+        toParent.put("daysOfWeek", (Serializable) daysOfWeek);
+        toParent.put("dates", dates);
+        alarmAddDaysViewModel.setLiveData(new HashMap(toParent));
         alarmAddDaysViewModel.setInfoString(makeInfoString());
 
     }

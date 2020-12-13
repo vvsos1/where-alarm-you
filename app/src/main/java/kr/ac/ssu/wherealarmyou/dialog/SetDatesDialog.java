@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.alarm.Date;
@@ -24,7 +23,7 @@ public class SetDatesDialog extends Dialog {
     TextView addDateBtn;
     RecyclerView recyclerView;
     DatesItemAdapter adapter;
-    List<Date> dates;
+    ArrayList<Date> dates;
     LinearLayoutManager layoutManager;
     TextView cancelBtn;
     TextView acceptBtn;

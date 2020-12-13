@@ -106,13 +106,10 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        time = new Time();
         title = "";
         description = "";
+        time = new Time();
         repetition = new Repetition(2);
-        dates = new ArrayList<Date>();
-        LocalDate now = LocalDate.now();
-        dates.add(new Date(now.getDayOfMonth(), now.getMonthValue(), now.getYear()));
 
 
         Bundle bundle = Objects.requireNonNull(getArguments());
@@ -146,12 +143,7 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
         // Content View Event Listener
         currentVisibleCategoryPosition = new AtomicInteger();
         alarmCategoryItemAdapter.setOnItemClickListener((view, position) -> {
-            if (time == null && position != TIME) {
-                Toast.makeText(getContext(), "시간을 먼저 설정해 주세요", Toast.LENGTH_SHORT).show();
-            } else {
                 changeCategory(position);
-            }
-
         });
         
         recyclerView.setAdapter(alarmCategoryItemAdapter);
@@ -210,19 +202,20 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
             });
         }
         else if (category == WEEK) {
-            AlarmAddViewModel<Integer> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
-            AlarmAddDaysViewModel alarmAddDaysViewModel = (AlarmAddDaysViewModel) viewModel;
-            viewModel.getLiveData().observe(getViewLifecycleOwner(), daysSum -> {
-                if (daysSum == 1) {
-                    this.daysOfWeek = null;
-                    this.activePeriod = null;
-                    this.dates = alarmAddDaysViewModel.getDates();
-                } else {
-                    this.daysOfWeek = alarmAddDaysViewModel.getDaysOfWeek();
-                    if (daysSum >= 510510)
-                        daysOfWeek.put("EVERY_DAY", true);
-                    this.activePeriod = alarmAddDaysViewModel.getActivePeriod();
-                    this.dates = null;
+            AlarmAddViewModel<Map> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddDaysViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), map -> {
+                if ((map.get("dates") instanceof List)) {
+                    if (((List) map.get("dates")).isEmpty()) {
+                        if (map.get("daysOfWeek") instanceof Map) {
+                            dates = (List) map.get("dates");
+                            daysOfWeek = (Map) map.get("daysOfWeek");
+                            activePeriod = (Period) map.get("activePeriod");
+                        }
+                    } else {
+                        dates = (List) map.get("dates");
+                        daysOfWeek = null;
+                        activePeriod = null;
+                    }
                 }
             });
             viewModel.getInfoString().observe(getViewLifecycleOwner(), string -> setInfo(string, category));
@@ -242,13 +235,22 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
                 }
             });
         } else if (category == MEMO) {
-            AlarmAddViewModel<String> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddMemoViewModel.class);
-            viewModel.getLiveData().observe(getViewLifecycleOwner(), string -> {
-                this.description = string;
+            AlarmAddViewModel<Map> viewModel = new ViewModelProvider(requireActivity()).get(AlarmAddMemoViewModel.class);
+            viewModel.getLiveData().observe(getViewLifecycleOwner(), map -> {
+                if (map == null)
+                    return;
+
+                if (map.get("title") != null) {
+                    this.title = (String) map.get("title");
+                    viewModel.setInfoString(title);
+                }
+
+                if (map.get("description") != null) {
+                    this.description = (String) map.get("description");
+                }
             });
             viewModel.getInfoString().observe(getViewLifecycleOwner(), s -> {
                 setInfo(s, category);
-                this.title = s;
             });
             viewModel.onComplete().observe(getViewLifecycleOwner(), isComplete -> {
                 if (isComplete) {
@@ -293,24 +295,24 @@ public class AlarmAddFragment extends Fragment implements View.OnClickListener
     public void onClick(View view) { }
     
     @Override
-    public void onStop( )
-    {
-        super.onStop( );
-        if (time.getMinutes( ) != null) {
-            Toast.makeText(getContext( ), time.getHours( ) + "시 " + time.getMinutes( ) + "분",
-                    Toast.LENGTH_SHORT).show( );
-            registerAlarm(time);
-        }
-        
+    public void onStop( ) {
+        super.onStop();
+        registerAlarm();
+
     }
-    
-    private void registerAlarm(Time time) {
+
+    private void registerAlarm() {
         if (time == null || time.getHours() == null || time.getMinutes() == null) {
             Toast.makeText(getContext(), "시간 없는 알람을 만들 수 없습니다", Toast.LENGTH_SHORT).show();
             return;
         }
 
         AlarmService alarmService = AlarmService.getInstance(getContext());
+        if (daysOfWeek == null && (dates == null || dates.isEmpty())) {
+            dates = new ArrayList<Date>();
+            LocalDate now = LocalDate.now();
+            dates.add(new Date(now.getDayOfMonth(), now.getMonthValue(), now.getYear()));
+        }
 
 
         AlarmSaveRequest req = AlarmSaveRequest.builder(time).dates(dates)

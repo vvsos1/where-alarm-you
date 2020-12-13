@@ -31,7 +31,7 @@ public class AlarmAddDetailFragment extends Fragment implements OnBackPressedLis
         alarmAddDetailViewModel = new ViewModelProvider(requireActivity()).get(AlarmAddDetailViewModel.class);
 
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return contentView;
     }
 
     @Override
