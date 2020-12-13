@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/group_linearLayoutParent"
@@ -15,56 +18,64 @@
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="장소 이름"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@+id/map"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="#000"/>
 
         <EditText
             android:id="@+id/et_address_title"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:hint="입력해주세요"
-            app:layout_constraintStart_toEndOf="@+id/textView3"
-            app:layout_constraintTop_toTopOf="@+id/textView3" />
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="7dp"
+            android:background="@drawable/round_corners_edittext"
+            android:hint="이름을 입력해주세요"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/textView3"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="72dp"
+            android:layout_marginTop="13dp"
             android:text="위치 검색"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@+id/map"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/et_address_title"
+            android:textColor="#000"/>
 
         <ImageView
             android:id="@+id/iv_current_location"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView4"
             app:layout_constraintEnd_toEndOf="@+id/map"
             app:layout_constraintTop_toTopOf="@+id/textView4"
-            app:srcCompat="@drawable/current_location" />
+            app:srcCompat="@drawable/ic_current_location_24" />
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="192dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginEnd="10dp"
             android:text="현위치"
-            android:textSize="20sp"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView2"
             app:layout_constraintEnd_toStartOf="@+id/iv_current_location"
-            app:layout_constraintHorizontal_bias="0.85"
             app:layout_constraintTop_toTopOf="@+id/textView2" />
 
         <fragment
             android:id="@+id/map"
             android:name="com.naver.maps.map.MapFragment"
             android:layout_width="match_parent"
-            android:layout_height="373dp"
+            android:layout_height="350dp"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.6"
@@ -73,12 +84,18 @@
 
         <EditText
             android:id="@+id/et_address_search"
-            android:layout_width="341dp"
-            android:layout_height="43dp"
-            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="7dp"
+            android:background="@drawable/round_corners_edittext"
             android:ems="10"
+            android:hint="주소를 입력해주세요"
             android:inputType="textPersonName"
-            android:text="Name"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/iv_current_location"
             app:layout_constraintStart_toStartOf="@+id/map"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -87,41 +104,74 @@
             android:id="@+id/rv_search_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:overScrollMode="never"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintEnd_toEndOf="@+id/et_address_search"
             app:layout_constraintStart_toStartOf="@+id/et_address_search"
             app:layout_constraintTop_toBottomOf="@+id/et_address_search" />
 
-        <SeekBar
-            android:id="@+id/sb_range"
-            android:layout_width="213dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="24dp"
-            android:max="200"
-            android:min="20"
+        <TextView
+            android:id="@+id/textViewRange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:text="범위"
+            android:textColor="#000"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@+id/map"
             app:layout_constraintTop_toBottomOf="@+id/map" />
 
+        <SeekBar
+            android:id="@+id/sb_range"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:max="200"
+            android:min="20"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="7dp"
+            app:layout_constraintStart_toStartOf="@+id/textViewRange"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRange"
+            android:background="@drawable/round_corners_edittext"/>
+
+        <TextView
+            android:id="@+id/textViewRangeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="13dp"
+            android:text="20m"
+            android:textColor="#000"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/sb_range"
+            app:layout_constraintEnd_toEndOf="@+id/map"
+            app:layout_constraintTop_toTopOf="@+id/sb_range" />
+
+        <TextView
+            android:id="@+id/textViewIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:text="아이콘"
+            android:textColor="#000"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/textViewRange"
+            app:layout_constraintTop_toBottomOf="@+id/sb_range" />
+
         <RelativeLayout
+            android:layout_marginTop="7dp"
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             app:layout_constraintLeft_toLeftOf="@id/map"
             app:layout_constraintRight_toRightOf="@id/map"
-            app:layout_constraintTop_toBottomOf="@+id/sb_range">
-
-            <TextView
-                android:id="@+id/id"
-                android:layout_width="wrap_content"
-                android:layout_height="39dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:text="아이콘"
-                android:textColor="#000"
-                android:textSize="20sp" />
+            app:layout_constraintStart_toStartOf="@+id/textViewIcon"
+            app:layout_constraintTop_toBottomOf="@+id/textViewIcon">
 
             <TextView
                 android:id="@+id/groupMake_textViewUnused1"
@@ -129,8 +179,7 @@
                 android:layout_height="wrap_content"
                 android:text="색  "
                 android:textColor="#000"
-                android:textSize="18sp"
-                android:layout_below="@id/id"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/groupMake_textViewUnused2"
@@ -184,7 +233,7 @@
             android:text="문구"
             android:textColor="#000"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/rv_location_color"
+            app:layout_constraintStart_toStartOf="@+id/relativeLayout"
             app:layout_constraintTop_toBottomOf="@id/rv_location_color" />
 
         <EditText

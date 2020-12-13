@@ -15,7 +15,7 @@ import reactor.util.annotation.NonNull;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public abstract class Location {
+public class Location {
     String uid;
 
     // 사용자가 지정한 장소 이름

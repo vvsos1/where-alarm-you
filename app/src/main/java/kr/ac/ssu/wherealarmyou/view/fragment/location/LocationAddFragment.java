@@ -48,6 +48,7 @@ import kr.ac.ssu.wherealarmyou.view.DataManager;
 import kr.ac.ssu.wherealarmyou.view.MainFrameActivity;
 import kr.ac.ssu.wherealarmyou.view.adapter.IconItemAdapter;
 import kr.ac.ssu.wherealarmyou.view.custom_view.OverlappingView;
+import kr.ac.ssu.wherealarmyou.view.custom_view.RecyclerViewDecoration;
 import reactor.core.scheduler.Schedulers;
 
 public class LocationAddFragment extends Fragment {
@@ -166,7 +167,8 @@ public class LocationAddFragment extends Fragment {
                         .build();
                 locationService.createLocation(newLocation)
                         .doOnSuccess(unused -> dataManager.addLocationLiveData(newLocation))
-                        .subscribe(aVoid -> MainFrameActivity.hideTopFragment());
+                        .subscribe( );
+                MainFrameActivity.hideTopFragment( );
             }
         });
 
@@ -238,11 +240,12 @@ public class LocationAddFragment extends Fragment {
 
     private void initSearchRecyclerView() {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        RecyclerViewDecoration decoration = new RecyclerViewDecoration(5);
         searchResultRv.setLayoutManager(manager);
         adapter = new AddressAdapter(searchResultRvData);
         // ListView에 adapter 등록
         searchResultRv.setAdapter(adapter);
-
+        searchResultRv.addItemDecoration(decoration);
     }
 
     private void initNaverMap() {
@@ -287,7 +290,7 @@ public class LocationAddFragment extends Fragment {
         @Override
         public AddressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.address_list_item, parent, false);
+                    .inflate(R.layout.item_address_list, parent, false);
 
             AddressViewHolder viewHolder = new AddressViewHolder(view);
             return viewHolder;

@@ -36,7 +36,7 @@ public class DataManager
             instance.updateAlarmLiveData( );
             instance.updateGroupLiveData( );
             instance.updateLocationLiveData( );
-            instance.observable.setValue(Boolean.TRUE);
+            instance.observable.setValue(Boolean.FALSE);
         }
         return instance;
     }
@@ -70,7 +70,7 @@ public class DataManager
         GroupService groupService = GroupService.getInstance( );
         groupService.getJoinedGroup( )
                     .doOnNext(instance::addGroupLiveData)
-                    .doOnComplete(this::pauseObserve)
+                    .doOnComplete(this::resumeObserve)
                     .publishOn(Schedulers.elastic( ))
                     .subscribeOn(Schedulers.elastic( ))
                     .subscribe( );
@@ -115,7 +115,7 @@ public class DataManager
     
     public void addLocationLiveData(Location location)
     {
-        List<Location> locations = Objects.requireNonNull(getLocationData( ).getValue( ));
+        List<Location> locations = Objects.requireNonNull(locationMutableLiveData.getValue( ));
         locations.add(location);
         locationMutableLiveData.setValue(locations);
     }
