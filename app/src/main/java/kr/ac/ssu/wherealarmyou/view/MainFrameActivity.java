@@ -20,11 +20,14 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.Map;
 import java.util.Objects;
 
 import kr.ac.ssu.wherealarmyou.R;
 import kr.ac.ssu.wherealarmyou.group.Group;
 import kr.ac.ssu.wherealarmyou.group.service.GroupService;
+import kr.ac.ssu.wherealarmyou.user.User;
+import kr.ac.ssu.wherealarmyou.user.service.UserService;
 import kr.ac.ssu.wherealarmyou.view.fragment.MainFragment;
 import kr.ac.ssu.wherealarmyou.view.fragment.OnBackPressedListener;
 import kr.ac.ssu.wherealarmyou.view.login.SetUserInfoActivity;
@@ -141,8 +144,8 @@ public class MainFrameActivity extends AppCompatActivity
                 blind.setVisibility(View.VISIBLE);
             }
         });
-
-        GroupService.getInstance().getJoinedGroup().map(Group::getUid).subscribe(s -> {
+        UserService userService = UserService.getInstance();
+        userService.findUser(userService.getCurrentUserUid()).map(User::getGroups).flatMapIterable(Map::keySet).subscribe(s -> {
             FirebaseMessaging.getInstance().subscribeToTopic(s).addOnSuccessListener(aVoid -> Log.d("MainFrameActivity", s + "구독 완료"));
         });
     }

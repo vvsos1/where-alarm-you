@@ -49,7 +49,6 @@ public class MainFragment extends Fragment implements View.OnClickListener
     
     private final MutableLiveData<List<Alarm>> filteredAlarms = new MutableLiveData<>(new ArrayList<>( ));
     
-    private List<Alarm>       alarms;
     private MainFrameActivity mainFrameActivity;
     
     // FAB ( Floating Action Button )
@@ -68,7 +67,7 @@ public class MainFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        alarms = dataManager.getAlarmData( ).getValue( );
+        List<Alarm>    alarms    = dataManager.getAlarmData( ).getValue( );
         List<Group>    groups    = dataManager.getGroupData( ).getValue( );
         List<Location> locations = dataManager.getLocationData( ).getValue( );
         
@@ -269,16 +268,19 @@ public class MainFragment extends Fragment implements View.OnClickListener
     
     private void filterAlarmByGroup(Group group)
     {
+        List<Alarm> alarms = Objects.requireNonNull(dataManager.getAlarmData( ).getValue( ));
         filteredAlarms.setValue(Alarm.filterAlarms(alarms, Set.of(group.getUid( )), null));
     }
     
     private void filterAlarmByLocation(Location location)
     {
+        List<Alarm> alarms = Objects.requireNonNull(dataManager.getAlarmData( ).getValue( ));
         filteredAlarms.setValue(Alarm.filterAlarms(alarms, null, Set.of(location.getUid( ))));
     }
     
     private void resetFilter( )
     {
+        List<Alarm> alarms = Objects.requireNonNull(dataManager.getAlarmData( ).getValue( ));
         filteredAlarms.setValue(alarms);
     }
     

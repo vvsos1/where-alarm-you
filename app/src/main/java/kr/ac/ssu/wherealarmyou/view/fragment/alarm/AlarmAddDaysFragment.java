@@ -334,7 +334,6 @@ public class AlarmAddDaysFragment
         toParent.put("dates", dates);
         alarmAddDaysViewModel.setLiveData(new HashMap(toParent));
         alarmAddDaysViewModel.setInfoString(makeInfoString());
-
     }
 
 }
